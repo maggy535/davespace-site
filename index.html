@@ -3,7 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Как купить Claude без верификации через Team</title>
+<title>Как купить Claude в России без верификации — через Team</title>
+<meta name="description" content="Пошагово и со скринами: рабочая почта на своём домене, иностранная карта и подписка Claude Team. Цены, подводные камни и что делать сотрудникам">
+<link rel="canonical" href="https://davespace.ru/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="D.A.V.E.">
+<meta property="og:url" content="https://davespace.ru/">
+<meta property="og:title" content="Как купить Claude в России без верификации — через Team">
+<meta property="og:description" content="Пошагово и со скринами: рабочая почта на своём домене, иностранная карта и подписка Claude Team. Цены, подводные камни и что делать сотрудникам">
+<meta property="og:image" content="https://davespace.ru/og.jpg">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta property="og:image:alt" content="Как купить Claude без верификации через Team">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Как купить Claude в России без верификации — через Team">
+<meta name="twitter:description" content="Пошагово и со скринами: рабочая почта на своём домене, иностранная карта и подписка Claude Team. Цены, подводные камни и что делать сотрудникам">
+<meta name="twitter:image" content="https://davespace.ru/og.jpg">
 <style>
   :root{
     --bg:#f5f6f8; --card:#fff; --text:#16181d; --muted:#5d6470; --line:#e3e6eb;
@@ -249,8 +265,9 @@
   .dv-end{display:flex;justify-content:center;margin:24px 0 0}
   .dv-hero h1{margin:0}
   .dv-sub{font-size:20px;line-height:32px;color:var(--muted);margin:0}
-  .dv-shot{margin:0 0 32px;border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(20,20,15,.06),0 20px 50px -12px rgba(20,20,15,.22),0 0 0 1px rgba(20,20,15,.08)}
+  .dv-shot{transform:scale(var(--shot-scale,.9));transform-origin:center top;margin:0 0 32px;border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(20,20,15,.06),0 20px 50px -12px rgba(20,20,15,.22),0 0 0 1px rgba(20,20,15,.08)}
   .dv-shot img{display:block;width:100%;height:auto}
+  @media (prefers-reduced-motion:reduce){.dv-shot{transform:none}}
   .dv-letter h2{font-size:28px;line-height:1.15;letter-spacing:-.02em;margin:0 0 16px}
   .dv-can{font-size:28px;line-height:1.15;letter-spacing:-.02em;margin:40px 0 0}
   @media (max-width:640px){.dv-can{font-size:23px;margin-top:32px}}
@@ -705,6 +722,18 @@
   <p>Оплата за год выходит на 20% дешевле, но списывается сразу за 12 месяцев</p>
 </section>
 
+<section>
+  <h2>Если у вас команда с сотрудниками — это идеально</h2>
+  <p>Когда с Claude работает несколько человек, Team удобнее, чем отдельная подписка у каждого</p>
+  <ul>
+    <li><strong>Один счёт на всех.</strong> Не нужно покупать подписку каждому и собирать чеки: одна карта, одна оплата на всю компанию</li>
+    <li><strong>Места остаются у компании.</strong> Сотрудник ушёл — забираете его место и отдаёте новому человеку, лишний аккаунт оплачивать не нужно</li>
+    <li><strong>Лимиты по задачам.</strong> Тем, кто весь день сидит в Claude Code, — премиум-место, остальным стандартное. Поменять тип можно в любой момент</li>
+    <li><strong>Общие проекты.</strong> Проект с инструкциями и файлами можно открыть коллегам, и все работают с одним и тем же контекстом</li>
+    <li><strong>Переписки не идут на обучение.</strong> На Team действуют коммерческие условия Anthropic: данные компании не используются для обучения моделей</li>
+  </ul>
+</section>
+
 <h2 class="part-h">Коротко, если не любите инструкции</h2>
 
 <div class="tldr">
@@ -981,6 +1010,21 @@ show(location.hash.slice(1)||firstNeeded());
   new IntersectionObserver(function(e){ visible=e[0].isIntersecting; if(visible && !running) run(); },{threshold:.4}).observe(box);
   addEventListener('resize',function(){ var on=seg.querySelector('.on'); if(on) pick(on.dataset.m); });
   document.addEventListener('click',function(e){ if(e.target.closest && e.target.closest('[data-tab="dave"]')) setTimeout(function(){ var on=seg.querySelector('.on'); pick(on?on.dataset.m:'codex'); },50); });
+})();
+</script>
+<script>
+(function(){
+  var el=document.querySelector('.dv-shot'); if(!el) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){el.style.transform='none';return;}
+  var ticking=false;
+  function upd(){ticking=false; var r=el.getBoundingClientRect(), vh=innerHeight||1;
+    if(!r.height) return;
+    var p=(vh-r.top)/(vh*0.6); p=p<0?0:p>1?1:p;
+    el.style.setProperty('--shot-scale',(0.9+0.1*p).toFixed(4));}
+  function on(){if(!ticking){ticking=true;requestAnimationFrame(upd);}}
+  addEventListener('scroll',on,{passive:true}); addEventListener('resize',on);
+  document.addEventListener('click',function(){setTimeout(on,0)});
+  upd();
 })();
 </script>
 </body>
