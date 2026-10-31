@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Как купить Claude без верификации через Team</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --card:#fff; --text:#16181d; --muted:#5d6470; --line:#e3e6eb;
+    --accent:#2f6fed; --warn-bg:#fff6e5; --warn-line:#f2c46b;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif}
+  main{max-width:920px;margin:0 auto;padding:48px 20px 80px}
+  h1{font-size:34px;line-height:1.2;margin:0 0 12px;letter-spacing:-.01em}
+  .lead{color:var(--muted);font-size:18px;margin:0 0 12px}
+  .intro{font-size:17px;margin:0 0 28px}
+  .facts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:0 0 40px}
+  .fact{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .fact b{display:block;font-size:20px}
+  .fact span{color:var(--muted);font-size:14px}
+  section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px 28px 24px;margin:0 0 20px}
+  h2{display:flex;align-items:center;gap:12px;font-size:22px;margin:0 0 14px}
+  h2 .n{flex:0 0 32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;
+    font-size:15px;display:grid;place-items:center}
+  ol,ul{margin:0 0 16px;padding-left:22px}
+  li{margin:0 0 6px}
+  p{margin:0 0 12px}
+  code{font:14px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;background:#eef1f5;border-radius:5px;padding:2px 6px}
+  .note{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:10px;padding:10px 14px;margin:0 0 16px;font-size:15px}
+  table{border-collapse:collapse;width:100%;font-size:15px;margin:0 0 4px}
+  td,th{border-bottom:1px solid var(--line);padding:9px 6px;text-align:left;vertical-align:top}
+  th{color:var(--muted);font-weight:500}
+  td:last-child,th:last-child{text-align:right;white-space:nowrap}
+
+  .opt-h{font-size:18px;color:var(--muted);margin:32px 0 12px;display:block}
+  details.opt{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:0 28px;margin:0 0 12px}
+  details.opt summary{cursor:pointer;font-size:18px;font-weight:600;padding:18px 0;list-style:none;display:flex;align-items:center;gap:10px}
+  details.opt summary::-webkit-details-marker{display:none}
+  details.opt summary::before{content:"›";display:inline-block;width:14px;color:var(--muted);transition:transform .2s}
+  details.opt[open] summary::before{transform:rotate(90deg)}
+  details.opt[open]{padding-bottom:22px}
+
+  /* carousel */
+  .car{position:relative;margin:8px 0 0}
+  .track{overflow:hidden;border-radius:10px;border:1px solid var(--line);touch-action:pan-y}
+  .slides{display:flex;transition:transform .3s ease;will-change:transform}
+  .track figure{flex:0 0 100%;min-width:100%;margin:0}
+  .track img{display:block;width:100%;height:auto;background:#eef0f3;cursor:zoom-in}
+  .cap{display:flex;align-items:center;gap:12px;margin:10px 0 0;min-height:24px}
+  .cap .count{flex:0 0 auto;color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
+  .cap .text{flex:1 1 auto;font-size:15px}
+  .nav{flex:0 0 auto;display:flex;gap:6px}
+  .nav button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:#fff;
+    font-size:18px;line-height:1;cursor:pointer;color:var(--text)}
+  .nav button:hover{background:#f0f2f5}
+  .nav button:disabled{opacity:.35;cursor:default;background:#fff}
+
+  /* lightbox */
+  .lb{position:fixed;inset:0;background:rgba(10,12,16,.92);display:none;z-index:10;cursor:zoom-out;overflow:auto}
+  .lb.on{display:block}
+  .lb img{display:block;max-width:none;width:min(1512px,100vw);margin:0 auto}
+
+  @media (max-width:640px){
+    main{padding:28px 12px 60px}
+    h1{font-size:26px}
+    .facts{grid-template-columns:1fr}
+    section{padding:20px 16px 18px}
+    details.opt{padding:0 16px}
+  }
+
+  .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 36px}
+  .tab{display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:16px 18px;cursor:pointer;font:inherit;color:var(--text);transition:border-color .15s,box-shadow .15s}
+  .tab:hover{border-color:#c9cfd8}
+  .tab .k{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#eef1f5;
+    color:var(--muted);font-size:14px;font-weight:600;margin:0 0 10px}
+  .tab b{display:block;font-size:17px;line-height:1.3}
+  .tab span.d{display:block;color:var(--muted);font-size:14px;margin-top:4px}
+  .tab[aria-selected="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .tab[aria-selected="true"] .k{background:var(--accent);color:#fff}
+  .panel[hidden]{display:none}
+  .tldr{background:#eef3ff;border:1px solid #cfdcfb;border-radius:14px;padding:16px 20px;margin:0 0 28px}
+  .part-h{font-size:24px;margin:40px 0 16px}
+  .tldr-h{font-weight:600;margin:0 0 10px}
+  .tldr ol{margin:0;padding-left:22px}
+  .tldr li{margin:0 0 4px}
+  .pc{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0 0;align-items:start}
+  .pc>div{border-radius:12px;padding:14px 16px 4px;border:1px solid var(--line)}
+  .pc .minus{background:#fff4f2;border-color:#f4c7bf}
+  .pc .plus{background:#f0faf3;border-color:#bfe3c9}
+  .pc h3{font-size:16px;margin:0 0 8px}
+  .pc ul{padding-left:20px;margin:0 0 10px}
+  @media (max-width:640px){.pc{grid-template-columns:1fr}}
+  .cards2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0 0 20px}
+  .cards2 section{margin:0}
+  .cards2 .sub{color:var(--muted);font-size:14px;margin:4px 0 6px}
+  @media (max-width:640px){.cards2{grid-template-columns:1fr}}
+  .have{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 16px}
+  .have-t{color:var(--muted);font-size:15px}
+  .chip{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:999px;
+    padding:7px 14px 7px 10px;font-size:15px;cursor:pointer;user-select:none;transition:border-color .15s,background .15s}
+  .chip:hover{border-color:#c9cfd8}
+  .chip input{width:16px;height:16px;margin:0;accent-color:#1f9d55;cursor:pointer}
+  .chip:has(input:checked){border-color:#1f9d55;background:#effaf3}
+  .tab.done{background:#f7fbf8}
+  .tab.done .k{background:#1f9d55;color:#fff;font-size:0}
+  .tab.done .k::before{content:"✓";font-size:15px}
+  .tab.done span.d{color:#1f9d55}
+  .panel h1{font-size:28px}
+  .empty{background:var(--card);border:1px dashed var(--line);border-radius:16px;padding:40px 28px;color:var(--muted);text-align:center}
+  @media (max-width:900px){.tabs{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:640px){.tabs{grid-template-columns:1fr}}
+
+  /* ---- dave.space skin: fonts, sky, buttons, spacing measured from dave.space on 31.10.2026 ---- */
+  @font-face{font-family:"BF Coil";font-weight:400;font-display:swap;src:url(assets/Coil-Regular.woff2) format("woff2")}
+  @font-face{font-family:"BF Coil";font-weight:500 700;font-display:swap;src:url(assets/Coil-Medium.woff2) format("woff2")}
+  :root{
+    --bg:#fbfcfc; --card:rgba(255,255,255,.8); --text:#1a1a1e; --head:#14140f; --muted:#8a8884; --soft:#6e6e64;
+    --line:rgba(20,20,15,.09); --accent:#c6613f; --accent-08:rgba(198,97,63,.08); --accent-15:rgba(198,97,63,.15);
+    --green:#15803d; --warn-bg:rgba(198,97,63,.07); --warn-line:rgba(198,97,63,.28);
+  }
+  html{background:var(--bg)}
+  body{background:transparent;color:var(--text);font:16px/1.55 "BF Coil","Inter",-apple-system,BlinkMacSystemFont,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.72;
+    background:linear-gradient(rgba(255,255,255,.44),rgba(255,255,255,.44)),
+      radial-gradient(48% 26% at 50% 30%,rgba(255,255,255,.44),transparent 95%),
+      url(assets/cloud-veil.jpg) 50% 0/cover no-repeat}
+  b,strong,th{font-weight:500}
+  a{color:var(--accent);text-underline-offset:3px;text-decoration-thickness:1px}
+  main{padding:88px 20px 96px}
+  main>h1{font-size:64px;line-height:1.05;letter-spacing:-.025em;font-weight:500;color:var(--head);margin:0 0 20px}
+  main>.intro{font-size:20px;line-height:28px;letter-spacing:-.006em;color:var(--muted);margin:0 0 32px;max-width:720px}
+  .panel h1{font-size:44px;line-height:1.08;letter-spacing:-.03em;font-weight:500;color:var(--head);margin:0 0 16px}
+  .panel .intro{font-size:18px;line-height:28px}
+  h2,h3{font-weight:500;color:var(--head)}
+  .part-h{font-size:32px;line-height:36px;letter-spacing:-.03em;margin:56px 0 20px}
+  section h2{font-size:24px;line-height:28px;letter-spacing:-.02em;margin:0 0 16px}
+  h2 .n{background:var(--accent);font-weight:500;font-size:15px;letter-spacing:0}
+  .pc h3{font-size:18px;line-height:22px;letter-spacing:-.01em}
+  section,.fact,.tab,details.opt,.empty{background:var(--card);border:1px solid var(--line);
+    -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+  section{border-radius:20px;padding:32px 32px 28px;margin:0 0 16px}
+  .fact{border-radius:16px;padding:16px 20px}
+  .fact b{font-size:22px;letter-spacing:-.02em;color:var(--head)}
+  .fact span{color:var(--muted)}
+  .facts{margin:0 0 8px}
+  .tabs{gap:12px;margin:0 0 48px}
+  .tab{border-radius:18px;padding:18px 20px}
+  .tab:hover{border-color:rgba(20,20,15,.22)}
+  .tab b{font-weight:500;font-size:18px;letter-spacing:-.01em;color:var(--head)}
+  .tab .k{background:rgba(20,20,15,.06);font-weight:500}
+  .tab[aria-selected="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .tab[aria-selected="true"] .k{background:var(--accent)}
+  .tab.done{background:rgba(255,255,255,.8)}
+  .tab.done .k{background:var(--green)}
+  .tab.done span.d{color:var(--green)}
+  .have{gap:10px;margin:0 0 20px}
+  .have-t{color:var(--muted);font-size:20px;line-height:28px;letter-spacing:-.006em}
+  @media (max-width:640px){.have-t{font-size:18px;line-height:26px}}
+  .chip{background:rgba(255,255,255,.8);border:0;box-shadow:inset 0 0 0 1px rgba(20,20,15,.22);padding:8px 16px 8px 12px;font-weight:500;color:var(--text)}
+  .chip:hover{box-shadow:inset 0 0 0 1px rgba(20,20,15,.4)}
+  .chip input{-webkit-appearance:none;appearance:none;flex:0 0 20px;width:20px;height:20px;margin:0;border-radius:6px;
+    background:#fff;box-shadow:inset 0 0 0 1.5px rgba(20,20,15,.28);cursor:pointer;position:relative;transition:background .15s,box-shadow .15s}
+  .chip:hover input{box-shadow:inset 0 0 0 1.5px rgba(20,20,15,.5)}
+  .chip input:checked{background:var(--green);box-shadow:none}
+  .chip input:checked::after{content:"";position:absolute;inset:3px;background:#fff;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 6 9 17l-5-5' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 6 9 17l-5-5' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+  .chip input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .chip:has(input:checked){background:rgba(21,128,61,.08);box-shadow:inset 0 0 0 1px var(--green)}
+  .tldr{background:var(--accent-08);border:1px solid var(--warn-line);border-radius:20px;padding:20px 24px;margin:0 0 8px}
+  .tldr li{margin:0 0 6px}
+  .note{border-radius:14px;padding:12px 16px}
+  .pc>div{border-radius:16px;padding:16px 18px 6px}
+  .pc .minus{background:rgba(198,97,63,.07);border-color:rgba(198,97,63,.28)}
+  .pc .plus{background:rgba(21,128,61,.06);border-color:rgba(21,128,61,.25)}
+  code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--accent-15);color:#8f3f22;border-radius:6px}
+  td,th{border-bottom:1px solid var(--line)}
+  th{color:var(--muted)}
+  .track{border-radius:12px;border:1px solid var(--line)}
+  .nav button{border:0;background:rgba(255,255,255,.9);box-shadow:inset 0 0 0 1px rgba(20,20,15,.22);color:var(--text);font-family:inherit}
+  .nav button:hover{background:#fff;box-shadow:inset 0 0 0 1px rgba(20,20,15,.4)}
+  .nav button:disabled{background:rgba(255,255,255,.6)}
+  .cards2 section>ul:first-of-type{list-style:none;padding:0;margin:4px 0 20px;display:flex;flex-wrap:wrap;gap:8px}
+  .cards2 section>ul:first-of-type li{margin:0}
+  .cards2 section>ul:first-of-type a{display:inline-flex;align-items:center;height:38px;padding:0 18px;border-radius:999px;
+    background:var(--accent);color:#fff;text-decoration:none;font-weight:500;transition:background .15s}
+  .cards2 section>ul:first-of-type a:hover{background:#b35634}
+  .cards2 section>ul:first-of-type li+li a{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1px rgba(20,20,15,.28)}
+  .cards2 section>ul:first-of-type li+li a:hover{background:rgba(255,255,255,.7)}
+  .cards2 .sub{color:var(--muted)}
+  .lb{background:rgba(20,20,15,.92)}
+  .site-header{position:fixed;inset:0 0 auto 0;height:64px;padding:14px 24px;display:flex;align-items:center;z-index:5}
+  .site-header::before{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .2s;
+    background:linear-gradient(rgba(255,255,255,.64),rgba(255,255,255,.46));-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+  .site-header.scrolled::before{opacity:1}
+  .brand{display:flex;align-items:center;gap:10px;height:28px;text-decoration:none}
+  .brand-eye{position:relative;width:28px;height:28px;flex:0 0 28px}
+  .brand-eye::before{content:"";position:absolute;inset:-3.39px;background:url(assets/dave-eye.webp) 50% 50%/100% 100% no-repeat}
+  .brand-name{font-size:0;color:transparent;display:flex;align-items:center}
+  .brand-name::after{content:"";display:block;width:102.344px;height:13px;background:#1a1a1e;
+    -webkit-mask:url(assets/dave-wordmark.svg) center/contain no-repeat;mask:url(assets/dave-wordmark.svg) center/contain no-repeat}
+  main>h1 .hl-accent{color:var(--accent)}
+  main>h1 .hl-pill{font:inherit;font-size:.85em;letter-spacing:inherit;background:var(--accent-15);border-radius:.42em;padding:.06em .4em;
+    display:inline-block;line-height:1.06;vertical-align:baseline}
+  @media (max-width:640px){.site-header{height:56px;padding:12px 14px}body main{padding-top:80px}}
+  .track{position:relative}
+  .arr{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:44px;height:44px;border-radius:50%;border:0;
+    display:grid;place-items:center;padding:0 0 3px;font:500 26px/1 "BF Coil",sans-serif;color:var(--text);cursor:pointer;
+    background:rgba(255,255,255,.94);box-shadow:0 2px 12px rgba(20,20,15,.18),inset 0 0 0 1px rgba(20,20,15,.12);transition:opacity .15s,background .15s}
+  .arr:hover{background:#fff}
+  .arr.prev{left:12px}
+  .arr.next{right:12px}
+  .arr:disabled{opacity:0;pointer-events:none}
+  @media (max-width:640px){.arr{width:36px;height:36px;font-size:22px}.arr.prev{left:8px}.arr.next{right:8px}}
+  .facts{margin:0 0 16px}
+  .tldr{background:var(--card);border:1px solid var(--line);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+  ol{list-style:none;padding-left:0;counter-reset:n}
+  ol>li{counter-increment:n;position:relative;padding-left:28px}
+  ol>li::before{content:counter(n) ".";position:absolute;left:0;top:0;color:var(--muted)}
+  .tldr ol>li::before{color:var(--accent);font-weight:500}
+  @media (max-width:640px){
+    main{padding:40px 14px 64px}
+    main>h1{font-size:40px;letter-spacing:-.03em}
+    main>.intro{font-size:18px;line-height:26px}
+    .panel h1{font-size:32px}
+    .part-h{font-size:26px;line-height:30px;margin:40px 0 16px}
+    section{padding:22px 18px 20px;border-radius:18px}
+    section h2{font-size:21px}
+    table{font-size:14px}
+    td,th{padding:8px 4px}
+    td:last-child,th:last-child{white-space:normal}
+  }
+  .pc + .note{margin:16px 0 0}
+  .site-header{gap:16px}
+  .collab{margin-left:auto;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:inset 0 0 0 1px rgba(198,97,63,.28);font-size:17px;line-height:24px;color:#1a1a1e;white-space:nowrap}
+  .collab a{color:var(--accent);font-weight:500}
+  .c-short{display:none}
+  @media (max-width:640px){.c-long{display:none}.c-short{display:inline}.site-header{gap:10px}.collab{font-size:12.5px;line-height:18px;padding:6px 11px;min-width:0;overflow:hidden;text-overflow:ellipsis}}
+  .tab.done .k{position:relative}
+  .tab.done .k::before{content:"";position:absolute;inset:0;margin:auto;width:16px;height:16px;background:#fff;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 6 9 17l-5-5' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 6 9 17l-5-5' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+  .dv-hero{margin:0 0 28px;display:flex;align-items:center;justify-content:space-between;gap:16px 24px;flex-wrap:wrap}
+  .dv-dl{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;text-decoration:none;border-radius:12px;padding:12px 20px;font-weight:500;font-size:16px;line-height:1.2;white-space:nowrap;transition:background .15s}
+  .dv-dl:hover{background:#ad5333}
+  .dv-dl .ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .dv-dl small{font-size:13px;font-weight:400;opacity:.8;margin-left:2px}
+  .dv-end{display:flex;justify-content:center;margin:24px 0 0}
+  .dv-hero h1{margin:0}
+  .dv-sub{font-size:20px;line-height:32px;color:var(--muted);margin:0}
+  .dv-shot{margin:0 0 32px;border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(20,20,15,.06),0 20px 50px -12px rgba(20,20,15,.22),0 0 0 1px rgba(20,20,15,.08)}
+  .dv-shot img{display:block;width:100%;height:auto}
+  .dv-letter h2{font-size:28px;line-height:1.15;letter-spacing:-.02em;margin:0 0 16px}
+  .dv-can{font-size:28px;line-height:1.15;letter-spacing:-.02em;margin:40px 0 0}
+  @media (max-width:640px){.dv-can{font-size:23px;margin-top:32px}}
+  .dv-hi{display:flex;align-items:center;gap:14px;margin:0 0 16px}
+  .dv-hi h2{margin:0}
+  .dv-hi .ava{flex:none;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;object-fit:cover}
+  .dv-zz .a3{display:flex;flex-direction:column;align-items:center;gap:10px;font-size:13px}
+  .dv-zz .lim,.dv-zz .cont{display:flex;align-items:center;gap:7px;background:#fff;border-radius:10px;padding:7px 12px;box-shadow:0 0 0 1px var(--line);font-weight:500}
+  .dv-zz .lim span,.dv-zz .cont span{font-weight:400;color:var(--zmuted)}
+  .dv-zz .lim{opacity:.6}
+  .dv-zz .cont{box-shadow:0 0 0 1.5px var(--accent)}.dv-zz .cont span{color:var(--text)}
+  .dv-zz .loc{display:flex;align-items:center;gap:6px;color:#9a4425;font-size:12px;margin-top:2px}.dv-zz .loc .ic{width:13px;height:13px;color:var(--accent)}
+  .dv-zz .slot{display:flex;justify-content:center}
+  .dv-zz .slot>div{box-sizing:border-box;overflow:hidden;white-space:nowrap;transition:opacity .5s,box-shadow .5s,width .5s cubic-bezier(.3,.7,.2,1)}
+  .dv-zz .slot>.hide{opacity:0!important}
+  .dv-zz .slot>.lim.lit{opacity:1}
+  .dv-zz .stack{display:grid}
+  .dv-zz .stack>.ly{grid-area:1/1;display:flex;align-items:center;gap:7px;width:max-content;transition:opacity .5s}
+  .dv-zz #dv-switch .seg{position:relative}
+  .dv-zz #dv-switch .seg span{position:relative;z-index:1;background:none;box-shadow:none;transition:color .3s}
+  .dv-zz #dv-switch .seg .on{color:var(--text);font-weight:500}
+  .dv-zz #dv-switch .thumb{position:absolute;top:3px;bottom:3px;left:0;border-radius:8px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.12);transition:transform .45s cubic-bezier(.3,.7,.2,1),width .45s cubic-bezier(.3,.7,.2,1)}
+  .dv-zz .dot.k{background:#4b7bec}
+  .dv-zz .art{min-width:0}
+  .dv-zz .art.tall{height:320px}
+  .dv-zz .art .a5{width:100%;box-sizing:border-box;padding:0 14px;justify-content:center}
+  .dv-zz .art .a5 .pn{flex:0 1 150px;min-width:0}
+  .dv-zz .rw{min-width:0;white-space:nowrap}
+  .dv-zz .tg{flex:0 1 230px;min-width:0;background:#fff;border-radius:12px;box-shadow:0 0 0 1px var(--line);overflow:hidden;font-size:13px}
+  .dv-zz .tg .th{display:flex;align-items:center;gap:8px;padding:9px 10px;border-bottom:1px solid var(--line)}
+  .dv-zz .tg .th>.ic{width:16px;height:16px;color:#3390ec;margin-right:-2px}
+  .dv-zz .tg .th small{display:block;font-size:11px;color:var(--zmuted);line-height:1.2}
+  .dv-zz .tg .th div b{display:block;font-weight:500;line-height:1.2}
+  .dv-zz .tg .av{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:500;font-size:14px}
+  .dv-zz .tg .av.big{width:30px;height:30px;background:linear-gradient(#ff885e,#c6613f)}
+  .dv-zz .tg .tr{display:flex;align-items:center;gap:9px;padding:7px 10px}
+  .dv-zz .tg .tr+.tr .tx{box-shadow:0 -1px 0 var(--line)}
+  .dv-zz .tg .tx{flex:1;min-width:0;padding:2px 0}
+  .dv-zz .tg .t1,.dv-zz .tg .t2{display:flex;align-items:center;gap:6px}
+  .dv-zz .tg .t1 b{font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dv-zz .tg time{font-size:11px;color:var(--zmuted)}
+  .dv-zz .tg .t2 span{flex:1;min-width:0;color:var(--zmuted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dv-zz .tg .t2 .fi{width:13px;height:13px;color:#3390ec;vertical-align:-2px;margin-right:4px}
+  .dv-zz .tg em{font-style:normal;background:#3390ec;color:#fff;border-radius:9px;min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;display:grid;place-items:center;font-size:11px;font-weight:500}
+  .dv-cloud{background:#fff;border:0;border-radius:20px;padding:28px 32px 32px;margin:16px 0 0}
+  .dv-cloud h3{font-size:26px;line-height:1.15;font-weight:500;letter-spacing:-.01em;margin:0 0 18px}
+  .dv-cloud .cl{display:flex;flex-wrap:wrap;gap:8px}
+  .dv-cloud .cl span{display:inline-flex;align-items:center;gap:7px;background:#f2f4f7;border-radius:999px;padding:7px 14px 7px 11px;font-size:15px}
+  .dv-cloud .ic{width:16px;height:16px;flex:none;fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  @media (max-width:640px){.dv-zz .art.tall{height:300px}.dv-zz .art .a5{gap:6px;width:100%;box-sizing:border-box;padding:0 10px}.dv-zz .tg{width:auto;flex:1;min-width:0}.dv-zz .a5 .pn{width:112px;flex:none;padding:8px 6px}.dv-zz .a5 .rw{padding:6px 5px;gap:5px}.dv-zz .a5 .sy{width:28px;height:28px}.dv-cloud{padding:22px 18px 24px}.dv-cloud h3{font-size:23px}.dv-cloud .cl span{font-size:14px}}
+  .dv-zz{--a15:rgba(198,97,63,.15);--soft:#f2f4f7;--zmuted:#6b6f76;display:flex;flex-direction:column;gap:16px;margin:20px 0 0}
+  .dv-zz .ic{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .dv-zz h3{font-weight:500;letter-spacing:-.01em}
+  .dv-zz p{margin:0}
+  .dv-zz{display:flex;flex-direction:column;gap:16px}
+  .dv-zz .z{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;background:#fff;border-radius:20px;padding:16px 32px 16px 16px}
+  .dv-zz .z.rev{padding:16px 16px 16px 32px}
+  .dv-zz .z.rev .art{order:2}
+  .dv-zz .art{background:var(--soft);border-radius:14px;height:230px;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .dv-zz .num{font-size:14px;color:var(--accent)}
+  .dv-zz h3{font-size:26px;line-height:1.15;margin:6px 0 10px}
+  .dv-zz p{color:var(--zmuted);font-size:16px}
+  .dv-zz .a1{display:flex;flex-direction:column;gap:12px}
+  .dv-zz .fl{display:flex;align-items:center;gap:10px}
+  .dv-zz .fl span{display:inline-flex;align-items:center;gap:7px;background:#fff;border-radius:9px;padding:8px 12px;box-shadow:0 0 0 1px var(--line);min-width:118px}
+  .dv-zz .fl span .ic{color:var(--zmuted)}
+  .dv-zz .fl .ok{font-weight:500}
+  .dv-zz .fl .ok .ic{color:var(--green)}
+  .dv-zz .fl .ar{color:#b4b8bf}
+  .dv-zz .a2{display:flex;flex-direction:column;gap:14px;width:78%}
+  .dv-zz .m{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+  .dv-zz .m.r{align-items:flex-end}
+  .dv-zz .m .who{font-size:12px;color:var(--zmuted);display:flex;gap:6px;align-items:center}
+  .dv-zz .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+  .dv-zz .dot.c{background:var(--accent)}
+  .dv-zz .dot.x{background:#1a1a1e}
+  .dv-zz .bub{background:#fff;box-shadow:0 0 0 1px var(--line);padding:9px 13px;border-radius:14px 14px 14px 4px}
+  .dv-zz .bub.dk{background:#1a1a1e;color:#fff;box-shadow:none;border-radius:14px 14px 4px 14px}
+  .dv-zz .a3{flex-direction:column;gap:18px;display:flex;align-items:center}
+  .dv-zz .mac{position:relative;color:#1a1a1e}
+  .dv-zz .mac .xl{width:96px;height:96px;stroke-width:1.2}
+  .dv-zz .lk{position:absolute;right:-8px;top:6px;width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center}
+  .dv-zz .seg{display:flex;background:#e3e6eb;border-radius:10px;padding:3px}
+  .dv-zz .seg span{padding:6px 14px;border-radius:8px;color:var(--zmuted)}
+  .dv-zz .seg .on{background:#fff;color:var(--text);font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+  .dv-zz .a4{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .dv-zz .core{width:64px;height:64px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:500}
+  .dv-zz .orb{display:flex;gap:6px}
+  .dv-zz .orb span{display:inline-flex;align-items:center;gap:5px;background:#fff;box-shadow:0 0 0 1px var(--line);color:var(--text);border-radius:999px;padding:3px 10px 3px 8px;font-size:12px}
+.dv-zz .orb .ic{width:13px;height:13px;color:var(--accent)}
+.dv-zz .core .br{width:32px;height:32px;stroke-width:1.6}
+  .dv-zz .legs{display:flex;gap:8px}
+  .dv-zz .legs span{display:inline-flex;align-items:center;gap:7px;background:#fff;box-shadow:0 0 0 1px var(--line);border-radius:9px;padding:6px 14px;font-weight:500}
+  .dv-zz .a4{position:relative;z-index:0}
+  .dv-zz .core{position:relative;animation:dvBreath 2.4s ease-in-out infinite}
+  .dv-zz .core::before,.dv-zz .core::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--accent);z-index:-1;animation:dvPulse 2.4s cubic-bezier(.2,.6,.3,1) infinite}
+  .dv-zz .core::after{animation-delay:1.2s}
+  .dv-zz .orb span,.dv-zz .legs span{animation:dvLift 4.8s ease-in-out infinite}
+  .dv-zz .orb span:nth-child(2){animation-delay:.3s}
+  .dv-zz .orb span:nth-child(3){animation-delay:.6s}
+  .dv-zz .orb span:nth-child(4){animation-delay:.9s}
+  .dv-zz .legs span:nth-child(1){animation-delay:1.6s}
+  .dv-zz .legs span:nth-child(2){animation-delay:1.9s}
+  .dv-zz .legs span:nth-child(3){animation-delay:2.2s}
+  @keyframes dvBreath{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+  @keyframes dvPulse{0%{transform:scale(1);opacity:.32}100%{transform:scale(1.9);opacity:0}}
+  @keyframes dvLift{0%,26%,100%{transform:none;box-shadow:0 0 0 1px var(--line)}9%,15%{transform:translateY(-4px);box-shadow:0 0 0 1.5px var(--accent),0 8px 16px rgba(198,97,63,.2)}}
+  .dv-zz .a6{display:flex;flex-direction:column;gap:10px;width:84%}
+  .dv-zz .pa{display:flex;align-items:center;gap:10px;background:#fff;box-shadow:0 0 0 1px var(--line);border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.35}
+  .dv-zz .pa .ic{width:28px;height:28px;padding:6px;box-sizing:border-box;border-radius:50%;background:var(--a15);color:var(--accent)}
+  .dv-zz .pa:nth-child(1){animation:dvP1 7.5s ease-out infinite}
+  .dv-zz .pa:nth-child(2){animation:dvP2 7.5s ease-out infinite}
+  .dv-zz .pa:nth-child(3){animation:dvP3 7.5s ease-out infinite}
+  @keyframes dvP1{0%{opacity:0;transform:translateY(10px)}6%,86%{opacity:1;transform:none}93%,100%{opacity:0;transform:none}}
+  @keyframes dvP2{0%,16%{opacity:0;transform:translateY(10px)}22%,86%{opacity:1;transform:none}93%,100%{opacity:0;transform:none}}
+  @keyframes dvP3{0%,32%{opacity:0;transform:translateY(10px)}38%,86%{opacity:1;transform:none}93%,100%{opacity:0;transform:none}}
+  @media (prefers-reduced-motion:reduce){.dv-zz .pa{animation:none!important}}
+  .dv-zz .sw{display:grid;justify-items:end;align-items:end}
+  .dv-zz .sw>.bub{grid-area:1/1}
+  .dv-zz .ty{display:inline-flex;gap:4px;align-items:center;padding:13px 14px}
+  .dv-zz .ty i{width:6px;height:6px;border-radius:50%;background:#9a9ca3;animation:dvDot 1s ease-in-out infinite}
+  .dv-zz .ty i:nth-child(2){animation-delay:.15s}
+  .dv-zz .ty i:nth-child(3){animation-delay:.3s}
+  .dv-zz .a2 .m:not(.r){animation:dvM1 7s ease-out infinite}
+  .dv-zz .a2 .m.r .who{animation:dvWho 7s ease-out infinite}
+  .dv-zz .a2 .ty{animation:dvTy 7s ease-out infinite}
+  .dv-zz .a2 .re{animation:dvRe 7s ease-out infinite}
+  @keyframes dvDot{0%,60%,100%{transform:none;opacity:.5}30%{transform:translateY(-3px);opacity:1}}
+  @keyframes dvM1{0%{opacity:0;transform:translateY(8px)}6%,88%{opacity:1;transform:none}94%,100%{opacity:0}}
+  @keyframes dvWho{0%,18%{opacity:0}22%,88%{opacity:1}94%,100%{opacity:0}}
+  @keyframes dvTy{0%,18%{opacity:0;transform:translateY(8px)}22%,44%{opacity:1;transform:none}48%,100%{opacity:0}}
+  @keyframes dvRe{0%,45%{opacity:0;transform:scale(.94)}51%,88%{opacity:1;transform:none}94%,100%{opacity:0}}
+  @media (prefers-reduced-motion:reduce){.dv-zz .a2 .m,.dv-zz .a2 .who,.dv-zz .a2 .re{animation:none!important}.dv-zz .a2 .ty{display:none}}
+  @media (prefers-reduced-motion:reduce){.dv-zz .core,.dv-zz .core::before,.dv-zz .core::after,.dv-zz .orb span,.dv-zz .legs span{animation:none}}
+  .dv-zz.dv-team{margin:16px 0 0}
+  .dv-zz .a7{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;padding:0 16px;box-sizing:border-box}
+  .dv-zz .a7 .tc{display:inline-flex;align-items:center;gap:8px;background:#fff;box-shadow:0 0 0 1px var(--line);border-radius:10px;padding:6px 10px 6px 6px;white-space:nowrap}
+  .dv-zz .a7 .tc.src{padding:8px 12px;font-weight:500;white-space:normal;text-align:left}
+  .dv-zz .a7 .tc .ic{color:var(--accent);width:15px;height:15px}
+  .dv-zz .a7 .av{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:500;flex:none}
+  .dv-zz .a7 .wire{width:2px;height:22px;background:linear-gradient(var(--accent),transparent);border-radius:2px;animation:dvTw 4.5s ease-in-out infinite}
+  .dv-zz .a7 .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .dv-zz .a7 .st{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--green);opacity:0;animation:dvTs 4.5s ease-out infinite}
+  .dv-zz .a7 .st .ic{width:13px;height:13px;color:var(--green)}
+  .dv-zz .a7 .tc:nth-child(2) .st{animation-delay:.25s}
+  .dv-zz .a7 .tc:nth-child(3) .st{animation-delay:.5s}
+  .dv-zz .tkick{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--accent);background:rgba(198,97,63,.08);border-radius:999px;padding:3px 10px}
+  .dv-zz .tkick .ic{width:13px;height:13px}
+  @keyframes dvTw{0%,10%{opacity:.25}25%,85%{opacity:1}100%{opacity:.25}}
+  @keyframes dvTs{0%,22%{opacity:0;transform:translateY(4px)}32%,86%{opacity:1;transform:none}96%,100%{opacity:0}}
+  @media (prefers-reduced-motion:reduce){.dv-zz .a7 .wire,.dv-zz .a7 .st{animation:none!important;opacity:1}}
+  .dv-zz .a5{display:flex;align-items:center;gap:10px;padding:0 14px}
+  .dv-zz .pn{background:#fff;border-radius:12px;box-shadow:0 0 0 1px var(--line);padding:10px;width:150px}
+  .dv-zz .pn i{font-style:normal;font-size:12px;color:var(--zmuted);display:block;padding:0 4px 6px}
+  .dv-zz .rw{display:flex;align-items:center;gap:6px;padding:6px;border-radius:7px;font-size:13px}
+  .dv-zz .rw .ic{width:13px;height:13px;color:var(--zmuted)}
+  .dv-zz .rw.hot{background:var(--a15)}
+  .dv-zz .rw b{margin-left:auto;background:var(--accent);color:#fff;border-radius:8px;font-size:11px;min-width:17px;height:17px;display:grid;place-items:center;font-weight:500}
+  .dv-zz .sy{width:34px;height:34px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px var(--line);color:var(--accent);display:grid;place-items:center;flex:none}
+  @media (max-width:640px){.dv-zz .z,.dv-zz .z.rev{grid-template-columns:1fr;padding:12px 12px 24px;gap:16px}
+  .dv-zz .z.rev .art{order:0}
+  .dv-zz .zt{padding:0 8px}
+  .dv-zz .a5{padding:0}
+  .dv-zz .pn{width:120px}}
+  @media (max-width:640px){.dv-sub{font-size:17px;line-height:28px}.dv-letter h2{font-size:23px}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="https://dave.space/" target="_blank" rel="noopener" aria-label="D.A.V.E."><span class="brand-eye"></span><span class="brand-name">D.A.V.E.</span></a>
+  <div class="collab"><span class="c-long">Преподаёте или пишете про Claude и Codex?</span><span class="c-short">Учите Claude?</span> Го <a href="https://t.me/maggy535" target="_blank" rel="noopener">заколлабимся</a></div>
+</header>
+<main>
+
+<h1>Как купить <code class="hl-pill"><span class="hl-accent">Claude</span></code> <span class="hl-accent">без&nbsp;верификации</span> через&nbsp;Team</h1>
+<p class="intro">Claude Team работает только с почтой на домене компании и оплачивается иностранной картой. Поэтому сначала заводим рабочую почту, потом карту, потом саму команду в Claude</p>
+
+
+<div class="have">
+  <span class="have-t">У меня уже есть:</span>
+  <label class="chip"><input type="checkbox" data-have="mail"><span>Рабочая почта на своём домене</span></label>
+  <label class="chip"><input type="checkbox" data-have="card"><span>Иностранная карта</span></label>
+</div>
+
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" data-tab="mail"><span class="k">1</span><b>Рабочая почта</b><span class="d">Домен и ящики на Timeweb</span></button>
+  <button class="tab" role="tab" data-tab="card"><span class="k">2</span><b>Иностранная карта</b><span class="d">Чем оплатить Claude</span></button>
+  <button class="tab" role="tab" data-tab="team"><span class="k">3</span><b>Claude Team</b><span class="d">Команда, места и сотрудники</span></button>
+  <button class="tab" role="tab" data-tab="dave"><span class="k">4</span><b>D.A.V.E.</b><span class="d">Чтобы быть первым парнем на районе</span></button>
+</div>
+
+<div class="panel" id="panel-mail" role="tabpanel">
+<h1>Домен и корпоративная почта на Timeweb</h1>
+<p class="intro">Рабочая почта — это адрес на домене вашей компании: <b>ivan@kometa-team.ru</b> вместо <b>ivan.petrov84@gmail.com</b>. Без неё Claude Team не завести: в команду приглашают только адреса на домене компании</p>
+<h2 class="part-h">Коротко, если не любите инструкции</h2>
+
+<div class="tldr">
+  <ol>
+    <li><span>Регистрируемся в <a href="https://timeweb.com/ru/services/hosting?utm_source=cb711478&amp;utm_medium=timeweb&amp;utm_campaign=timeweb-bring-a-friend" target="_blank" rel="noopener">Timeweb</a></span></li>
+    <li><span>Покупаем домен (необходим будет вход в Госуслуги)</span></li>
+    <li><span>Заводим почту на домене</span></li>
+    <li><span>Входим в почтовый клиент <a href="https://mail.timeweb.com" target="_blank" rel="noopener">mail.timeweb.com</a></span></li>
+    <li><span>Получаем письма</span></li>
+  </ol>
+</div>
+
+<h2 class="part-h">Подробно и со скринами</h2>
+
+<section>
+  <h2><span class="n">1</span>Регистрация</h2>
+  <ol>
+    <li>На <a href="https://timeweb.com/ru/services/hosting?utm_source=cb711478&amp;utm_medium=timeweb&amp;utm_campaign=timeweb-bring-a-friend" target="_blank" rel="noopener">timeweb.com</a> нажмите «Регистрация» и введите почту. Пароль от аккаунта придёт письмом</li>
+    <li>Вопрос «Какой проект вы запускаете?» — «Пропустить шаг»</li>
+    <li>Сразу откроется оплата хостинга Optimo за 6 120 ₽ в год. Для почты он не нужен: нажмите «Домены и SSL» в меню слева, а в окне — «Прервать оплату»</li>
+  </ol>
+  <div class="car">
+    <div class="track">
+      <figure><img loading="lazy" src="img/mail/r01-home.jpg?v=5" alt=""><figcaption>«Регистрация» справа вверху</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r03-register-email.jpg?v=5" alt=""><figcaption>Почта и стрелка</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r04-onboarding.jpg?v=5" alt=""><figcaption>«Пропустить шаг» внизу</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r05-after-skip.jpg?v=5" alt=""><figcaption>Оплату хостинга не трогаем — сразу в «Домены и SSL»</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r06-leave-payment.jpg?v=5" alt=""><figcaption>«Прервать оплату»</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">2</span>Домен</h2>
+  <ol>
+    <li>Откроется раздел «Домены и SSL». Нажмите «Купить домен» и введите название</li>
+    <li>Смотрите на цену продления, а не только на первый год. Пример: <b>.space</b> — 149 ₽, а со второго года 3 480 ₽; <b>.ru</b> — 200 ₽ и 399 ₽. Если домен нужен надолго, <b>.ru</b> выгоднее</li>
+    <li>«В корзину» → «Корзина» справа вверху. В корзине уже включены SSL Timeweb Pro (1 990 ₽) и «Скрытие данных» (760 ₽). Для почты они не нужны — выключите оба переключателя, в итоге останется цена домена</li>
+  </ol>
+  <div class="car">
+    <div class="track">
+      <figure><img loading="lazy" src="img/mail/r07-domains.jpg?v=5" alt=""><figcaption>«Купить домен»</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r08-buy-domain.jpg?v=5" alt=""><figcaption>Название — в строку поиска</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r09-search.jpg?v=5" alt=""><figcaption>Цена, продление под ней и «В корзину»</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r10-in-cart.jpg?v=5" alt=""><figcaption>Переходим в «Корзину»</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r11-cart-default.jpg?v=5" alt=""><figcaption>Выключаем оба переключателя: сейчас 2 899 ₽</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r12-cart-149.jpg?v=5" alt=""><figcaption>Итого 149 ₽. Дальше — «Добавить нового» администратора</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">3</span>Администратор домена</h2>
+  <p>Без администратора домен не купить — это человек, на которого он будет записан</p>
+  <ol>
+    <li>В корзине: «Администратор» → «Добавить нового» → «Добавить через Госуслуги»</li>
+    <li>Если администратор вы — «Я — администратор», галочка согласия, «Продолжить» и вход в Госуслуги</li>
+    <li>Если другой человек — отправьте ему ссылку из того же окна. Он войдёт в Госуслуги и пришлёт код <code>TWD-…</code>, который вставляется ниже</li>
+    <li>Без Госуслуг — «Заполнить данные вручную», понадобятся паспортные данные</li>
+    <li>Выберите администратора в корзине и нажмите «Перейти к оплате»</li>
+  </ol>
+  <div class="car">
+    <div class="track">
+      <figure><img loading="lazy" src="img/mail/r13-admin-choice.jpg?v=5" alt=""><figcaption>Два способа добавить администратора</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r15-gosuslugi-consent.jpg?v=5" alt=""><figcaption>«Я — администратор» или ссылка для другого человека</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r16-gosuslugi-login.jpg?v=5" alt=""><figcaption>Вход в Госуслуги</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r18-admin-select.jpg?v=5" alt=""><figcaption>После Госуслуг выбираем себя в списке «Администратор»</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r19-cart-ready.jpg?v=5" alt=""><figcaption>Администратор выбран — «Перейти к оплате»</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">4</span>Оплата домена</h2>
+  <ol>
+    <li>Способ — «Российская банковская карта»</li>
+    <li>Галочка «Сохранить карту» стоит сама и включает автопродление. Снимите её, если не хотите автоматических списаний</li>
+    <li>«Оплатить» → страница банка → «Деньги уже на балансе». Почту можно настраивать сразу</li>
+  </ol>
+  <div class="car">
+    <div class="track">
+      <figure><img loading="lazy" src="img/mail/r21-payment-nosave.jpg?v=5" alt=""><figcaption>Снимаем «Сохранить карту» и платим</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r23-paid.jpg?v=5" alt=""><figcaption>Оплачено</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">5</span>Тариф «Почтовый»</h2>
+  <p>После регистрации на аккаунте стоит тариф Optimo за 729 ₽ в месяц, и Timeweb сам создал на нём сайт. Для почты нужен тариф «Почтовый»: <b>95 ₽ в месяц или 950 ₽ в год</b>, ящиков без ограничения, 10 ГБ на все</p>
+  <ol>
+    <li>«Настройки тарифа» → выберите «Почтовый» → «Сохранить изменения». Timeweb ответит ошибкой: сначала нужно удалить сайт</li>
+    <li>«Сайты» → отметьте сайт → «Удалить», поставьте галочку «Удалить файлы сайта» → «Да, удалить»</li>
+    <li>Вернитесь в «Настройки тарифа» и снова сохраните «Почтовый»</li>
+    <li>Раздел «Почта» откроется только после оплаты: «Почта» → «Перейти к оплате» → «На 12 месяцев» (950 ₽) → снимите «Сохранить карту» → «Оплатить»</li>
+  </ol>
+  <div class="note">Тариф «Парковка» за 0 ₽ не подходит: при переходе на него удаляются все ящики и письма</div>
+  <div class="car">
+    <div class="track">
+      <figure><img loading="lazy" src="img/mail/r26-tariff-mail.jpg?v=5" alt=""><figcaption>«Настройки тарифа» → «Почтовый» → «Сохранить изменения»</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r27-tariff-save.jpg?v=5" alt=""><figcaption>Ошибка: сначала удалить сайт</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r29-site-selected.jpg?v=5" alt=""><figcaption>«Сайты» → отметить сайт → «Удалить»</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r30-site-delete-confirm.jpg?v=5" alt=""><figcaption>Здесь отметьте «Удалить файлы сайта» и нажмите «Да, удалить»</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r33-tariff-mail-saved.jpg?v=5" alt=""><figcaption>Снова «Настройки тарифа» → «Сохранить изменения»: тариф сохранён</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r34-mail-after-tariff.jpg?v=5" alt=""><figcaption>«Почта» → «Перейти к оплате»</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r36-payment-period.jpg?v=5" alt=""><figcaption>Срок: 12 месяцев со скидкой — 950 ₽</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r37-payment-no-autorenew.jpg?v=5" alt=""><figcaption>Снимаем «Сохранить карту» и платим</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r39-balance-paid.jpg?v=5" alt=""><figcaption>Тариф оплачен</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">6</span>Почтовые ящики</h2>
+  <ol>
+    <li>«Почта» → вверху вместо технического адреса вида <code>cb…tw1.ru</code> выберите свой домен</li>
+    <li>«Добавить ящик». В строке: имя ящика, пароль и имя с фамилией. Пароль придумайте сами. Ящиков можно сделать сразу несколько</li>
+    <li>«Создать ящики»</li>
+  </ol>
+  <div class="car">
+    <div class="track">
+      <figure><img loading="lazy" src="img/mail/r41-mail-domain-list.jpg?v=5" alt=""><figcaption>«Почта» → нажать на адрес вверху → свой домен</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r43-mailboxes-filled.jpg?v=5" alt=""><figcaption>«Добавить ящик» → заполнить строки → «Создать»</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r45-mailbox-list.jpg?v=5" alt=""><figcaption>Ящики готовы</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">7</span>Вход в почту</h2>
+  <ol>
+    <li>Откройте <a href="https://mail.timeweb.com">mail.timeweb.com</a>, введите полный адрес ящика и пароль</li>
+    <li>Почта откроется на английском. Русский включается в кружке с инициалами справа вверху: «Interface language» → «Русский»</li>
+    <li>Сменить пароль: «Настройки» → «Безопасность» → «Пароль от аккаунта» → «Изменить пароль»</li>
+    <li>Там же двухфакторная защита — по SMS или через Telegram</li>
+  </ol>
+  <div class="car">
+    <div class="track">
+      <figure><img loading="lazy" src="img/mail/r62-webmail-login-filled.jpg?v=5" alt=""><figcaption>Вход в почту</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r60-webmail-inbox-light.jpg?v=5" alt=""><figcaption>Почта на русском</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r52-webmail-security.jpg?v=5" alt=""><figcaption>«Настройки» → «Безопасность»: пароль и двухфакторка</figcaption></figure>
+      <figure><img loading="lazy" src="img/mail/r67-ivan-inbox-letters.jpg?v=5" alt=""><figcaption>Письма от коллеги и снаружи пришли во «Входящие»</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<h2 class="opt-h">По желанию</h2>
+
+<details class="opt">
+  <summary>Почта в телефоне и программах</summary>
+  <p>Apple Mail, Outlook, Thunderbird, почта на телефоне — подключаются вручную:</p>
+  <table style="margin:0 0 16px">
+    <tr><th>Что</th><th>Сервер</th><th>Порт</th></tr>
+    <tr><td>Входящие (IMAP)</td><td><code>imap.timeweb.ru</code></td><td>993, SSL</td></tr>
+    <tr><td>Исходящие (SMTP)</td><td><code>smtp.timeweb.ru</code></td><td>465, SSL</td></tr>
+  </table>
+  <p style="margin-top:12px">Логин — полный адрес ящика, пароль — пароль ящика</p>
+</details>
+
+
+</div>
+
+<div class="panel" id="panel-card" role="tabpanel" hidden>
+<h1>Иностранная карта</h1>
+<p class="intro">Два варианта надёжных карт:</p>
+<div class="cards2">
+  <section>
+    <h2>Zarub</h2>
+    <ul>
+      <li><a href="https://t.me/zarub_robot?start=ref_b99Ul2" target="_blank" rel="noopener">Оформить в&nbsp;тг</a></li>
+      <li><a href="https://zarub.io/?ref=b99Ul2" target="_blank" rel="noopener">Оформить на&nbsp;сайте</a></li>
+    </ul>
+    <p class="sub">Стоимость выпуска</p>
+    <ul>
+      <li>19&nbsp;долларов&nbsp;— самая простая</li>
+      <li>30&nbsp;долларов (работает Apple Pay за&nbsp;рубежом)</li>
+    </ul>
+    <p>Курс пополнения на&nbsp;<!--rate:date-->31.10<!--/rate-->&nbsp;— <!--rate:zarub-->99,15<!--/rate-->&nbsp;рубля, плюс <!--rate:zarub-sbp-->7<!--/rate-->% комиссии при&nbsp;пополнении через&nbsp;СБП</p>
+  </section>
+  <section>
+    <h2>Platipomiru</h2>
+    <ul>
+      <li><a href="https://platipomiru.com/?utm_source=davespace&amp;utm_medium=cpa" target="_blank" rel="noopener">Оформить на&nbsp;сайте</a></li>
+    </ul>
+    <p class="sub">Стоимость выпуска</p>
+    <ul>
+      <li>3990&nbsp;рублей&nbsp;— с&nbsp;промокодом <strong>Matvey</strong> скидка 500&nbsp;рублей, будет стоить 3490&nbsp;рублей</li>
+    </ul>
+    <p>Курс пополнения на&nbsp;<!--rate:date-->31.10<!--/rate-->&nbsp;— <!--rate:pp-travel-->91,16<!--/rate-->&nbsp;рубля, без&nbsp;комиссии</p>
+    <p>Поддерживают Apple Pay за&nbsp;рубежом</p>
+    <p>Не&nbsp;брать карту за&nbsp;2990&nbsp;рублей (невыгодный курс: <!--rate:pp-subscriptions-->96,81<!--/rate-->&nbsp;рубля)</p>
+  </section>
+</div>
+<p><strong>Итог:</strong> Platipomiru на&nbsp;дистанции выгодней, чем&nbsp;Zarub, из-за курса</p>
+</div>
+
+<div class="panel" id="panel-team" role="tabpanel" hidden>
+<h1>Аккаунт Claude Team</h1>
+<section>
+  <h2>Что такое Claude Team</h2>
+  <p>Обычная подписка Pro или Max — это один аккаунт на одного человека. Claude Team — подписка на компанию: вы покупаете места и раздаёте их сотрудникам на их рабочие адреса. Оплачиваете вы как руководитель, одной картой</p>
+  <div class="pc">
+    <div class="minus">
+      <h3>Минусы</h3>
+      <ul>
+        <li>Обязательно купить минимум 2 места — от $50 в месяц, даже если работаете один</li>
+        <li>Нужна почта на своём домене: на Gmail в команду не пригласить</li>
+      </ul>
+    </div>
+    <div class="plus">
+      <h3>Плюсы</h3>
+      <ul>
+        <li>Не требует верификации</li>
+        <li>Мест можно купить сколько угодно и докупать по ходу</li>
+        <li>Места можно менять между аккаунтами: сотрудник ушёл — место отдаёте другому</li>
+        <li>Каждому своё место: стандартное или премиум с лимитами в 6,25 раза больше Pro. Тип меняется в любой момент</li>
+        <li>Одна карта и один счёт на всю команду</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note">Некоторые берут несколько мест Team под&nbsp;себя одного и&nbsp;пользуются ими как&nbsp;одним большим лимитом: <a href="https://www.reddit.com/r/ClaudeCode/comments/1xeyo84/team_account_with_5_seats/" target="_blank" rel="noopener">пример&nbsp;1</a>, <a href="https://www.reddit.com/r/Anthropic/comments/1lv6cyr/comment/n2axjx9/" target="_blank" rel="noopener">пример&nbsp;2</a>. Соответствует ли это <a href="https://www.anthropic.com/legal/commercial-terms" target="_blank" rel="noopener">условиям Anthropic</a>, проверяйте сами и&nbsp;решайте сами</div>
+</section>
+
+<section>
+  <h2>Сколько стоит</h2>
+  <p>Платите за места: одно место — один человек со своим аккаунтом. Минимум 2 места, тип каждого выбираете сами и можете поменять в любой момент</p>
+  <table style="margin:0 0 16px">
+    <tr><th>Место</th><th>Сколько можно пользоваться</th><th>В месяц</th><th>При оплате за год</th></tr>
+    <tr><td>Стандартное</td><td>Чуть больше, чем на Pro (×1,25)</td><td>$25</td><td>$20 в месяц</td></tr>
+    <tr><td>Премиум</td><td>В 6,25 раза больше, чем на Pro</td><td>$125</td><td>$100 в месяц</td></tr>
+  </table>
+  <p class="sub">Сколько выйдет</p>
+  <ul>
+    <li>Работаете один и хватало Pro — 2 стандартных места, $50 в месяц</li>
+    <li>Работаете один и сидели на Max ×5 — премиум + стандартное, $150 в месяц</li>
+    <li>Работаете один и сидели на Max ×20 — 2 премиума, $250 в месяц</li>
+  </ul>
+  <p>Оплата за год выходит на 20% дешевле, но списывается сразу за 12 месяцев</p>
+</section>
+
+<h2 class="part-h">Коротко, если не любите инструкции</h2>
+
+<div class="tldr">
+  <ol>
+    <li><span>Переходим по <a href="https://claude.com/pricing" target="_blank" rel="noopener">ссылке Team</a> из США</span></li>
+    <li><span>Регистрируемся на рабочую почту</span></li>
+    <li><span>Покупаем 2 места</span></li>
+    <li><span>Платим зарубежной картой, адрес вводим США, Delaware</span></li>
+    <li><span>Приглашаем второй аккаунт на рабочей почте</span></li>
+  </ol>
+</div>
+
+<h2 class="part-h">Подробно и со скринами</h2>
+
+<section>
+  <h2><span class="n">1</span>Тариф</h2>
+  <ol>
+    <li>Откройте <a href="https://claude.com/pricing">claude.com/pricing</a> → «Team &amp; Enterprise» → «Get Team plan»</li>
+  </ol>
+  <div class="car">
+    <div class="track">
+      <figure><img loading="lazy" src="img/team/t02.jpg?v=2" alt=""><figcaption>«Team &amp; Enterprise» → «Get Team plan»</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t03.jpg?v=2" alt=""><figcaption>Цены мест</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">2</span>Вход по рабочей почте</h2>
+  <ol>
+    <li>Введите рабочий адрес и нажмите «Continue with email»</li>
+    <li>Откройте письмо от Anthropic и нажмите «Sign in». Ссылка работает 10 минут</li>
+    <li>Если почта открыта в другом браузере — правой кнопкой по «Sign in» → «Скопировать адрес ссылки» и вставьте его в браузер, где начинали</li>
+  </ol>
+  <div class="car">
+    <div class="track">
+      <figure><img loading="lazy" src="img/team/t05.jpg?v=2" alt=""><figcaption>Рабочая почта → «Continue with email»</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t06.jpg?v=2" alt=""><figcaption>Ссылка ушла на почту</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t08.jpg?v=2" alt=""><figcaption>Письмо от Anthropic → «Sign in»</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t09.jpg?v=2" alt=""><figcaption>Или скопировать ссылку в нужный браузер</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">3</span>Команда</h2>
+  <ol>
+    <li>Поставьте галочку согласия → «Create account»</li>
+    <li>«With my team» → «Team»</li>
+    <li>Название команды — его увидят сотрудники в приглашении. «Continue»</li>
+  </ol>
+  <div class="car">
+    <div class="track">
+      <figure><img loading="lazy" src="img/team/t12.jpg?v=2" alt=""><figcaption>Галочка → «Create account»</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t14.jpg?v=2" alt=""><figcaption>«With my team» → «Team»</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t15.jpg?v=2" alt=""><figcaption>Название команды</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">4</span>Места и оплата</h2>
+  <ol>
+    <li>Сразу стоят 2 стандартных места. «Adjust seats» — выбрать, сколько стандартных и сколько премиум</li>
+    <li>Помесячно или за год — за год на 20% дешевле, но вся сумма списывается сразу</li>
+    <li>Ниже — данные иностранной карты и её адрес. «Subscribe»</li>
+  </ol>
+  <div class="car">
+    <div class="track">
+      <figure><img loading="lazy" src="img/team/t16.jpg?v=2" alt=""><figcaption>«Adjust seats»</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t17.jpg?v=2" alt=""><figcaption>Срок и количество мест</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t18.jpg?v=2" alt=""><figcaption>1 стандартное + 1 премиум = $150 в месяц</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t20.jpg?v=2" alt=""><figcaption>Адрес и карта → «Subscribe»</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t22.jpg?v=2" alt=""><figcaption>Команда создана</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">5</span>Приглашение сотрудников</h2>
+  <ol>
+    <li>Впишите рабочие адреса сотрудников: в «Standard seats» или «Premium seats». После каждого адреса — Enter</li>
+    <li>«Invite and continue». Приглашения уйдут на почту</li>
+    <li>Выберите свою роль → «Continue». Claude готов к работе</li>
+  </ol>
+  <div class="car">
+    <div class="track">
+      <figure><img loading="lazy" src="img/team/t24.jpg?v=2" alt=""><figcaption>Адрес сотрудника → «Invite and continue»</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t26.jpg?v=2" alt=""><figcaption>Своя роль → «Continue»</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t27.jpg?v=2" alt=""><figcaption>Готово</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">6</span>Что делает сотрудник</h2>
+  <ol>
+    <li>В письме «You're invited to join…» нажимает «Accept invite», затем «Sign in»</li>
+    <li>Вводит свой рабочий адрес и входит по ссылке из нового письма — так же, как в шаге 2</li>
+    <li>«Accept invite», имя, чем занимается. Подключение Google Drive и почты можно пропустить: «Skip for now»</li>
+  </ol>
+  <div class="car">
+    <div class="track">
+      <figure><img loading="lazy" src="img/team/t30.jpg?v=2" alt=""><figcaption>Приглашение → «Accept invite»</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t35.jpg?v=2" alt=""><figcaption>«Sign in»</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t36.jpg?v=2" alt=""><figcaption>Свой рабочий адрес</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t37.jpg?v=2" alt=""><figcaption>Ссылка ушла на почту</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t38.jpg?v=2" alt=""><figcaption>Письмо со ссылкой для входа</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t41.jpg?v=2" alt=""><figcaption>«Accept invite»</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t42.jpg?v=2" alt=""><figcaption>Имя</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t44.jpg?v=2" alt=""><figcaption>Чем занимается → «Continue»</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t46.jpg?v=2" alt=""><figcaption>Подключения — «Skip for now»</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t47.jpg?v=2" alt=""><figcaption>Сотрудник в команде</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="n">7</span>Управление местами</h2>
+  <ol>
+    <li>Внизу слева свой адрес → «Organization settings»</li>
+    <li>«Organization and access» — домен команды и сколько мест занято. «Members» — список сотрудников</li>
+    <li>Тип места меняется в колонке «Tier»: стандартное, премиум или без места</li>
+    <li>Свои лимиты каждый видит в «Settings» → «Usage»</li>
+  </ol>
+  <div class="car">
+    <div class="track">
+      <figure><img loading="lazy" src="img/team/t28.jpg?v=2" alt=""><figcaption>Свой адрес → «Organization settings»</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t29.jpg?v=2" alt=""><figcaption>Настройки команды</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t51.jpg?v=2" alt=""><figcaption>Сотрудники и их места</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t52.jpg?v=2" alt=""><figcaption>Сменить тип места</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t54.jpg?v=2" alt=""><figcaption>Место переведено на премиум</figcaption></figure>
+      <figure><img loading="lazy" src="img/team/t50.jpg?v=2" alt=""><figcaption>«Settings» → «Usage»: лимиты</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="panel" id="panel-dave" role="tabpanel" hidden>
+<div class="dv-hero">
+  <h1>Очень проактивный агент</h1>
+  <a class="dv-dl" href="https://dave.space/ru" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Скачать D.A.V.E.<small>Mac и Windows</small></a>
+</div>
+<figure class="dv-shot"><img loading="lazy" decoding="async" src="img/dave/app@2x.webp?v=2" width="1240" height="720" alt="Окно D.A.V.E."></figure>
+<section class="dv-letter">
+  <div class="dv-hi"><img class="ava" src="img/dave/matvey.webp?v=3" width="52" height="52" alt="Матвей"><h2>Привет, я Матвей, создатель Дейва</h2></div>
+  <p>Дейв — это супер-апп агент с мозгами партнёра-кофаундера. Сейчас такие штуки модно называть харнесами</p>
+  <p>Работает на Claude Code, Codex и Kimi (выйдет буквально на днях)</p><p>Мой манифест — вам не надо разбираться, кто такой агент, и думать, как его создать. Вы — это ваш бизнес и процессы. Расскажите, что болит или что давно хотели реализовать, а Дейв проведёт вас за руку</p>
+</section>
+<h2 class="dv-can">Что умеет Дейв</h2>
+<div class="dv-zz"><div class="z"><div class="art"><div class="a3" id="dv-switch"><div class="slot"><div class="lim"><b class="dot c"></b>Claude<span>заблокирован</span></div></div><div class="seg"><i class="thumb"></i><span data-m="claude">Claude</span><span data-m="codex" class="on">Codex</span><span data-m="kimi">Kimi</span></div><div class="slot"><div class="cont"><b class="dot x"></b>Codex<span>продолжаю с того же места</span></div></div><div class="loc"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>всё лежит на вашем компьютере</div></div></div><div class="zt"><span class="num">01</span><h3>Переживёт любые блокировки</h3><p>Чаты, файлы и память лежат на вашем компьютере. Закончились лимиты или отключили сервис — переключаете модель прямо в чате и продолжаете с того же места</p></div></div><div class="z rev"><div class="art"><div class="a4"><div class="core" aria-label="мозг"><svg class="ic br" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M19.938 10.5a4 4 0 0 1 .585.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/></svg></div><div class="orb"><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>скиллы</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>история</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>проекты</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg>MCP</span></div><div class="legs"><span><b class="dot c"></b>Claude</span><span><b class="dot x"></b>Codex</span><span><b class="dot k"></b>Kimi</span></div></div></div><div class="zt"><span class="num">02</span><h3>Один мозг на все модели</h3><p>Скиллы, история, проекты, сервисы и MCP общие для Claude, Codex и Kimi</p></div></div><div class="z"><div class="art"><div class="a2"><div class="m"><span class="who"><b class="dot c"></b>Claude</span><span class="bub">Codex, бэкенд готов?</span></div><div class="m r"><span class="who"><b class="dot x"></b>Codex</span><span class="sw"><span class="bub dk ty" aria-hidden="true"><i></i><i></i><i></i></span><span class="bub dk re">Да, подключай</span></span></div></div></div><div class="zt"><span class="num">03</span><h3>Чаты знают друг про друга</h3><p>Объединяются в команды и переписываются. Claude может писать Codex и наоборот</p></div></div><div class="z rev"><div class="art"><div class="a6"><div class="pa"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg><span>У Spark нет подключения для ИИ, написал своё и подключил почту</span></div><div class="pa"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg><span>Яндекс Диск отдаёт 10% файлов, поднял сервер и вытаскиваю 1,7 ТБ по кускам</span></div><div class="pa"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg><span>Каждое утро смотрю Авито и дописываю новые MacBook в вашу таблицу</span></div></div></div><div class="zt"><span class="num">04</span><h3>Очень проактивный</h3><p>Нет нужного подключения — напишет сам. Сервис не отдаёт данные — найдёт обходной путь. Работа повторяется — поставит её на расписание</p></div></div><div class="z"><div class="art"><div class="a1"><div class="fl"><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M3 7.5h4"/><path d="M3 12h18"/><path d="M3 16.5h4"/><path d="M17 3v18"/><path d="M17 7.5h4"/><path d="M17 16.5h4"/></svg>видео</span><svg class="ic ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span class="ok"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>рилс 0:30</span></div><div class="fl"><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg>созвон</span><svg class="ic ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span class="ok"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>текст</span></div><div class="fl"><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>черновик</span><svg class="ic ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg><span class="ok"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>правки</span></div></div></div><div class="zt"><span class="num">05</span><h3>Инструменты из коробки</h3><p>Смонтирует рилс, расшифрует созвон, отредактирует текст в своём MD-редакторе</p></div></div><div class="z rev"><div class="art tall"><div class="a5"><div class="pn"><i>D.A.V.E.</i><div class="rw"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Лендинг</div><div class="rw hot"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Налоги<b>1</b></div><div class="rw"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Рилсы</div><div class="rw"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Поддержка</div></div><span class="sy"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg></span><div class="tg"><div class="th"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><b class="av big">D</b><div><b>D.A.V.E.</b><small>4 темы</small></div></div><div class="tr"><b class="av" style="background:#e17076">Л</b><div class="tx"><div class="t1"><b>Лендинг</b><time>21:47</time></div><div class="t2"><span>Готово, открыл в превью</span></div></div></div><div class="tr"><b class="av" style="background:#7bc862">Н</b><div class="tx"><div class="t1"><b>Налоги</b><time>21:45</time></div><div class="t2"><span><svg class="ic fi" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>Декларация.pdf</span><em>1</em></div></div></div><div class="tr"><b class="av" style="background:#65aadd">Р</b><div class="tx"><div class="t1"><b>Рилсы</b><time>21:30</time></div><div class="t2"><span><svg class="ic fi" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>Рилс.mp4, 0:30</span></div></div></div><div class="tr"><b class="av" style="background:#ee7aae">П</b><div class="tx"><div class="t1"><b>Поддержка</b><time>21:12</time></div><div class="t2"><span>Ответил клиенту</span></div></div></div></div></div></div><div class="zt"><span class="num">06</span><h3>Синхронизация с Telegram</h3><p>Чаты становятся топиками, сообщения видны и на компьютере, и в телефоне</p></div></div></div>
+<section class="dv-cloud"><h3>И ещё много всего</h3><div class="cl"><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>Закрепы чатов</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>Закрепы файлов в чате</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>Задачи по расписанию</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>Превью PDF, видео и сайтов</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2.5a1 1 0 0 1-.8-.4l-.9-1.2A1 1 0 0 0 15 3h-2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1Z"/><path d="M20 21a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-2.9a1 1 0 0 1-.88-.55l-.42-.85a1 1 0 0 0-.92-.6H13a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1Z"/><path d="M3 5a2 2 0 0 0 2 2h3"/><path d="M3 3v13a2 2 0 0 0 2 2h3"/></svg>Папки чатов в несколько уровней</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Поиск по файлам</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>Скраперы сайтов и соцсетей</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>Управление браузером</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M10 4v4"/><path d="M2 8h20"/><path d="M6 4v4"/></svg>Управление приложениями</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg>Голосовой ввод</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></svg>Расшифровка созвонов</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>Картинки и видео</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>MD-редактор</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>Экспорт в PDF</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>Ветка чата с любого сообщения</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>Копия чата</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Импорт из Claude Code и Codex</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>Отправка чата файлом</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>Режим для текстов</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>Терминал</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>Смена модели посреди чата</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>Память</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>Проекты</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>Агенты в фоне</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Работа в команде</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M12 7v6"/><path d="M9 10h6"/></svg>Докидки во время ответа</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg>Свой сервер 24/7</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg>Подключение сервисов и MCP</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>Скиллы</span><span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>Корзина чатов</span></div></section>
+<div class="dv-zz dv-team"><div class="z"><div class="art"><div class="a7"><div class="tc src"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>Вы добавили скилл «Отчёт для инвестора»</div><div class="wire"></div><div class="row"><span class="tc"><b class="av" style="background:#e17076">А</b>Аня<span class="st"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>умеет</span></span><span class="tc"><b class="av" style="background:#65aadd">О</b>Олег<span class="st"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>умеет</span></span><span class="tc"><b class="av" style="background:#7bc862">К</b>Катя<span class="st"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>умеет</span></span></div></div></div><div class="zt"><span class="tkick"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Командный шеринг</span><h3>Научили одного Дейва — умеет вся команда</h3><p>Скиллы, проекты, агенты и правила общие для всей команды. Добавили или поправили — у коллег Дейв подхватит это со следующего сообщения</p></div></div></div>
+<div class="dv-end"><a class="dv-dl" href="https://dave.space/ru" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Скачать D.A.V.E.<small>Mac и Windows</small></a></div>
+</div>
+
+</main>
+
+<div class="lb" id="lb"><img alt=""></div>
+
+<script>
+document.querySelectorAll('.car').forEach(car => {
+  const track = car.querySelector('.track');
+  const slides = [...track.children];
+  const strip = document.createElement('div');
+  strip.className = 'slides';
+  slides.forEach(f => strip.appendChild(f));
+  track.appendChild(strip);
+  let cur = 0;
+  const cap = document.createElement('div');
+  cap.className = 'cap';
+  cap.innerHTML = '<span class="count"></span><span class="text"></span>';
+  car.appendChild(cap);
+  if (slides.length > 1) {
+    track.insertAdjacentHTML('beforeend', '<button class="arr prev" aria-label="Назад">‹</button><button class="arr next" aria-label="Вперёд">›</button>');
+  }
+  slides.forEach(f => { const c = f.querySelector('figcaption'); if (c) c.hidden = true; });
+  const prev = track.querySelector('.arr.prev'), next = track.querySelector('.arr.next');
+  const update = () => {
+    strip.style.transform = 'translateX(' + (-cur * 100) + '%)';
+    cap.querySelector('.count').textContent = slides.length > 1 ? (cur + 1) + ' / ' + slides.length : '';
+    const c = slides[cur].querySelector('figcaption');
+    cap.querySelector('.text').textContent = c ? c.textContent : '';
+    if (prev) { prev.disabled = cur === 0; next.disabled = cur === slides.length - 1; }
+  };
+  const go = i => { cur = Math.min(slides.length - 1, Math.max(0, i)); update(); };
+  if (prev) { prev.onclick = () => go(cur - 1); next.onclick = () => go(cur + 1); }
+  let sx = null, sy = null, dx = 0, horiz = null;
+  track.addEventListener('touchstart', e => {
+    if (e.target.closest('.arr')) return;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0; horiz = null;
+  }, { passive: true });
+  track.addEventListener('touchmove', e => {
+    if (sx === null) return;
+    const mx = e.touches[0].clientX - sx, my = e.touches[0].clientY - sy;
+    if (horiz === null && (Math.abs(mx) > 6 || Math.abs(my) > 6)) horiz = Math.abs(mx) > Math.abs(my);
+    if (!horiz) return;
+    e.preventDefault();
+    dx = mx;
+    const edge = (cur === 0 && dx > 0) || (cur === slides.length - 1 && dx < 0);
+    strip.style.transition = 'none';
+    strip.style.transform = 'translateX(calc(' + (-cur * 100) + '% + ' + (edge ? dx / 3 : dx) + 'px))';
+  }, { passive: false });
+  const end = () => {
+    if (sx === null) return;
+    strip.style.transition = '';
+    if (horiz && Math.abs(dx) > Math.min(60, track.clientWidth * 0.15)) go(cur + (dx < 0 ? 1 : -1)); else update();
+    sx = null; horiz = null; dx = 0;
+  };
+  track.addEventListener('touchend', end);
+  track.addEventListener('touchcancel', end);
+  update();
+});
+const lb = document.getElementById('lb');
+document.querySelectorAll('.track img').forEach(img => img.addEventListener('click', () => {
+  lb.querySelector('img').src = img.src; lb.classList.add('on'); lb.scrollTop = 0;
+}));
+lb.addEventListener('click', () => lb.classList.remove('on'));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') lb.classList.remove('on'); });
+</script>
+<script>
+{const h=document.querySelector('.site-header');const hh=()=>document.body.style.setProperty('--hh',h.offsetHeight+'px');hh();addEventListener('resize',hh);const f=()=>h.classList.toggle('scrolled',scrollY>8);addEventListener('scroll',f,{passive:true});f();}
+const tabs=[...document.querySelectorAll('.tab')];
+const show=id=>{
+  if(!document.getElementById('panel-'+id)) id='mail';
+  tabs.forEach(t=>t.setAttribute('aria-selected',t.dataset.tab===id));
+  document.querySelectorAll('.panel').forEach(p=>p.hidden=p.id!=='panel-'+id);
+};
+tabs.forEach(t=>t.addEventListener('click',()=>{history.replaceState(null,'','#'+t.dataset.tab);show(t.dataset.tab);}));
+window.addEventListener('hashchange',()=>{show(location.hash.slice(1));window.scrollTo(0,0);});
+const ORDER=['mail','card','team','dave'];
+const sub={};tabs.forEach(t=>sub[t.dataset.tab]=t.querySelector('.d').textContent);
+const boxes=[...document.querySelectorAll('[data-have]')];
+const saved=JSON.parse(localStorage.getItem('have')||'{}');
+const paint=()=>{
+  boxes.forEach(b=>{const t=tabs.find(x=>x.dataset.tab===b.dataset.have);
+    t.classList.toggle('done',b.checked);t.querySelector('.d').textContent=b.checked?'Уже есть — можно пропустить':sub[b.dataset.have];});
+};
+const firstNeeded=()=>ORDER.find(id=>!boxes.some(b=>b.dataset.have===id&&b.checked));
+boxes.forEach(b=>{b.checked=!!saved[b.dataset.have];b.addEventListener('change',()=>{
+  saved[b.dataset.have]=b.checked;localStorage.setItem('have',JSON.stringify(saved));paint();
+  const cur=(tabs.find(t=>t.getAttribute('aria-selected')==='true')||{}).dataset?.tab;
+  if(b.checked&&cur===b.dataset.have){const n=firstNeeded();history.replaceState(null,'','#'+n);show(n);}
+});});
+paint();
+show(location.hash.slice(1)||firstNeeded());
+</script>
+<script>
+(function(){
+  var box=document.getElementById('dv-switch'); if(!box) return;
+  var seg=box.querySelector('.seg'), thumb=seg.querySelector('.thumb'), tabs=[].slice.call(seg.querySelectorAll('span'));
+  var top=box.querySelectorAll('.slot')[0].firstElementChild, bot=box.querySelectorAll('.slot')[1].firstElementChild;
+  function pick(m){ tabs.forEach(function(t){ var on=t.dataset.m===m; t.classList.toggle('on',on); if(on){ thumb.style.width=t.offsetWidth+'px'; thumb.style.transform='translateX('+t.offsetLeft+'px)'; } }); }
+  function layer(dot,name,txt){ var d=document.createElement('div'); d.className='ly'; d.innerHTML='<b class="dot '+dot+'"></b>'+name+'<span>'+txt+'</span>'; return d; }
+  function init(el){ var st=document.createElement('div'); st.className='stack'; var ly=document.createElement('div'); ly.className='ly'; while(el.firstChild) ly.appendChild(el.firstChild); st.appendChild(ly); el.appendChild(st); }
+  function set(el,kind,dot,name,txt,hidden){
+    var st=el.querySelector('.stack'), cur=st.lastElementChild, nx=layer(dot,name,txt);
+    var w0=el.offsetWidth, pad=w0-cur.offsetWidth;
+    el.style.width=w0+'px';
+    nx.style.opacity='0'; st.appendChild(nx);
+    var w1=nx.offsetWidth+pad;
+    el.className=kind+(hidden?' hide':'');
+    requestAnimationFrame(function(){ el.style.width=w1+'px'; cur.style.opacity='0'; nx.style.opacity='1'; });
+    setTimeout(function(){ if(cur.parentNode) cur.remove(); },520);
+  }
+  init(top); init(bot);
+  var steps=[
+    [0,    function(){ set(top,'cont','c','Claude','работаю'); set(bot,'cont','x','Codex','продолжаю с того же места',true); pick('claude'); }],
+    [1400, function(){ set(top,'lim','c','Claude','заблокирован'); }],
+    [2700, function(){ pick('codex'); set(bot,'cont','x','Codex','продолжаю с того же места'); }],
+    [4300, function(){ set(bot,'lim lit','x','Codex','лимит, ждать 5 часов'); }],
+    [5700, function(){ pick('kimi'); set(top,'cont','k','Kimi','продолжаю с того же места'); bot.classList.remove('lit'); }],
+    [8700, null]
+  ];
+  pick('codex');
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var timers=[], visible=false, running=false;
+  function run(){ running=true; steps.forEach(function(st){ timers.push(setTimeout(st[1]||function(){ running=false; if(visible) run(); }, st[0])); }); }
+  new IntersectionObserver(function(e){ visible=e[0].isIntersecting; if(visible && !running) run(); },{threshold:.4}).observe(box);
+  addEventListener('resize',function(){ var on=seg.querySelector('.on'); if(on) pick(on.dataset.m); });
+  document.addEventListener('click',function(e){ if(e.target.closest && e.target.closest('[data-tab="dave"]')) setTimeout(function(){ var on=seg.querySelector('.on'); pick(on?on.dataset.m:'codex'); },50); });
+})();
+</script>
+</body>
+</html>
