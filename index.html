@@ -48,7 +48,7 @@
   .track{overflow:hidden;border-radius:10px;border:1px solid var(--line);touch-action:pan-y}
   .slides{display:flex;transition:transform .3s ease;will-change:transform}
   .track figure{flex:0 0 100%;min-width:100%;margin:0}
-  .track img{display:block;width:100%;height:auto;background:#eef0f3;cursor:zoom-in}
+  .track img{display:block;width:100%;height:auto;background:#eef0f3}
   .cap{display:flex;align-items:center;gap:12px;margin:10px 0 0;min-height:24px}
   .cap .count{flex:0 0 auto;color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
   .cap .text{flex:1 1 auto;font-size:15px}
@@ -865,7 +865,7 @@
 
 </main>
 
-<div class="lb" id="lb"><img alt=""></div>
+
 
 <script>
 document.querySelectorAll('.car').forEach(car => {
@@ -920,12 +920,6 @@ document.querySelectorAll('.car').forEach(car => {
   track.addEventListener('touchcancel', end);
   update();
 });
-const lb = document.getElementById('lb');
-document.querySelectorAll('.track img').forEach(img => img.addEventListener('click', () => {
-  lb.querySelector('img').src = img.src; lb.classList.add('on'); lb.scrollTop = 0;
-}));
-lb.addEventListener('click', () => lb.classList.remove('on'));
-document.addEventListener('keydown', e => { if (e.key === 'Escape') lb.classList.remove('on'); });
 </script>
 <script>
 {const h=document.querySelector('.site-header');const hh=()=>document.body.style.setProperty('--hh',h.offsetHeight+'px');hh();addEventListener('resize',hh);const f=()=>h.classList.toggle('scrolled',scrollY>8);addEventListener('scroll',f,{passive:true});f();}
