@@ -1049,6 +1049,6 @@ show(location.hash.slice(1)||firstNeeded());
   upd();
 })();
 </script>
-<script>(function(){if(location.hostname!=='davespace.ru')return;var u='https://api.dave.space/v1/hits/davespace/hit?',n=0,d=1;try{var t=new Date(Date.now()+108e5).toISOString().slice(0,10),v=localStorage.getItem('dvc');n=v?0:1;d=v===t?0:1;localStorage.setItem('dvc',t)}catch(e){}(new Image).src=u+'n='+n+'&d='+d})()</script>
+<script>(function(){if(location.hostname!=='davespace.ru')return;var p=location.pathname.indexOf('/instruction')===0?'/instruction/':'/',u='https://api.dave.space/v1/hits/davespace/hit?p='+encodeURIComponent(p),n=0,d=1;try{var k='dvc'+p,t=new Date(Date.now()+108e5).toISOString().slice(0,10),v=localStorage.getItem(k);n=v?0:1;d=v===t?0:1;localStorage.setItem(k,t)}catch(e){}(new Image).src=u+'&n='+n+'&d='+d})()</script>
 </body>
 </html>
