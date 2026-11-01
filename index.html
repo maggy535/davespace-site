@@ -208,9 +208,11 @@
   .cards2 .sub{color:var(--muted)}
   .lb{background:rgba(20,20,15,.92)}
   .site-header{position:fixed;inset:0 0 auto 0;height:64px;padding:14px 24px;display:flex;align-items:center;z-index:5}
-  .site-header::before{content:"";position:absolute;inset:0 0 -100% 0;z-index:-1;opacity:0;transition:opacity .2s;
-    background:linear-gradient(rgba(255,255,255,.64),rgba(255,255,255,.46) 50%,transparent 50%);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
-    -webkit-mask-image:linear-gradient(#000 50%,transparent 50%);mask-image:linear-gradient(#000 50%,transparent 50%);pointer-events:none}
+  .site-header::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:linear-gradient(rgba(251,252,252,.28),rgba(251,252,252,.28)),linear-gradient(rgba(255,255,255,.44),rgba(255,255,255,.44)),
+      radial-gradient(48% 26% at 50% 30%,rgba(255,255,255,.44),transparent 95%),
+      url(/assets/cloud-veil.webp) 50% 0/cover no-repeat;
+    -webkit-clip-path:inset(0 0 calc(100% - 64px) 0);clip-path:inset(0 0 calc(100% - 64px) 0)}
   .site-header.scrolled::before{opacity:1}
   .brand{display:flex;align-items:center;gap:10px;height:28px;text-decoration:none}
   .brand-eye{position:relative;width:28px;height:28px;flex:0 0 28px}
@@ -221,7 +223,7 @@
   main>h1 .hl-accent{color:var(--accent)}
   main>h1 .hl-pill{font:inherit;font-size:.85em;letter-spacing:inherit;background:var(--accent-15);border-radius:.42em;padding:.06em .4em;
     display:inline-block;line-height:1.06;vertical-align:baseline}
-  @media (max-width:640px){.site-header{height:56px;padding:12px 14px}body main{padding-top:80px}}
+  @media (max-width:640px){.site-header{height:56px;padding:12px 14px}.site-header::before{-webkit-clip-path:inset(0 0 calc(100% - 56px) 0);clip-path:inset(0 0 calc(100% - 56px) 0)}body main{padding-top:80px}}
   .track{position:relative}
   .arr{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:44px;height:44px;border-radius:50%;border:0;
     display:grid;place-items:center;padding:0 0 3px;font:500 26px/1 "BF Coil",sans-serif;color:var(--text);cursor:pointer;
