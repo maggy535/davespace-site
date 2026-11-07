@@ -1,0 +1,47 @@
+/*! Coil typeface. Copyright (c) 2020 by Gayane Bagdasaryan, Vyacheslav Kirilenko. All rights reserved.
+    Coil typeface (c) Brownfox.org 2020. Licensed for the website dave.space, Brownfox Web licence BF-W.1.11. */
+
+/* The landing's own face (the founder's pick: pair 8, Coil), in the two styles the licence covers.
+   The files are Brownfox's, byte for byte as delivered: the licence forbids converting them and
+   cutting characters out of them, so there is no subset and no copy inside a stylesheet. The
+   family keeps the name every sheet of the landing already uses. README.md beside this file has
+   the licence's rules.
+
+   font-display: block, together with the page's own wait for its faces (feed-flow.ts,
+   showWhenFacesIn): words are drawn in Coil or not drawn yet, never in a stand-in face first.
+
+   Nothing heavier than Medium is licensed. The third rule hands every bolder request (600 and up)
+   to Medium itself, so a browser neither thickens the letters on its own nor reaches for another
+   family. The three rules carry the descriptors of the trial sheet (feed-perk/fonts/trial-brownfox/
+   brownfox.css, a local file kept out of git): on a workbench page that still links that sheet
+   before this one, faces that differ only in their character range are taken from the last one
+   defined, which is this one, so the trial files are never asked for. */
+
+/* The licence wants the copyright holder named in the stylesheet itself. The landing's build drops
+   every comment of its own sheets (measured 2026-10-01: the line above was gone from the built page),
+   so the same line is also a value, which no build may change or remove. Nothing reads it. */
+:root {
+  --coil-typeface-copyright: "Coil typeface. Copyright (c) 2020 by Gayane Bagdasaryan, Vyacheslav Kirilenko. All rights reserved. Coil typeface (c) Brownfox.org 2020, licensed for dave.space";
+}
+
+@font-face {
+  font-family: "BF Coil";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("./Coil-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "BF Coil";
+  font-style: normal;
+  font-weight: 500;
+  font-display: block;
+  src: url("./Coil-Medium.woff2") format("woff2");
+}
+@font-face {
+  font-family: "BF Coil";
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url("./Coil-Medium.woff2") format("woff2");
+}

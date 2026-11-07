@@ -1,0 +1,135 @@
+/* Shared base of the three design drafts: the landing's own faces and colours.
+   Coil is linked from the landing's licensed folder through the local `fonts` link,
+   never copied or converted. Values are read from dave.space on 2026-10-14. */
+@import url("fonts/coil/coil.css");
+
+@font-face {
+  font-family: "DAVE Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("fonts/mono-jetbrains-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "DAVE Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: block;
+  src: url("fonts/mono-jetbrains-500-normal.woff2") format("woff2");
+}
+
+:root {
+  --font: "BF Coil", system-ui, sans-serif;
+  --mono: "DAVE Mono", ui-monospace, Menlo, monospace;
+
+  --ink: #1a1a1e;
+  --ink-2: #414142;
+  --muted: #8a8884;
+  --eyebrow: #919183;
+  --accent: #c6613f;
+  --accent-wash: rgba(198, 97, 63, 0.15);
+  --chip: rgba(255, 255, 255, 0.72);
+  --hair: rgba(20, 24, 30, 0.08);
+  --night: #14140f;
+  --night-ink: #f5f5eb;
+
+  --good: #2f8a55;
+  --good-wash: rgba(47, 138, 85, 0.12);
+  --warn: #8d6512;
+  --warn-wash: rgba(214, 160, 30, 0.18);
+  --bad: #b8432c;
+  --bad-wash: rgba(206, 72, 48, 0.13);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--ink);
+}
+
+h1,
+h2,
+h3,
+p,
+figure {
+  margin: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The landing's logo: the eye drawn a little larger than its box, then the wordmark. */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+.brand-eye {
+  position: relative;
+  width: 28px;
+  height: 28px;
+}
+.brand-eye::before {
+  content: "";
+  position: absolute;
+  inset: -3.4px;
+  background: url("assets/dave-eye.webp") center / contain no-repeat;
+}
+.brand-word {
+  width: 102px;
+  height: 13px;
+  background: currentColor;
+  -webkit-mask: url("assets/dave-wordmark.svg") center / contain no-repeat;
+  mask: url("assets/dave-wordmark.svg") center / contain no-repeat;
+}
+
+/* Step labels: green — done without the owner, yellow — the owner acts, red — extra work. */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+.tag.good {
+  color: var(--good);
+  background: var(--good-wash);
+}
+.tag.warn {
+  color: var(--warn);
+  background: var(--warn-wash);
+}
+.tag.bad {
+  color: var(--bad);
+  background: var(--bad-wash);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
