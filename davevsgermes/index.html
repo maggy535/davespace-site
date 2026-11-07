@@ -415,6 +415,19 @@
   .video-frame video { display: block; width: 100%; height: 100%; background: #10100c; }
   .video-i18n { display: block; }
   .video-note { margin-top: 32px; font-size: 14px; line-height: 20px; }
+  /* How the test was run: four facts in a row. */
+  .test-terms { list-style: none; margin: 32px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .test-terms li { display: flex; flex-direction: column; padding: 24px; border-radius: 16px; background: #181813; box-shadow: 0 0 0 1px rgba(245, 245, 235, 0.1); }
+  .test-terms .tt-k { font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 1.1px; text-transform: uppercase; color: var(--dim); }
+  .test-terms b { margin-top: 12px; font-size: 24px; line-height: 32px; font-weight: 500; letter-spacing: -0.4px; color: var(--fg); }
+  .test-terms .tt-v { margin-top: 4px; font-size: 15px; line-height: 22px; color: var(--dim); text-wrap: pretty; }
+  @media (max-width: 1100px) { .test-terms { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 760px) {
+    .test-terms { gap: 8px; margin-top: 24px; }
+    .test-terms li { padding: 16px; border-radius: 12px; }
+    .test-terms b { margin-top: 8px; font-size: 18px; line-height: 24px; letter-spacing: -0.2px; }
+    .test-terms .tt-v { font-size: 13px; line-height: 18px; }
+  }
 
   /* First screen: the same hands, a different head. */
   .hero .case-title { margin-top: 16px; font-size: 72px; line-height: 76px; font-weight: 500; letter-spacing: -2.4px; }
@@ -785,7 +798,12 @@
     </section>
   <section class="page-section duo-videos" id="video">
       <h2>Как это было</h2>
-      <p class="section-lead">Задание проходил робот на&nbsp;Claude в&nbsp;роли человека, который раньше не&nbsp;пользовался нейросетями. Мак&nbsp;— чистый, Hermes и&nbsp;D.A.V.E. только что скачаны и&nbsp;ничем не&nbsp;настроены</p>
+      <ul class="test-terms" aria-label="Как проходил тест">
+        <li><span class="tt-k">Кто проходил</span><b>Робот на&nbsp;Claude</b><span class="tt-v">Проходил задание вместо человека</span></li>
+        <li><span class="tt-k">В&nbsp;роли</span><b>Новичка</b><span class="tt-v">Раньше не&nbsp;пользовался нейросетями</span></li>
+        <li><span class="tt-k">Компьютер</span><b>Чистый Мак</b><span class="tt-v">Ничего не&nbsp;установлено заранее</span></li>
+        <li><span class="tt-k">Программы</span><b>Hermes и&nbsp;D.A.V.E.</b><span class="tt-v">Только что скачаны, без настроек</span></li>
+      </ul>
       <media-i18n class="video-i18n"><div class="result-grid video-grid"><article class="result-card video-card">
           <div class="result-card-head"><h3><span class="logo" aria-hidden="true"></span>D.A.V.E.</h3><small>36 мин 49 с</small></div>
           <div class="video-frame">
