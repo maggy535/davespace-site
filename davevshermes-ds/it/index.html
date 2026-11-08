@@ -1,0 +1,930 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dave contro Hermes</title>
+<meta name="description" content="Lo stesso compito, «Crea una dashboard», per D.A.V.E. e Hermes. Misuriamo il tempo di lavoro, quanto ha dovuto fare la persona e la proattività dell’agente">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="D.A.V.E.">
+<meta property="og:locale" content="it_IT">
+<meta property="og:url" content="https://dave.space/davevshermes/it/">
+<meta property="og:title" content="Dave contro Hermes">
+<meta property="og:description" content="Lo stesso compito, «Crea una dashboard», per D.A.V.E. e Hermes. Misuriamo il tempo di lavoro, quanto ha dovuto fare la persona e la proattività dell’agente">
+<meta property="og:image" content="https://dave.space/davevshermes/og-it.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Le icone di D.A.V.E. e Hermes una di fronte all’altra, in mezzo VS">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Dave contro Hermes">
+<meta name="twitter:description" content="Lo stesso compito, «Crea una dashboard», per D.A.V.E. e Hermes. Misuriamo il tempo di lavoro, quanto ha dovuto fare la persona e la proattività dell’agente">
+<meta name="twitter:image" content="https://dave.space/davevshermes/og-it.jpg">
+<link rel="canonical" href="https://dave.space/davevshermes/it/">
+<!--hreflang--><link rel="alternate" hreflang="en" href="https://dave.space/davevshermes/"><link rel="alternate" hreflang="zh-Hans" href="https://dave.space/davevshermes/zh/"><link rel="alternate" hreflang="es" href="https://dave.space/davevshermes/es/"><link rel="alternate" hreflang="hi" href="https://dave.space/davevshermes/hi/"><link rel="alternate" hreflang="bn" href="https://dave.space/davevshermes/bn/"><link rel="alternate" hreflang="pt-BR" href="https://dave.space/davevshermes/pt/"><link rel="alternate" hreflang="ru" href="https://dave.space/davevshermes/ru/"><link rel="alternate" hreflang="ja" href="https://dave.space/davevshermes/ja/"><link rel="alternate" hreflang="de" href="https://dave.space/davevshermes/de/"><link rel="alternate" hreflang="fr" href="https://dave.space/davevshermes/fr/"><link rel="alternate" hreflang="ko" href="https://dave.space/davevshermes/ko/"><link rel="alternate" hreflang="it" href="https://dave.space/davevshermes/it/"><link rel="alternate" hreflang="tr" href="https://dave.space/davevshermes/tr/"><link rel="alternate" hreflang="vi" href="https://dave.space/davevshermes/vi/"><link rel="alternate" hreflang="pl" href="https://dave.space/davevshermes/pl/"><link rel="alternate" hreflang="nl" href="https://dave.space/davevshermes/nl/"><link rel="alternate" hreflang="id" href="https://dave.space/davevshermes/id/"><link rel="alternate" hreflang="th" href="https://dave.space/davevshermes/th/"><link rel="alternate" hreflang="uk" href="https://dave.space/davevshermes/uk/"><link rel="alternate" hreflang="sv" href="https://dave.space/davevshermes/sv/"><link rel="alternate" hreflang="x-default" href="https://dave.space/davevshermes/"><!--/hreflang-->
+<script>/* Same rule as dave.space: the address's own language, then a choice made in this tab, then the browser's languages, then English. */(function(){var L={'en':'','zh-hans':'zh','es':'es','hi':'hi','bn':'bn','pt-br':'pt','ru':'ru','ja':'ja','de':'de','fr':'fr','ko':'ko','it':'it','tr':'tr','vi':'vi','pl':'pl','nl':'nl','id':'id','th':'th','uk':'uk','sv':'sv'};function m(t){if(typeof t!=='string'||t.length>64)return null;var v=t.trim().replace(/_/g,'-');if(!/^[a-z]{2,8}(?:-[a-z0-9]{1,8})*$/i.test(v))return null;v=v.toLowerCase();if(L.hasOwnProperty(v))return v;var p=v.split('-'),b=p[0];if(b==='zh'){for(var i=1;i<p.length;i++)if(['hant','tw','hk','mo'].indexOf(p[i])>=0)return null;return'zh-hans'}if(b==='pt')return'pt-br';return L.hasOwnProperty(b)?b:null}try{if(/bot|crawl|spider|slurp|preview|lighthouse/i.test(navigator.userAgent))return;var q=new URLSearchParams(location.search),s=function(k){try{return sessionStorage.getItem(k)}catch(e){return null}},seg=(location.pathname.match(/\/davevshermes\/([a-z]{2})\/?/)||[])[1]||'',path=null,cur='en';for(var k in L)if(L[k]&&L[k]===seg){path=k;cur=k}var br=navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language],b=null;for(var j=0;j<br.length&&!b;j++)b=m(br[j]);var lang=m(q.get('lang'))||path||m(s('dave_site_lang'))||m(s('dave_site_lang_app'))||b||'en';if(lang===cur){if(q.has('lang')){q.delete('lang');var r=q.toString();history.replaceState(null,'',location.pathname+(r?'?'+r:'')+location.hash)}return}q.delete('lang');var qs=q.toString();location.replace('/davevshermes/'+(L[lang]?L[lang]+'/':'')+(qs?'?'+qs:'')+location.hash)}catch(e){}})();</script>
+<link rel="icon" href="../assets/dave-eye.webp">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../fonts/coil/Coil-Medium.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../fonts/coil/Coil-Regular.woff2">
+<link rel="stylesheet" href="../shared.css">
+<link rel="stylesheet" href="../deck.css">
+<style>
+  :root {
+    --bg: #10100c;
+    --fg: #f5f5eb;
+    --dim: #8f8d86;
+    --codex: #6f6d66;
+    --lime: #c4f27a;
+    --line: rgba(245, 245, 235, 0.12);
+    --good: #b8ec8e;
+    --good-wash: rgba(184, 236, 142, 0.12);
+    --warn: #f2cd6b;
+    --warn-wash: rgba(242, 205, 107, 0.13);
+    --bad: #ff8e74;
+    --bad-wash: rgba(255, 142, 116, 0.14);
+  }
+  body {
+    background:
+    radial-gradient(56% 48% at 88% 0%, rgba(198, 97, 63, 0.2), transparent 72%),
+    var(--bg);
+    background-repeat: no-repeat;
+    color: var(--fg);
+  }
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    padding: 0 24px;
+    background: #10100c;
+  }
+  .eyebrow {
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 500;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .acc {
+    color: #e07a52;
+  }
+  /* The approved first screen, extended to four participants. */
+  .hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100svh - 64px);
+    padding: 40px max(24px, (100% - 1252px) / 2) 56px;
+  }
+  .hero h1 {
+    margin-top: 16px;
+    font-size: 72px;
+    line-height: 76px;
+    font-weight: 500;
+    letter-spacing: -2.4px;
+  }
+  /* What the owner handed over, as pills under the task. */
+  .data {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+  }
+  .data-label {
+    margin-right: 8px;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--dim);
+  }
+  .pill {
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(245, 245, 235, 0.04);
+    font-size: 14px;
+    line-height: 30px;
+    font-weight: 500;
+    color: var(--dim);
+    white-space: nowrap;
+  }
+  .pill b {
+    margin-right: 6px;
+    font-weight: 500;
+    color: var(--fg);
+  }
+  .score {
+    margin-top: 40px;
+    border-top: 1px solid var(--line);
+  }
+  .score-row {
+    display: grid;
+    grid-template-columns: minmax(260px, 1.6fr) repeat(4, minmax(0, 1fr));
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+  }
+  .score-head {
+    height: 64px;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--dim);
+  }
+  .who {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    color: var(--fg);
+  }
+  .who strong {
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+  }
+  .who small {
+    color: var(--dim);
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .who.dave {
+    color: var(--fg);
+  }
+  .score-row:not(.score-head) {
+    height: 120px;
+  }
+  .label {
+    font-size: 28px;
+    line-height: 32px;
+    font-weight: 500;
+    letter-spacing: -0.6px;
+    text-wrap: balance;
+  }
+  .n {
+    font-size: 80px;
+    line-height: 88px;
+    font-weight: 500;
+    letter-spacing: -4px;
+    white-space: nowrap;
+  }
+  .n .unit {
+    font-size: 0.25em;
+    line-height: 1;
+    letter-spacing: 0;
+  }
+  /* Numbers are grey; the owner chose which ones are green. */
+  .n {
+    color: var(--codex);
+  }
+  .n.win {
+    color: var(--lime);
+  }
+  .result-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px 32px; margin-top: 40px; }
+  .result-card { min-width: 0; scroll-margin-top: 88px; }
+  .result-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding-bottom: 16px; }
+  .result-card-head small { color: var(--dim); font-size: 14px; line-height: 20px; }
+  .result-card .result-preview { display: block; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #22221c; transition: border-color .15s; }
+  .result-preview:hover { border-color: var(--accent); }
+  .result-preview:active { opacity: .85; }
+  .result-preview img { width: 100%; height: auto; aspect-ratio: 1.6; object-fit: contain; object-position: top; }
+  .result-card p { margin-top: 16px; color: var(--dim); font-size: 15px; line-height: 24px; }
+  .result-card:has(.result-list) { display: flex; flex-direction: column; }
+  .result-list { list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 12px; align-content: start; flex: 1; }
+  .result-list li { position: relative; padding-left: 28px; font-size: 18px; line-height: 28px; color: var(--fg); text-wrap: pretty; }
+  .result-list li::before { position: absolute; left: 0; top: 0; width: 20px; text-align: center; }
+  .result-list li.ok::before { content: "✓"; color: var(--lime); }
+  .result-list li.no { color: var(--dim); }
+  .result-list li.no::before { content: "—"; }
+  .result-list li span { font-size: 14px; }
+  .result-card .result-open { display: inline-block; margin-top: 12px; font-size: 15px; line-height: 24px; }
+  .result-open:hover { color: var(--accent); }
+  .four-results { padding-top: 64px; }
+  .pair-record { margin-top: 120px; padding-top: 32px; border-top: 1px solid var(--line); }
+  .pair-record > .section-lead { max-width: 60ch; }
+  .pair-record .page-section:first-of-type { padding-top: 64px; }
+  .opus-burden .table-scroll { margin-top: 32px; }
+  .opus-burden td, .opus-burden th { width: 33.333%; }
+  .opus-burden td:first-child { font-weight: 500; }
+  .opus-record { margin-top: 32px; }
+  .page-section { scroll-margin-top: 80px; }
+  @media (min-width: 761px) and (max-width: 1100px) {
+    .n { font-size: 60px; line-height: 68px; }
+    .label { font-size: 24px; line-height: 28px; }
+    .score-row { grid-template-columns: minmax(220px, 1.6fr) repeat(4, minmax(0, 1fr)); }
+  }
+  @media (max-width: 760px) {
+    .top {
+      height: 56px;
+      padding: 0 16px;
+    }
+    .hero {
+      justify-content: flex-start;
+      min-height: calc(100svh - 56px);
+      padding: 32px 16px;
+    }
+    .hero h1 {
+      font-size: 44px;
+      line-height: 48px;
+      letter-spacing: -1.4px;
+    }
+    .data {
+      margin-top: 20px;
+    }
+    .data-label {
+      flex-basis: 100%;
+      margin-right: 0;
+      font-size: 12px;
+      line-height: 16px;
+    }
+    .pill {
+      height: 28px;
+      padding: 0 10px;
+      font-size: 12px;
+      line-height: 26px;
+    }
+    /* The second half of a pill does not fit a phone row. */
+    .pill .more {
+      display: none;
+    }
+    .score {
+      margin-top: 24px;
+    }
+    .score-row {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0 8px;
+    }
+    .score-head {
+      height: 56px;
+      font-size: 12px;
+    }
+    .score-head > :first-child {
+      display: none;
+    }
+    .who strong { font-size: 14px; line-height: 20px; }
+    .who small { font-size: 12px; line-height: 16px; }
+    .who .logo { width: 16px; height: 16px; border-radius: 4px; margin-right: 4px; }
+    .score-row:not(.score-head) {
+      height: 104px;
+      padding: 12px 0;
+    }
+    .label {
+      grid-column: 1 / -1;
+      font-size: 16px;
+      line-height: 24px;
+      letter-spacing: -0.2px;
+    }
+    .n {
+      font-size: 40px;
+      line-height: 48px;
+      letter-spacing: -1.6px;
+    }
+    .n .unit { font-size: 12px; }
+    .result-grid { grid-template-columns: 1fr; gap: 40px; margin-top: 32px; }
+    .result-card-head { gap: 12px; }
+    .result-card-head small { max-width: 13ch; text-align: right; }
+    .four-results { padding-top: 48px; }
+    .pair-record { margin-top: 80px; }
+    .opus-burden td, .opus-burden th { min-width: 180px; }
+  }
+
+  /* Presentation body: hairlines on the night background. */
+  .deck {
+    --d-width: 1252px;
+    --d-text: #f5f5eb;
+    --d-text-2: #d6d5cc;
+    --d-muted: #8f8d86;
+    --d-eyebrow: #8f8d86;
+    --d-line: rgba(245, 245, 235, 0.12);
+    --d-surface: #181813;
+    --d-soft: #22221c;
+    --d-radius: 20px;
+    --d-shadow: 0 0 0 1px rgba(245, 245, 235, 0.08);
+    --d-chip: rgba(245, 245, 235, 0.06);
+    --d-chip-hover: rgba(245, 245, 235, 0.12);
+    --d-chip-line: rgba(245, 245, 235, 0.14);
+    --d-on: #f5f5eb;
+    --d-on-ink: #14140f;
+    --d-accent-text: #e07a52;
+    --d-outcome-bg: rgba(198, 97, 63, 0.16);
+    --d-outcome-ink: #f5f5eb;
+    --d-outcome-label: #e07a52;
+    --d-outcome-muted: #b9b7ae;
+    --d-callout-bg: #f5f5eb;
+    --d-callout-ink: #14140f;
+    --d-callout-acc: #c6613f;
+    --d-callout-muted: #55544e;
+    --d-callout-line: rgba(20, 20, 15, 0.16);
+  }
+  .journey {
+    overflow: visible;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    border-bottom: 1px solid var(--d-line);
+  }
+  .journey-head,
+  .journey-row {
+    padding: 0;
+  }
+  .journey-head > span,
+  .step-name {
+    padding-left: 0;
+  }
+  .journey-head b:first-of-type img {
+    filter: invert(1);
+    opacity: 0.7;
+  }
+  @media (max-width: 760px) {
+    .journey-row {
+      column-gap: 16px;
+    }
+    .journey-cell {
+      padding-right: 0;
+      padding-left: 0;
+    }
+  }
+  .dv-dl{display:inline-flex;align-items:center;gap:8px;background:#c6613f;color:#fff;text-decoration:none;border-radius:12px;padding:12px 20px;font-weight:500;font-size:16px;line-height:1.2;white-space:nowrap;transition:background .15s}
+  .dv-dl:hover{background:#ad5333}
+  .dv-dl .ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .dv-dl small{font-size:13px;font-weight:400;opacity:.8;margin-left:2px}
+  .dv-get{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .dv-promo{color:var(--dim);font-size:14px;line-height:20px;text-align:center}
+  .dv-end{display:flex;justify-content:center;padding:64px 16px 96px}
+  .top .dv-dl{padding:8px 14px;font-size:14px;border-radius:8px}
+  .top::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:100vh;background:#10100c;pointer-events:none}
+  @media (max-width:760px){.top .dv-dl small{display:none}}
+  .top-r{display:flex;align-items:center;gap:8px}
+  .lang{position:relative}
+  .lang summary{display:flex;align-items:center;gap:6px;flex-shrink:0;white-space:nowrap;height:36px;padding:0 10px;border-radius:8px;color:var(--dim);font-size:14px;line-height:20px;font-weight:500;cursor:pointer;list-style:none;user-select:none;transition:color .15s,background .15s}
+  .lang summary::-webkit-details-marker{display:none}
+  .lang summary:hover,.lang[open] summary{color:var(--fg);background:rgba(245,245,235,.06)}
+  .lang summary:focus-visible{outline:2px solid #e07a52;outline-offset:2px}
+  .lang .ic{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .lang .chev{width:14px;height:14px;transition:transform .15s}
+  .lang[open] .chev{transform:rotate(180deg)}
+  .lang-code{display:none}
+  @media (max-width:440px){.top .brand-word{display:none}}
+  .lang-list{position:absolute;right:0;top:calc(100% + 8px);z-index:30;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:400px;margin:0;padding:8px;list-style:none;border-radius:12px;background:#1d1d17;box-shadow:0 0 0 1px rgba(245,245,235,.12),0 16px 40px rgba(0,0,0,.5)}
+  .lang-list a{display:block;padding:8px 12px;border-radius:8px;color:var(--dim);font-size:14px;line-height:20px;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lang-list a:hover{color:var(--fg);background:rgba(245,245,235,.06)}
+  .lang-list a[aria-current]{color:var(--fg);background:rgba(224,122,82,.16)}
+  @media (max-width:760px){.lang-name{display:none}.lang-code{display:inline}.lang summary{padding:0 8px}.lang-list{position:fixed;left:16px;right:16px;top:64px;width:auto}}
+</style>
+<style>
+  @font-face {
+    font-family: "DAVE Mono";
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("../assets/jetbrains-mono-cyrillic-wght-normal.woff2") format("woff2");
+    unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  }
+  @font-face {
+    font-family: "DAVE Mono";
+    font-style: normal;
+    font-weight: 500;
+    font-display: block;
+    src: url("../assets/jetbrains-mono-cyrillic-wght-normal.woff2") format("woff2");
+    unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  }
+</style>
+<style>
+  /* Two participants instead of four: Hermes against D.A.V.E. */
+  .duo .score-row { grid-template-columns: minmax(260px, 1.4fr) repeat(2, minmax(0, 1fr)); column-gap: 32px; }
+  .duo .score-row:not(.score-head) { height: 112px; }
+  .duo .score-row.result-row { height: auto; align-items: start; padding: 24px 0 28px; }
+  .duo .result-row .label { padding-top: 2px; }
+  .did-grid { grid-column: 2 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+              column-gap: 32px; row-gap: 10px; }
+  .item { display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: baseline;
+          font-size: 20px; line-height: 28px; font-weight: 500; letter-spacing: -0.2px; color: var(--fg); }
+  .item .mark { font-size: 18px; line-height: 28px; color: var(--lime); }
+  .item.left, .item.left .mark { color: var(--codex); }
+  .item.left small { font-size: 14px; line-height: 0; font-weight: 400; color: var(--codex); }
+  .duo-notes { margin-top: 0; padding: 32px 0 96px; }
+  @media (min-width: 761px) and (max-width: 1100px) {
+    .duo .score-row { grid-template-columns: minmax(200px, 1.2fr) repeat(2, minmax(0, 1fr)); }
+    .item { font-size: 17px; line-height: 24px; }
+  }
+  @media (max-width: 760px) {
+    .duo .score-row { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; }
+    .duo .score-row:not(.score-head) { height: auto; padding: 12px 0; }
+    .duo .score-row.result-row { padding: 12px 0 16px; }
+    .duo .result-row .label { margin-bottom: 8px; }
+    .did-grid { grid-column: 1 / -1; column-gap: 16px; row-gap: 6px; }
+    .item { grid-template-columns: 16px minmax(0, 1fr); font-size: 14px; line-height: 20px; letter-spacing: 0; }
+    .item .mark { font-size: 13px; line-height: 20px; }
+    .item.left small { display: none; }
+    .duo-notes { grid-template-columns: 1fr; gap: 16px; padding: 24px 0 64px; }
+  }
+  .duo-results { padding-top: 32px; padding-bottom: 120px; }
+  .mscore { display: none; }
+  @media (max-width: 760px) {
+    .score.duo { display: none; }
+    .mscore { display: block; margin-top: 24px; border-top: 1px solid var(--line); }
+    .mrow { display: grid; grid-template-columns: minmax(0, 1fr) 80px 80px; column-gap: 8px; align-items: center;
+            min-height: 44px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+    .mrow.mhead { min-height: 52px; }
+    .mrow.mtime { min-height: 64px; }
+    .mrow.msec { min-height: 0; padding: 20px 0 4px; border-bottom: 0; }
+    .mlabel { font-size: 15px; line-height: 20px; font-weight: 500; color: var(--fg); }
+    .mlabel.mdim { font-size: 12px; line-height: 16px; color: var(--dim); }
+    .mrow.msec .mlabel { font-size: 12px; line-height: 16px; letter-spacing: 1.1px; text-transform: uppercase; color: var(--dim); }
+    .mn { font-size: 32px; line-height: 36px; font-weight: 500; letter-spacing: -1.2px; white-space: nowrap; color: var(--codex); }
+    .mn .unit { font-size: 12px; line-height: 1; letter-spacing: 0; }
+    .mn.win { color: var(--lime); }
+    .mv { font-size: 17px; line-height: 20px; font-weight: 500; color: var(--fg); }
+    .mv.ok { color: var(--lime); }
+    .mv.left { font-size: 14px; font-weight: 400; color: var(--codex); }
+  }
+
+  /* Recordings of both runs. */
+  .duo-videos { padding-top: 32px; padding-bottom: 96px; }
+  .video-frame { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #22221c; }
+  .video-frame video-player { display: block; }
+  .video-frame video-skin {
+    display: block; width: 100%; aspect-ratio: 1512 / 982;
+    --media-accent-color: #c4f27a; --media-accent-text-color: #14140f;
+    --media-border-radius: 0; --media-border-color: transparent;
+    --media-font-family: inherit; --media-object-fit: contain;
+  }
+  .video-frame video { display: block; width: 100%; height: 100%; background: #10100c; }
+  .video-i18n { display: block; }
+  .video-note { margin-top: 32px; font-size: 14px; line-height: 20px; }
+  /* How the test was run: four facts in a row. */
+  .test-terms { list-style: none; margin: 32px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .test-terms li { display: flex; flex-direction: column; padding: 24px; border-radius: 16px; background: #181813; box-shadow: 0 0 0 1px rgba(245, 245, 235, 0.1); }
+  .test-terms .tt-k { font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 1.1px; text-transform: uppercase; color: var(--dim); }
+  .test-terms b { margin-top: 12px; font-size: 24px; line-height: 32px; font-weight: 500; letter-spacing: -0.4px; color: var(--fg); }
+  .test-terms .tt-v { margin-top: 4px; font-size: 15px; line-height: 22px; color: var(--dim); text-wrap: pretty; }
+  @media (max-width: 1100px) { .test-terms { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 760px) {
+    .test-terms { gap: 8px; margin-top: 24px; }
+    .test-terms li { padding: 16px; border-radius: 12px; }
+    .test-terms b { margin-top: 8px; font-size: 18px; line-height: 24px; letter-spacing: -0.2px; }
+    .test-terms .tt-v { font-size: 13px; line-height: 18px; }
+  }
+
+  /* First screen: the same hands, a different head. */
+  .hero .case-title { margin-top: 16px; font-size: 72px; line-height: 76px; font-weight: 500; letter-spacing: -2.4px; }
+  .intro h1 .acc { white-space: nowrap; }
+  .intro-lead { margin-top: 16px; max-width: none; font-size: 22px; line-height: 32px; color: #d6d5cc; text-wrap: balance; }
+  .stack { display: grid; gap: 32px; margin-top: 48px; }
+  .stack-head, .stack-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .stack-head { margin-bottom: -16px; }
+  .stack-who { display: flex; align-items: center; gap: 8px; padding-left: 24px;
+               font-size: 24px; line-height: 32px; font-weight: 500; letter-spacing: -0.4px; color: var(--fg); }
+  .stack-who.hermes { color: var(--dim); }
+  .stack-eye { flex: none; width: 24px; height: 24px; border-radius: 8px;
+               background: url("../assets/dave-eye.webp") center / cover no-repeat; }
+  .logo { display: inline-block; flex: none; width: 20px; height: 20px; border-radius: 6px; vertical-align: -3px; margin-right: 8px;
+          background: url("../assets/dave-eye.webp") center / cover no-repeat; }
+  .hermes-logo { background: #f2f2f2 url("../logos/hermes-app.svg") center / 80% no-repeat; }
+  .result-card-head h3 .logo { width: 24px; height: 24px; vertical-align: -4px; }
+  .who strong { display: inline-flex; align-items: center; }
+  .hermes-eye { background: #f2f2f2 url("../logos/hermes-app.svg") center / 80% no-repeat; }
+  .stack-layer { align-self: start; padding-top: 32px; font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 1.1px;
+                 text-transform: uppercase; color: var(--dim); }
+  .band { grid-column: 1 / -1; padding: 24px; border-radius: 16px; background: #181813; box-shadow: 0 0 0 1px rgba(245, 245, 235, 0.1); }
+  .band-title { font-size: 24px; line-height: 32px; font-weight: 500; letter-spacing: -0.4px; color: var(--fg); }
+  .band-sub { margin-top: 4px; font-size: 17px; line-height: 24px; color: var(--dim); }
+  .brain { padding: 24px; border-radius: 16px;
+           background: linear-gradient(155deg, rgba(224, 122, 82, 0.34), rgba(198, 97, 63, 0.10) 70%);
+           box-shadow: 0 0 0 1px rgba(224, 122, 82, 0.55), 0 24px 64px -32px rgba(224, 122, 82, 0.5); }
+  .brain-title, .brain-none { font-size: 28px; line-height: 32px; font-weight: 500; letter-spacing: -0.6px; }
+  .brain-title { color: var(--fg); }
+  .brain-traits { display: grid; gap: 12px; margin: 16px 0 0; padding: 0; list-style: none; }
+  .brain-traits li { display: grid; grid-template-columns: 28px minmax(0, 1fr); align-items: baseline;
+                     font-size: 20px; line-height: 28px; font-weight: 500; color: var(--fg); }
+  .brain-traits li::before { content: "✓"; color: #f2a07d; }
+  .brain-none { padding: 24px; border-radius: 16px; border: 1px dashed rgba(245, 245, 235, 0.22); color: var(--dim); }
+
+  .m-who { display: none; }
+  /* The brain at work, on the same dashboard. */
+  .brain-case { padding-top: 48px; padding-bottom: 120px; }
+  .moments { margin-top: 40px; border-top: 1px solid var(--line); }
+  .moments-head, .moment { display: grid; grid-template-columns: minmax(260px, 1.4fr) repeat(2, minmax(0, 1fr)); column-gap: 32px;
+                           border-bottom: 1px solid var(--line); }
+  .moments-head { align-items: center; height: 64px; font-size: 14px; line-height: 20px; font-weight: 500; color: var(--dim); }
+  .moment { align-items: first baseline; padding: 28px 0 32px; }
+  .deck .moment h3 { margin: 0; font-size: 28px; line-height: 32px; letter-spacing: -0.6px; color: var(--fg); text-wrap: balance; }
+  .moment-who { display: none; font-size: 14px; line-height: 20px; font-weight: 600; color: var(--dim); }
+  .moment-side.dave .moment-who { color: var(--lime); }
+  .moment-side p { margin: 0; font-size: 20px; line-height: 28px; font-weight: 500; letter-spacing: -0.2px; color: var(--codex); }
+  .moment-side.dave p { color: var(--fg); }
+
+  /* Everything else, at the bottom. */
+  .rest { padding-top: 32px; padding-bottom: 120px; }
+  .section-top > p { max-width: 48ch; }
+  .diff-table { margin-top: 40px; overflow: visible; border-radius: 0; background: none; box-shadow: none; border-top: 1px solid var(--line); }
+  .deck .diff-table table { display: block; font-size: 17px; line-height: 24px; }
+  .deck .diff-table thead, .deck .diff-table tbody { display: block; }
+  .deck .diff-table tr { display: grid; grid-template-columns: minmax(260px, 1.4fr) repeat(2, minmax(0, 1fr)); column-gap: 32px;
+                         border-bottom: 1px solid var(--line); }
+  .deck .diff-table th, .deck .diff-table td { display: block; width: auto; min-width: 0; padding: 20px 0; border: 0; background: none; }
+  .deck .diff-table th { padding-top: 22px; padding-bottom: 22px; font-size: 16px; line-height: 20px; font-weight: 500;
+                         letter-spacing: 0; text-transform: none; color: var(--fg); }
+  .deck .diff-table th:first-child { font-size: 14px; color: var(--dim); }
+  .deck .diff-table td:first-child { font-size: 20px; line-height: 28px; letter-spacing: -0.2px; color: var(--fg); }
+  .deck .diff-table td[data-who] { padding-top: 22px; }
+  .deck .diff-table td.yes { color: #c4f27a; }
+  .deck .diff-table td.no { color: var(--codex); }
+  .deck .diff-table td .y { color: #c4f27a; }
+  .deck .diff-table td .soon { color: var(--codex); }
+  .deck .diff-table { overflow: visible; }
+  .deck .diff-table th .logo { margin-right: 8px; }
+  .deck .diff-table td.part { color: var(--codex); }
+  .deck .diff-table td.plain { color: var(--fg); }
+  .tip { position: relative; display: inline-grid; place-items: center; width: 20px; height: 20px; margin-left: 4px; vertical-align: 2px;
+         padding: 0; border: 1px solid currentColor; border-radius: 50%; background: none; color: var(--dim);
+         font-family: inherit; font-size: 12px; font-weight: 600; line-height: 1; cursor: help; }
+  .tip:hover, .tip:focus-visible { color: var(--fg); outline: none; }
+  .tip-body { position: absolute; z-index: 20; bottom: calc(100% + 8px); right: -12px; width: 320px; padding: 16px;
+              border-radius: 12px; background: #24241d; box-shadow: 0 0 0 1px rgba(245,245,235,.12), 0 16px 40px rgba(0,0,0,.5);
+              color: var(--fg); font-family: inherit; font-size: 16px; line-height: 24px; font-weight: 400; text-align: left; white-space: normal;
+              opacity: 0; visibility: hidden; transform: translateY(4px); transition: opacity .15s, transform .15s, visibility .15s; pointer-events: none; }
+  .tip:hover .tip-body, .tip:focus .tip-body { opacity: 1; visibility: visible; transform: none; }
+
+  .nw { white-space: nowrap; }
+  .diff-soon { margin-top: 80px; }
+  .soon-card { position: relative; overflow: hidden; padding: 24px; border-radius: 16px;
+               background: linear-gradient(180deg, rgba(224,122,82,.10), rgba(24,24,19,0) 55%), #181813;
+               box-shadow: 0 0 0 1px rgba(224,122,82,.28), 0 24px 60px -30px rgba(224,122,82,.45); }
+  .soon-card h4 { margin: 24px 0 0; font-size: 24px; line-height: 32px; font-weight: 500; letter-spacing: -0.3px; color: var(--fg); }
+  .soon-card p { margin-top: 12px; font-size: 16px; line-height: 24px; color: var(--dim); }
+  .soon-vis { position: relative; height: 160px; border-radius: 12px; background:
+                radial-gradient(120% 90% at 50% 0%, rgba(224,122,82,.22), transparent 60%),
+                repeating-linear-gradient(90deg, rgba(245,245,235,.04) 0 1px, transparent 1px 24px),
+                repeating-linear-gradient(0deg, rgba(245,245,235,.04) 0 1px, transparent 1px 24px), #13130f;
+              box-shadow: inset 0 0 0 1px rgba(245,245,235,.08); display: grid; place-items: center; }
+  .sv-eye { display: block; width: 40px; height: 40px; border-radius: 12px; background: url("../assets/dave-eye.webp") center / cover no-repeat;
+            box-shadow: 0 0 0 3px #13130f, 0 8px 20px rgba(0,0,0,.5); }
+  .team-vis { gap: 0; align-content: center; }
+  .tv-lines { width: 224px; height: 24px; margin: 0 auto; background:
+              linear-gradient(rgba(224,122,82,.55),rgba(224,122,82,.55)) 111.5px 0px / 1px 12px no-repeat,
+              linear-gradient(rgba(224,122,82,.55),rgba(224,122,82,.55)) 22px 12px / 181px 1px no-repeat,
+              linear-gradient(rgba(224,122,82,.55),rgba(224,122,82,.55)) 21.5px 12px / 1px 12px no-repeat,
+              linear-gradient(rgba(224,122,82,.55),rgba(224,122,82,.55)) 81.5px 12px / 1px 12px no-repeat,
+              linear-gradient(rgba(224,122,82,.55),rgba(224,122,82,.55)) 141.5px 12px / 1px 12px no-repeat,
+              linear-gradient(rgba(224,122,82,.55),rgba(224,122,82,.55)) 201.5px 12px / 1px 12px no-repeat; }
+  .tv-people { display: flex; justify-content: center; gap: 16px; }
+  .tv-person { position: relative; width: 44px; height: 44px; }
+  .tv-ava { display: block; width: 44px; height: 44px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 3px #13130f, 0 8px 18px rgba(0,0,0,.45); }
+  .tv-badge { position: absolute; right: -6px; bottom: -6px; width: 22px; height: 22px; border-radius: 7px;
+              background: url("../assets/dave-eye.webp") center / cover no-repeat; box-shadow: 0 0 0 2px #13130f; }
+  .tv-doc { display: flex; align-items: center; gap: 12px; padding: 8px 16px 8px 8px; border-radius: 12px; background: #22221c;
+            box-shadow: 0 0 0 1px rgba(224,122,82,.4), 0 0 24px rgba(224,122,82,.25); }
+  .tv-doc-ic { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #e07a52, #b9532f); }
+  .tv-doc b { display: block; font-size: 14px; line-height: 20px; font-weight: 600; color: var(--fg); }
+  .tv-doc small { display: block; font-size: 12px; line-height: 16px; color: #f2a07d; }
+  .soon-card .soon-lead { margin-top: 8px; font-size: 18px; line-height: 28px; color: var(--fg); }
+  .soon-list { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 12px; }
+  .soon-list li { position: relative; padding-left: 28px; font-size: 16px; line-height: 24px; color: var(--dim); text-wrap: pretty; }
+  .soon-list li::before { content: ""; position: absolute; left: 4px; top: 8px; width: 8px; height: 8px; border-radius: 50%;
+                          background: #e07a52; box-shadow: 0 0 0 4px rgba(224,122,82,.18); }
+  .sv-time { justify-self: center; font-size: 12px; line-height: 16px; color: var(--dim); }
+  .srv-vis { grid-template-columns: auto auto; gap: 24px; }
+  .sv-box { display: grid; justify-items: start; gap: 4px; padding: 16px; border-radius: 12px; background: #22221c;
+            box-shadow: 0 0 0 1px rgba(245,245,235,.12); font-size: 12px; line-height: 16px; color: var(--dim); }
+  .sv-box b { font-size: 28px; line-height: 32px; font-weight: 600; letter-spacing: -0.5px; color: var(--fg); }
+  .sv-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 4px rgba(196,242,122,.18); animation: svpulse 2s ease-in-out infinite; }
+  @keyframes svpulse { 50% { box-shadow: 0 0 0 8px rgba(196,242,122,0); } }
+  .sv-chat { display: grid; gap: 8px; }
+  .sv-msg { max-width: 200px; padding: 8px 12px; border-radius: 12px; font-size: 13px; line-height: 18px; }
+  .sv-msg.in { justify-self: start; background: #2b2b24; color: var(--fg); border-bottom-left-radius: 4px; }
+  .sv-msg.out { justify-self: end; background: #e07a52; color: #1a120d; border-bottom-right-radius: 4px; }
+  @media (prefers-reduced-motion: reduce) { .sv-dot { animation: none; } }
+
+  .deck .diff-soon-title { font-size: 28px; line-height: 36px; font-weight: 500; letter-spacing: -0.4px; color: var(--fg); }
+  .soon-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 24px; }
+
+  @media (min-width: 761px) and (max-width: 1100px) {
+    .hero .case-title { font-size: 60px; line-height: 64px; }
+    .stack-head, .stack-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .brain-title, .brain-none { font-size: 24px; line-height: 32px; letter-spacing: -0.4px; }
+    .brain-traits li { font-size: 18px; }
+    .moments-head, .moment { grid-template-columns: minmax(200px, 1.2fr) repeat(2, minmax(0, 1fr)); }
+    .deck .diff-table tr { grid-template-columns: minmax(200px, 1.2fr) repeat(2, minmax(0, 1fr)); }
+    .deck .diff-table td:first-child { font-size: 17px; line-height: 24px; }
+    .deck .diff-table td[data-who] { padding-top: 20px; }
+    .deck .moment h3 { font-size: 24px; line-height: 32px; }
+    .moment-side p { font-size: 17px; line-height: 24px; }
+  }
+  @media (max-width: 760px) {
+    .duo-videos { padding-bottom: 64px; }
+    .hero .case-title { font-size: 44px; line-height: 48px; letter-spacing: -1.4px; }
+    .intro-lead { margin-top: 16px; font-size: 18px; line-height: 26px; }
+    .stack { margin-top: 32px; gap: 24px; }
+    .stack-head { display: none; }
+    .stack-row { grid-template-columns: 1fr; gap: 8px; }
+    .brain-none { margin-top: 8px; }
+    .m-who { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 16px; line-height: 24px; font-weight: 600; color: var(--dim); }
+    .m-who .stack-eye { width: 24px; height: 24px; }
+    .brain .m-who { color: #f5f5eb; }
+    .stack-layer { grid-column: 1 / -1; padding-top: 0; }
+    .stack-who { gap: 8px; font-size: 20px; line-height: 24px; letter-spacing: -0.3px; }
+    .stack-eye { width: 24px; height: 24px; border-radius: 8px; }
+    .band { grid-column: 1 / -1; padding: 16px; border-radius: 16px; }
+    .band-title { font-size: 18px; line-height: 24px; letter-spacing: -0.2px; }
+    .band-sub { font-size: 15px; line-height: 20px; }
+    .brain { padding: 16px; border-radius: 16px; }
+    .brain-title, .brain-none { font-size: 20px; line-height: 28px; letter-spacing: -0.3px; }
+    .brain-traits { gap: 8px; margin-top: 12px; }
+    .brain-traits li { grid-template-columns: 20px minmax(0, 1fr); font-size: 16px; line-height: 24px; }
+    .brain-none { padding: 16px; border-radius: 16px; }
+    .brain-case { padding-top: 32px; padding-bottom: 80px; }
+    .moments { margin-top: 28px; }
+    .moments-head { display: none; }
+    .moment { grid-template-columns: 1fr; row-gap: 12px; align-items: start; padding: 20px 0 24px; }
+    .deck .moment h3 { font-size: 22px; line-height: 28px; letter-spacing: -0.3px; }
+    .moment-who { display: block; margin-bottom: 4px; }
+    .moment-side p { font-size: 16px; line-height: 24px; letter-spacing: 0; }
+    .rest { padding-bottom: 80px; }
+    .diff-table { margin-top: 28px; }
+    .diff-soon { margin-top: 56px; }
+    .deck .diff-soon-title { font-size: 22px; line-height: 32px; letter-spacing: -0.2px; }
+    .soon-cards { grid-template-columns: 1fr; gap: 12px; }
+    .soon-card { padding: 20px; }
+    .soon-card h4 { font-size: 20px; line-height: 28px; }
+    .deck .diff-table thead { display: none; }
+    .deck .diff-table .tip { position: static; }
+    .deck .diff-table .tip-body { position: absolute; left: 0; right: 0; bottom: calc(100% + 8px); width: auto; }
+    .diff-table table, .diff-table tbody, .diff-table tr { display: block; width: 100%; }
+    .deck .diff-table tr { display: block; padding: 16px 0; border-top: 1px solid var(--line); border-bottom: 0; }
+    .deck .diff-table tr:first-child { border-top: 0; }
+    .deck .diff-table td, .deck .diff-table td:first-child, .deck .diff-table td:nth-child(2) { display: block; width: auto; padding: 0; border: 0; }
+    .deck .diff-table td:first-child { width: auto; margin-bottom: 8px; font-size: 15px; line-height: 24px; }
+    .deck .diff-table td[data-who] { position: relative; padding: 4px 0 4px 84px; font-size: 14px; line-height: 20px; }
+    .deck .diff-table td[data-who]::before { content: attr(data-who); position: absolute; left: 0; top: 4px; color: var(--dim); font-size: 12px; line-height: 20px; }
+  }
+  .score .score-row:last-child, .mscore .mrow:last-child { border-bottom: 0; }
+</style>
+<script type="module" src="../vendor/videojs-10.3.0/video.js"></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#top" aria-label="D.A.V.E."><span class="brand-eye"></span><span class="brand-word"></span></a>
+  <div class="top-r"><!--lang-menu--><details class="lang"><summary aria-label="Lingua"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span class="lang-name">Italiano</span><span class="lang-code">IT</span><svg class="ic chev" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary><ul class="lang-list"><li><a href="/davevshermes/" hreflang="en" lang="en">English</a></li><li><a href="/davevshermes/zh/" hreflang="zh-Hans" lang="zh-Hans">简体中文</a></li><li><a href="/davevshermes/es/" hreflang="es" lang="es">Español</a></li><li><a href="/davevshermes/hi/" hreflang="hi" lang="hi">हिन्दी</a></li><li><a href="/davevshermes/bn/" hreflang="bn" lang="bn">বাংলা</a></li><li><a href="/davevshermes/pt/" hreflang="pt-BR" lang="pt-BR">Português (Brasil)</a></li><li><a href="/davevshermes/ru/" hreflang="ru" lang="ru">Русский</a></li><li><a href="/davevshermes/ja/" hreflang="ja" lang="ja">日本語</a></li><li><a href="/davevshermes/de/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/davevshermes/fr/" hreflang="fr" lang="fr">Français</a></li><li><a href="/davevshermes/ko/" hreflang="ko" lang="ko">한국어</a></li><li><a href="/davevshermes/it/" hreflang="it" lang="it" aria-current="page">Italiano</a></li><li><a href="/davevshermes/tr/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/davevshermes/vi/" hreflang="vi" lang="vi">Tiếng Việt</a></li><li><a href="/davevshermes/pl/" hreflang="pl" lang="pl">Polski</a></li><li><a href="/davevshermes/nl/" hreflang="nl" lang="nl">Nederlands</a></li><li><a href="/davevshermes/id/" hreflang="id" lang="id">Bahasa Indonesia</a></li><li><a href="/davevshermes/th/" hreflang="th" lang="th">ไทย</a></li><li><a href="/davevshermes/uk/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/davevshermes/sv/" hreflang="sv" lang="sv">Svenska</a></li></ul></details><!--/lang-menu-->
+  <a class="dv-dl" href="https://dave.space/cabinet/?ref=DAVE-TEAM&amp;lang=en" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Scarica D.A.V.E.<small>Mac e Windows</small></a></div>
+</header>
+
+<main id="top">
+  <section class="hero intro" id="diff">
+    <h1><span class="acc">Dave</span> contro Hermes</h1>
+    <p class="intro-lead">Cosa hanno in comune e in cosa sono diversi</p>
+    <div class="stage stack" aria-label="Di cosa sono fatti D.A.V.E. e Hermes">
+      <div class="stack-head">
+        <div class="stack-who"><span class="stack-eye" aria-hidden="true"></span>D.A.V.E.</div>
+        <div class="stack-who hermes"><span class="stack-eye hermes-eye" aria-hidden="true"></span>Hermes</div>
+      </div>
+      <div class="stack-row">
+        <div class="band">
+          <div class="band-title">Un’interfaccia sopra Claude&nbsp;Code, Codex e altri</div>
+          <p class="band-sub">Entrambi controllano il computer e il browser, lavorano con i file e scrivono codice</p>
+        </div>
+      </div>
+      <div class="stack-row">
+        <div class="brain">
+          <span class="m-who"><span class="stack-eye" aria-hidden="true"></span>D.A.V.E.</span>
+          <div class="brain-title">Il cervello di un socio cofondatore</div>
+          <ul class="brain-traits">
+            <li>Ti guida passo passo</li>
+            <li>Non chiede per sciocchezze</li>
+            <li>Si prende la responsabilità</li>
+          </ul>
+        </div>
+        <div class="brain-none"><span class="m-who"><span class="stack-eye hermes-eye" aria-hidden="true"></span>Hermes</span>Nessun cervello proprio</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero" id="effort">
+    <h2 class="case-title">Caso: crea una <span class="acc">dashboard</span></h2>
+    <div class="data">
+      <span class="data-label">Dati dell’azienda</span>
+      <span class="pill"><b>HubSpot</b>12 trattative</span>
+      <span class="pill"><b>Posta dell’ufficio</b>33 email</span>
+      <span class="pill"><b>5 file</b>listini e ricevute</span>
+      <span class="pill"><b>3 portali</b><span class="more">fornitore, interventi, finanziamenti</span></span>
+    </div>
+
+    <div class="stage score duo" role="table" aria-label="Quanto è costato e cosa è stato fatto">
+      <div class="score-row score-head" role="row">
+        <span role="columnheader"></span>
+        <span role="columnheader" class="who dave"><strong><span class="logo" aria-hidden="true"></span>D.A.V.E.</strong><small>Opus&nbsp;5.5 High</small></span>
+        <span role="columnheader" class="who codex"><strong><span class="logo hermes-logo" aria-hidden="true"></span>Hermes</strong><small>Opus&nbsp;5.5 High</small></span>
+      </div>
+      <div class="score-row" role="row">
+        <span role="rowheader" class="label">Tempo di lavoro</span>
+        <span role="cell" class="n">35<span class="unit">&nbsp;min</span></span>
+        <span role="cell" class="n">33<span class="unit">&nbsp;min</span></span>
+      </div>
+      <div class="score-row" role="row">
+        <span role="rowheader" class="label">Tempo della persona allo schermo</span>
+        <span role="cell" class="n win">5<span class="unit">&nbsp;min</span></span>
+        <span role="cell" class="n">11<span class="unit">&nbsp;min</span></span>
+      </div>
+      <div class="score-row result-row" role="row">
+        <span role="rowheader" class="label">Cosa è stato fatto</span>
+        <div role="cell" class="did-grid" aria-label="D.A.V.E. a sinistra, Hermes a destra">
+          <span class="item"><span class="mark">✓</span><span>Dashboard con i soldi</span></span>
+          <span class="item"><span class="mark">✓</span><span>Dashboard con i soldi</span></span>
+          <span class="item"><span class="mark">✓</span><span>2 ordini al fornitore</span></span>
+          <span class="item left"><span class="mark">—</span><span>Ordini al fornitore <small>non fatti</small></span></span>
+          <span class="item"><span class="mark">✓</span><span>Ordine e intervento annullati</span></span>
+          <span class="item left"><span class="mark">—</span><span>Ordine del cliente <small>non annullato</small></span></span>
+          <span class="item"><span class="mark">✓</span><span>13 correzioni in contabilità e CRM</span></span>
+          <span class="item left"><span class="mark">—</span><span>Correzioni in contabilità e CRM <small>non fatte</small></span></span>
+          <span class="item"><span class="mark">✓</span><span>7 email ai clienti</span></span>
+          <span class="item"><span class="mark">✓</span><span>4 email ai clienti</span></span>
+          <span class="item"><span class="mark">✓</span><span>2 attività programmate</span></span>
+          <span class="item"><span class="mark">✓</span><span>1 attività programmata</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="stage mscore" role="table" aria-label="Quanto è costato e cosa è stato fatto">
+      <div class="mrow mhead" role="row">
+        <span role="columnheader" class="mlabel mdim"></span>
+        <span role="columnheader" class="who"><strong><span class="logo" aria-hidden="true"></span>D.A.V.E.</strong><small>Opus&nbsp;5.5 High</small></span>
+        <span role="columnheader" class="who"><strong><span class="logo hermes-logo" aria-hidden="true"></span>Hermes</strong><small>Opus&nbsp;5.5 High</small></span>
+      </div>
+      <div class="mrow mtime" role="row">
+        <span role="rowheader" class="mlabel">Tempo di lavoro</span>
+        <span role="cell" class="mn">35<span class="unit">&nbsp;min</span></span>
+        <span role="cell" class="mn">33<span class="unit">&nbsp;min</span></span>
+      </div>
+      <div class="mrow mtime" role="row">
+        <span role="rowheader" class="mlabel">Tempo della persona allo schermo</span>
+        <span role="cell" class="mn win">5<span class="unit">&nbsp;min</span></span>
+        <span role="cell" class="mn">11<span class="unit">&nbsp;min</span></span>
+      </div>
+      <div class="mrow msec" role="row"><span role="rowheader" class="mlabel">Cosa è stato fatto</span></div>
+      <div class="mrow" role="row">
+        <span role="rowheader" class="mlabel">Dashboard con i soldi</span>
+        <span role="cell" class="mv ok">✓</span>
+        <span role="cell" class="mv ok">✓</span>
+      </div>
+      <div class="mrow" role="row">
+        <span role="rowheader" class="mlabel">Ordini al fornitore</span>
+        <span role="cell" class="mv">2</span>
+        <span role="cell" class="mv left">no</span>
+      </div>
+      <div class="mrow" role="row">
+        <span role="rowheader" class="mlabel">Ordine del cliente annullato</span>
+        <span role="cell" class="mv ok">✓</span>
+        <span role="cell" class="mv left">no</span>
+      </div>
+      <div class="mrow" role="row">
+        <span role="rowheader" class="mlabel">Correzioni in contabilità e CRM</span>
+        <span role="cell" class="mv">13</span>
+        <span role="cell" class="mv left">no</span>
+      </div>
+      <div class="mrow" role="row">
+        <span role="rowheader" class="mlabel">Email ai clienti</span>
+        <span role="cell" class="mv">7</span>
+        <span role="cell" class="mv">4</span>
+      </div>
+      <div class="mrow" role="row">
+        <span role="rowheader" class="mlabel">Attività programmate</span>
+        <span role="cell" class="mv">2</span>
+        <span role="cell" class="mv">1</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="deck">
+  <section class="page-section brain-case" id="brain">
+      <h2>Come ha aiutato il <span class="acc">cervello</span></h2>
+      <div class="moments" role="table" aria-label="Come ha aiutato il cervello">
+        <div class="moments-head" role="row"><span role="columnheader"></span><span role="columnheader" class="who dave"><strong><span class="logo" aria-hidden="true"></span>D.A.V.E.</strong></span><span role="columnheader" class="who"><strong><span class="logo hermes-logo" aria-hidden="true"></span>Hermes</strong></span></div>
+        <div class="moment" role="row">
+          <h3 role="rowheader">Non chiede per sciocchezze</h3>
+          <div class="moment-side dave" role="cell"><span class="moment-who">D.A.V.E.</span><p>Una sola scheda di accesso&nbsp;— ed è dentro tutti e cinque i servizi</p></div>
+          <div class="moment-side" role="cell"><span class="moment-who">Hermes</span><p>Le password di cinque servizi le ha salvate la persona da sola. In HubSpot è entrata da sola</p></div>
+        </div>
+        <div class="moment" role="row">
+          <h3 role="rowheader">Si prende la responsabilità</h3>
+          <div class="moment-side dave" role="cell"><span class="moment-who">D.A.V.E.</span><p>Dopo un «sì» ha fatto gli ordini, annullato l’intervento e corretto la contabilità da solo</p></div>
+          <div class="moment-side" role="cell"><span class="moment-who">Hermes</span><p>Ha fatto una lista: cosa ordinare, annullare e correggere. Il lavoro resta alla persona</p></div>
+        </div>
+        <div class="moment" role="row">
+          <h3 role="rowheader">Ti guida passo passo</h3>
+          <div class="moment-side dave" role="cell"><span class="moment-who">D.A.V.E.</span><p>Alla fine: «Non c’è più nulla da decidere. Restano tre cose&nbsp;— sono nella dashboard»</p></div>
+          <div class="moment-side" role="cell"><span class="moment-who">Hermes</span><p>Alla fine: «Entro lunedì decida sul pagamento extra a Marcus e sul rimborso a Ben»</p></div>
+        </div>
+      </div>
+    </section>
+  <section class="page-section four-results duo-results" id="results">
+      <h2>Cosa ha fatto ciascuno</h2>
+      <p class="section-lead">Entrambi hanno azzeccato i numeri. La differenza sta in ciò che è rimasto alla persona</p>
+      <div class="result-grid"><article class="result-card">
+          <div class="result-card-head"><h3><span class="logo" aria-hidden="true"></span>D.A.V.E.</h3><small>Opus 5.5 High</small></div>
+          <a class="result-preview" href="../results/dave-dashboard.html" target="_blank" rel="noopener" aria-label="Apri la dashboard&nbsp;— D.A.V.E.">
+            <img src="../results/dave-dashboard.png" alt="Dashboard creata da D.A.V.E." width="1440" height="900" loading="lazy">
+          </a><ul class="result-list">
+            <li class="ok">I soldi di tutti gli ordini</li>
+            <li class="ok">Ordini al fornitore fatti per&nbsp;$2,515</li>
+            <li class="ok">Registro interventi e HubSpot allineati</li>
+            <li class="ok">Ha proposto da solo di aggiornare la dashboard ogni lunedì</li>
+            <li class="ok">Alla persona restano due cose: farsi ridare dalla banca i soldi di Ben e chiamare l’installatore</li>
+          </ul>
+          <a class="result-open" href="../results/dave-dashboard.html" target="_blank" rel="noopener">Apri la dashboard <span aria-hidden="true">↗</span></a>
+        </article><article class="result-card">
+          <div class="result-card-head"><h3><span class="logo hermes-logo" aria-hidden="true"></span>Hermes</h3><small>Opus 5.5 High</small></div>
+          <a class="result-preview" href="../results/hermes-dashboard.html" target="_blank" rel="noopener" aria-label="Apri la dashboard&nbsp;— Hermes">
+            <img src="../results/hermes-dashboard.png" alt="Dashboard creata da Hermes" width="1440" height="900" loading="lazy">
+          </a><ul class="result-list">
+            <li class="ok">I soldi di tutti gli ordini</li>
+            <li class="no">Cosa ordinare lunedì <span>mostrato, ma non ordinato</span></li>
+            <li class="no">A chi restituire i soldi <span>mostrato, ma non restituito</span></li>
+            <li class="no">Trattative obsolete in HubSpot <span>mostrate, ma non corrette</span></li>
+            <li class="no">In testa alla dashboard: «nei sistemi non è stato cambiato nulla»</li>
+          </ul>
+          <a class="result-open" href="../results/hermes-dashboard.html" target="_blank" rel="noopener">Apri la dashboard <span aria-hidden="true">↗</span></a>
+        </article></div>
+    </section>
+  <section class="page-section duo-videos" id="video">
+      <h2>Com’è andata</h2>
+      <ul class="test-terms" aria-label="Come si è svolto il test">
+        <li><span class="tt-k">Chi l’ha svolto</span><b>Un robot con&nbsp;Claude</b><span class="tt-v">Ha fatto il compito al posto di una persona</span></li>
+        <li><span class="tt-k">Nel ruolo di</span><b>Principiante</b><span class="tt-v">Non aveva mai usato l’IA</span></li>
+        <li><span class="tt-k">Computer</span><b>Un Mac pulito</b><span class="tt-v">Niente installato prima</span></li>
+        <li><span class="tt-k">Programmi</span><b>Hermes e D.A.V.E.</b><span class="tt-v">Appena scaricati, senza impostazioni</span></li>
+      </ul>
+      <media-i18n class="video-i18n"><div class="result-grid video-grid"><article class="result-card video-card">
+          <div class="result-card-head"><h3><span class="logo" aria-hidden="true"></span>D.A.V.E.</h3><small>36 min 49 s</small></div>
+          <div class="video-frame">
+            <video-player default-playback-rates="1 2 4 8">
+              <video-skin>
+                <video src="https://downloads.dave.space/bench/davevshermes/dave-v2.mp4" poster="https://downloads.dave.space/bench/davevshermes/dave-poster-v2.jpg" preload="metadata" playsinline>
+                  <track kind="chapters" src="dave-chapters.vtt" srclang="it" label="Capitoli" default>
+                </video>
+              </video-skin>
+            </video-player>
+          </div>
+          <p>La registrazione completa, senza tagli</p>
+        </article><article class="result-card video-card">
+          <div class="result-card-head"><h3><span class="logo hermes-logo" aria-hidden="true"></span>Hermes</h3><small>35 min 35 s</small></div>
+          <div class="video-frame">
+            <video-player default-playback-rates="1 2 4 8">
+              <video-skin>
+                <video src="https://downloads.dave.space/bench/davevshermes/hermes-v2.mp4" poster="https://downloads.dave.space/bench/davevshermes/hermes-poster-v2.jpg" preload="metadata" playsinline>
+                  <track kind="chapters" src="hermes-chapters.vtt" srclang="it" label="Capitoli" default>
+                </video>
+              </video-skin>
+            </video-player>
+          </div>
+          <p>La registrazione completa, senza tagli</p>
+        </article></div></media-i18n>
+    </section>
+  <section class="page-section rest" id="rest">
+      <h2>Confronto delle funzioni</h2>
+      <div class="table-scroll diff-table" tabindex="0" role="region" aria-label="Confronto tra D.A.V.E. e Hermes"><table><thead><tr><th scope="col">Cosa sa fare</th><th scope="col"><span class="logo" aria-hidden="true"></span>D.A.V.E.</th><th scope="col"><span class="logo hermes-logo" aria-hidden="true"></span>Hermes</th></tr></thead><tbody><tr><td>Modelli di IA</td><td data-who="D.A.V.E." class="plain">Claude, Codex e Kimi</td><td data-who="Hermes" class="plain">Tutti quelli sul mercato</td></tr><tr><td>Skill, chat e progetti condivisi tra i modelli</td><td data-who="D.A.V.E." class="yes">Sì</td><td data-who="Hermes" class="yes">Sì</td></tr><tr><td>Cervello proprio</td><td data-who="D.A.V.E." class="yes">Sì</td><td data-who="Hermes" class="no">No</td></tr><tr><td>Versione 24/7 su server</td><td data-who="D.A.V.E."><span class="soon">Tra una settimana</span></td><td data-who="Hermes" class="yes">Sì</td></tr><tr><td>Lavoro di squadra</td><td data-who="D.A.V.E."><span class="soon">Tra una settimana</span></td><td data-who="Hermes" class="no">No</td></tr><tr><td>Editor di testo in stile Notion</td><td data-who="D.A.V.E." class="yes">Sì</td><td data-who="Hermes" class="no">No</td></tr><tr><td>Sincronizzazione con Telegram</td><td data-who="D.A.V.E." class="yes">Sì</td><td data-who="Hermes" class="part">Parziale</td></tr><tr><td>Chat che parlano tra loro</td><td data-who="D.A.V.E." class="yes">Sì</td><td data-who="Hermes" class="no">No</td></tr><tr><td>Cartelle di chat su più livelli, trascinamento delle chat tra di esse</td><td data-who="D.A.V.E." class="yes">Sì</td><td data-who="Hermes" class="no">No</td></tr><tr><td>File fissati per una chat o per tutte</td><td data-who="D.A.V.E." class="yes">Sì</td><td data-who="Hermes" class="no">No</td></tr><tr><td>Attività programmate</td><td data-who="D.A.V.E." class="yes">Sì</td><td data-who="Hermes" class="yes">Sì</td></tr><tr><td>Servizi di scraping pronti all’uso</td><td data-who="D.A.V.E." class="yes">Sì</td><td data-who="Hermes" class="yes">Sì</td></tr><tr><td>Controllo del browser</td><td data-who="D.A.V.E." class="yes">Sì <button type="button" class="tip" aria-label="Dettagli">i<span class="tip-body" role="tooltip">Una copia separata di Google Chrome. Prima di prendere il controllo chiede in chat o su Telegram per quanto dare accesso al sito: un passo, 15&nbsp;minuti, un’ora, un giorno o per sempre</span></button></td><td data-who="Hermes" class="yes">Sì <button type="button" class="tip" aria-label="Dettagli">i<span class="tip-body" role="tooltip">Il browser è integrato nel programma</span></button></td></tr><tr><td>Controllo delle app</td><td data-who="D.A.V.E." class="yes">Sì</td><td data-who="Hermes" class="yes">Sì</td></tr><tr><td>Assistenza</td><td data-who="D.A.V.E." class="yes">Chat intelligente «riparati da solo» <button type="button" class="tip" aria-label="Dettagli">i<span class="tip-body" role="tooltip">Risolve il guasto sul posto o invia da solo un rapporto allo sviluppatore. Se lo stanno già sistemando, te lo dice subito</span></button></td><td data-who="Hermes" class="no">No</td></tr><tr><td>Connettori: servizi via API, MCP, CLI e altro</td><td data-who="D.A.V.E." class="yes">Sì, dalla chat</td><td data-who="Hermes" class="yes">Sì, dalla chat</td></tr><tr><td>Appshots: screenshot e video direttamente in chat</td><td data-who="D.A.V.E." class="yes">Sì</td><td data-who="Hermes" class="no">No</td></tr></tbody></table></div>
+      <div class="diff-soon">
+          <h3 class="diff-soon-title"><span class="acc">Tra una settimana</span>&nbsp;— un grande aggiornamento</h3>
+          <div class="soon-cards">
+            <div class="soon-card">
+              <div class="soon-vis team-vis" aria-hidden="true">
+                <div class="tv-doc"><span class="tv-doc-ic"></span><span><b>Skill «Vendite»</b><small>aggiornata · per tutto il team</small></span></div>
+                <div class="tv-lines"></div>
+                <div class="tv-people"><span class="tv-person"><img class="tv-ava" src="../assets/people/toon-Anna.svg" alt="" width="44" height="44"><span class="tv-badge"></span></span><span class="tv-person"><img class="tv-ava" src="../assets/people/toon-Max.svg" alt="" width="44" height="44"><span class="tv-badge"></span></span><span class="tv-person"><img class="tv-ava" src="../assets/people/toon-Olga.svg" alt="" width="44" height="44"><span class="tv-badge"></span></span><span class="tv-person"><img class="tv-ava" src="../assets/people/toon-Leo.svg" alt="" width="44" height="44"><span class="tv-badge"></span></span></div>
+              </div>
+              <h4>Accesso per il team</h4>
+              <p class="soon-lead">Come Google Drive, ma per l’IA: un solo cervello per tutto il team</p>
+              <ul class="soon-list">
+                <li>Correggete una skill o aggiungete un PDF al progetto&nbsp;— e tutti i Dave del team lo sanno subito e ci lavorano</li>
+                <li>Modificate i documenti insieme, come in Notion: cronologia delle versioni, accesso in lettura, commenti o modifica completa</li>
+                <li>I dati sono sul vostro server e solo vostri. Il server lo configura Dave da solo: piano, paese, backup. In 30&nbsp;minuti il «Cervello collettivo» è operativo</li>
+              </ul>
+            </div>
+            <div class="soon-card">
+              <div class="soon-vis srv-vis" aria-hidden="true">
+                <div class="sv-box"><span class="sv-dot"></span>Server<b>24/7</b></div>
+                <div class="sv-chat"><span class="sv-time">03:12 · portatile chiuso</span><span class="sv-msg in">Prepara il report della settimana</span><span class="sv-msg out">Fatto, il report è in chat ✓</span></div>
+              </div>
+              <h4>Dave 24/7 su&nbsp;un server</h4>
+              <p class="soon-lead">Lavora mentre dormi</p>
+              <ul class="soon-list">
+                <li>La versione per Linux funziona giorno e notte e ha il suo browser</li>
+                <li>Hai chiuso il portatile&nbsp;— scrivi a Dave su Telegram, lui risponde e fa le cose</li>
+                <li>Dati nel cloud: se al computer succede <span class="nw">qualcosa</span>, non perdi nulla</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    </section>
+  </div>
+  <div class="dv-end"><div class="dv-get"><a class="dv-dl" href="https://dave.space/cabinet/?ref=DAVE-TEAM&amp;lang=en" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Scarica D.A.V.E.<small>Mac e Windows</small></a><span class="dv-promo">14&nbsp;giorni gratis&nbsp;— il codice promo è già nel link</span></div></div>
+</main>
+<script>
+  document.addEventListener('click', e => { const d = document.querySelector('details.lang'); if (d && d.open && !d.contains(e.target)) d.open = false; });
+  document.addEventListener('keydown', e => { const d = document.querySelector('details.lang'); if (e.key === 'Escape' && d && d.open) { d.open = false; d.querySelector('summary').focus(); } });
+  document.addEventListener('click', e => { const a = e.target.closest && e.target.closest('.lang-list a'); if (a) { try { sessionStorage.setItem('dave_site_lang', a.getAttribute('hreflang')); } catch (_) {} } });
+</script>
+</body>
+</html>
