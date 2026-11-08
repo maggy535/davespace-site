@@ -333,6 +333,15 @@
       padding-left: 0;
     }
   }
+  .dv-dl{display:inline-flex;align-items:center;gap:8px;background:#c6613f;color:#fff;text-decoration:none;border-radius:12px;padding:12px 20px;font-weight:500;font-size:16px;line-height:1.2;white-space:nowrap;transition:background .15s}
+  .dv-dl:hover{background:#ad5333}
+  .dv-dl .ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .dv-dl small{font-size:13px;font-weight:400;opacity:.8;margin-left:2px}
+  .dv-get{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .dv-promo{color:var(--dim);font-size:14px;line-height:20px;text-align:center}
+  .dv-end{display:flex;justify-content:center;padding:64px 16px 96px}
+  .top .dv-dl{padding:8px 14px;font-size:14px;border-radius:8px}
+  @media (max-width:760px){.top .dv-dl small{display:none}}
 </style>
 <style>
   @font-face {
@@ -628,6 +637,7 @@
 <body>
 <header class="top">
   <a class="brand" href="#top" aria-label="D.A.V.E."><span class="brand-eye"></span><span class="brand-word"></span></a>
+  <a class="dv-dl" href="https://dave.space/cabinet/?ref=DAVE-TEAM&amp;lang=ru" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Скачать D.A.V.E.<small>Mac и Windows</small></a>
 </header>
 
 <main id="top">
@@ -876,6 +886,7 @@
         </div>
     </section>
   </div>
+  <div class="dv-end"><div class="dv-get"><a class="dv-dl" href="https://dave.space/cabinet/?ref=DAVE-TEAM&amp;lang=ru" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Скачать D.A.V.E.<small>Mac и Windows</small></a><span class="dv-promo">14&nbsp;дней бесплатно&nbsp;— промокод уже в&nbsp;ссылке</span></div></div>
 </main>
 </body>
 </html>
