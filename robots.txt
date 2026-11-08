@@ -18,6 +18,7 @@ Allow: /og.jpg$
 Allow: /llms.txt$
 Allow: /sitemap.xml$
 Allow: /e3cb32f91def30c9c10ad649e27b28f2.txt$
+Allow: /google5b9543da6305f863.html$
 Disallow: /
 
 User-agent: Googlebot-Image
