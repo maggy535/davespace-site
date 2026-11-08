@@ -1138,9 +1138,9 @@ show(location.hash.slice(1)||firstNeeded());
     var pass = d.answered === d.total && d.flagged === 0 && !moving;
     var verdict;
     if (home) verdict = 'VPN выключен: Claude видит адрес вашей страны. Включите VPN и нажмите ещё раз';
-    else if (moving) verdict = 'Не подходит: адрес меняется от соединения к соединению, Claude увидит их все. Смените сервер в NurVPN на Canada или любой из списка выше и нажмите ещё раз';
+    else if (moving) verdict = 'Не подходит: адрес меняется от соединения к соединению. Используйте страны NurVPN из списка или проверьте свой VPS';
     else if (pass) verdict = 'Подходит: на всех четырёх сайтах ноль. Claude видит обычный адрес';
-    else if (d.flagged > 0) verdict = 'Не подходит: не ноль на ' + d.flagged + ' из ' + d.total + ' сайтов. Смените сервер в NurVPN на Canada или любой из списка выше и нажмите ещё раз';
+    else if (d.flagged > 0) verdict = 'Не подходит: не ноль на ' + d.flagged + ' из ' + d.total + ' сайтов. Используйте страны NurVPN из списка или проверьте свой VPS';
     else verdict = 'Ответили ' + d.answered + ' из ' + d.total + ' сайтов, и у них ноль. Остальные проверьте по ссылке на карточке';
     var place = [];
     if (d.country && d.country !== 'RU') {
