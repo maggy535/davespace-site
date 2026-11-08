@@ -20,6 +20,7 @@
 <meta name="twitter:description" content="Одна и та же задача «Собери дашборд» для D.A.V.E. и Hermes. Замеряем время работы, участие человека и проактивность агента">
 <meta name="twitter:image" content="https://davespace.ru/davevsgermes/og-v3.jpg">
 <link rel="canonical" href="https://davespace.ru/davevsgermes/">
+<!--hreflang--><link rel="alternate" hreflang="en" href="https://davespace.ru/davevsgermes/en/"><link rel="alternate" hreflang="zh-Hans" href="https://davespace.ru/davevsgermes/zh/"><link rel="alternate" hreflang="es" href="https://davespace.ru/davevsgermes/es/"><link rel="alternate" hreflang="hi" href="https://davespace.ru/davevsgermes/hi/"><link rel="alternate" hreflang="bn" href="https://davespace.ru/davevsgermes/bn/"><link rel="alternate" hreflang="pt-BR" href="https://davespace.ru/davevsgermes/pt/"><link rel="alternate" hreflang="ru" href="https://davespace.ru/davevsgermes/"><link rel="alternate" hreflang="ja" href="https://davespace.ru/davevsgermes/ja/"><link rel="alternate" hreflang="de" href="https://davespace.ru/davevsgermes/de/"><link rel="alternate" hreflang="fr" href="https://davespace.ru/davevsgermes/fr/"><link rel="alternate" hreflang="ko" href="https://davespace.ru/davevsgermes/ko/"><link rel="alternate" hreflang="it" href="https://davespace.ru/davevsgermes/it/"><link rel="alternate" hreflang="tr" href="https://davespace.ru/davevsgermes/tr/"><link rel="alternate" hreflang="vi" href="https://davespace.ru/davevsgermes/vi/"><link rel="alternate" hreflang="pl" href="https://davespace.ru/davevsgermes/pl/"><link rel="alternate" hreflang="nl" href="https://davespace.ru/davevsgermes/nl/"><link rel="alternate" hreflang="id" href="https://davespace.ru/davevsgermes/id/"><link rel="alternate" hreflang="th" href="https://davespace.ru/davevsgermes/th/"><link rel="alternate" hreflang="uk" href="https://davespace.ru/davevsgermes/uk/"><link rel="alternate" hreflang="sv" href="https://davespace.ru/davevsgermes/sv/"><link rel="alternate" hreflang="x-default" href="https://davespace.ru/davevsgermes/en/"><!--/hreflang-->
 <link rel="icon" href="assets/dave-eye.webp">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/coil/Coil-Medium.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/coil/Coil-Regular.woff2">
@@ -356,6 +357,22 @@
   .top .dv-dl{padding:8px 14px;font-size:14px;border-radius:8px}
   .top::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:100vh;background:#10100c;pointer-events:none}
   @media (max-width:760px){.top .dv-dl small{display:none}}
+  .top-r{display:flex;align-items:center;gap:8px}
+  .lang{position:relative}
+  .lang summary{display:flex;align-items:center;gap:6px;flex-shrink:0;white-space:nowrap;height:36px;padding:0 10px;border-radius:8px;color:var(--dim);font-size:14px;line-height:20px;font-weight:500;cursor:pointer;list-style:none;user-select:none;transition:color .15s,background .15s}
+  .lang summary::-webkit-details-marker{display:none}
+  .lang summary:hover,.lang[open] summary{color:var(--fg);background:rgba(245,245,235,.06)}
+  .lang summary:focus-visible{outline:2px solid #e07a52;outline-offset:2px}
+  .lang .ic{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .lang .chev{width:14px;height:14px;transition:transform .15s}
+  .lang[open] .chev{transform:rotate(180deg)}
+  .lang-code{display:none}
+  @media (max-width:440px){.top .brand-word{display:none}}
+  .lang-list{position:absolute;right:0;top:calc(100% + 8px);z-index:30;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:400px;margin:0;padding:8px;list-style:none;border-radius:12px;background:#1d1d17;box-shadow:0 0 0 1px rgba(245,245,235,.12),0 16px 40px rgba(0,0,0,.5)}
+  .lang-list a{display:block;padding:8px 12px;border-radius:8px;color:var(--dim);font-size:14px;line-height:20px;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lang-list a:hover{color:var(--fg);background:rgba(245,245,235,.06)}
+  .lang-list a[aria-current]{color:var(--fg);background:rgba(224,122,82,.16)}
+  @media (max-width:760px){.lang-name{display:none}.lang-code{display:inline}.lang summary{padding:0 8px}.lang-list{position:fixed;left:16px;right:16px;top:64px;width:auto}}
 </style>
 <style>
   @font-face {
@@ -651,7 +668,8 @@
 <body>
 <header class="top">
   <a class="brand" href="#top" aria-label="D.A.V.E."><span class="brand-eye"></span><span class="brand-word"></span></a>
-  <a class="dv-dl" href="https://dave.space/cabinet/?ref=DAVE-TEAM&amp;lang=ru" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Скачать D.A.V.E.<small>Mac и Windows</small></a>
+  <div class="top-r"><!--lang-menu--><details class="lang"><summary aria-label="Язык"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span class="lang-name">Русский</span><span class="lang-code">RU</span><svg class="ic chev" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></summary><ul class="lang-list"><li><a href="/davevsgermes/en/" hreflang="en" lang="en">English</a></li><li><a href="/davevsgermes/zh/" hreflang="zh-Hans" lang="zh-Hans">简体中文</a></li><li><a href="/davevsgermes/es/" hreflang="es" lang="es">Español</a></li><li><a href="/davevsgermes/hi/" hreflang="hi" lang="hi">हिन्दी</a></li><li><a href="/davevsgermes/bn/" hreflang="bn" lang="bn">বাংলা</a></li><li><a href="/davevsgermes/pt/" hreflang="pt-BR" lang="pt-BR">Português (Brasil)</a></li><li><a href="/davevsgermes/" hreflang="ru" lang="ru" aria-current="page">Русский</a></li><li><a href="/davevsgermes/ja/" hreflang="ja" lang="ja">日本語</a></li><li><a href="/davevsgermes/de/" hreflang="de" lang="de">Deutsch</a></li><li><a href="/davevsgermes/fr/" hreflang="fr" lang="fr">Français</a></li><li><a href="/davevsgermes/ko/" hreflang="ko" lang="ko">한국어</a></li><li><a href="/davevsgermes/it/" hreflang="it" lang="it">Italiano</a></li><li><a href="/davevsgermes/tr/" hreflang="tr" lang="tr">Türkçe</a></li><li><a href="/davevsgermes/vi/" hreflang="vi" lang="vi">Tiếng Việt</a></li><li><a href="/davevsgermes/pl/" hreflang="pl" lang="pl">Polski</a></li><li><a href="/davevsgermes/nl/" hreflang="nl" lang="nl">Nederlands</a></li><li><a href="/davevsgermes/id/" hreflang="id" lang="id">Bahasa Indonesia</a></li><li><a href="/davevsgermes/th/" hreflang="th" lang="th">ไทย</a></li><li><a href="/davevsgermes/uk/" hreflang="uk" lang="uk">Українська</a></li><li><a href="/davevsgermes/sv/" hreflang="sv" lang="sv">Svenska</a></li></ul></details><!--/lang-menu-->
+  <a class="dv-dl" href="https://dave.space/cabinet/?ref=DAVE-TEAM&amp;lang=ru" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Скачать D.A.V.E.<small>Mac и Windows</small></a></div>
 </header>
 
 <main id="top">
@@ -902,5 +920,9 @@
   </div>
   <div class="dv-end"><div class="dv-get"><a class="dv-dl" href="https://dave.space/cabinet/?ref=DAVE-TEAM&amp;lang=ru" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>Скачать D.A.V.E.<small>Mac и Windows</small></a><span class="dv-promo">14&nbsp;дней бесплатно&nbsp;— промокод уже в&nbsp;ссылке</span></div></div>
 </main>
+<script>
+  document.addEventListener('click', e => { const d = document.querySelector('details.lang'); if (d && d.open && !d.contains(e.target)) d.open = false; });
+  document.addEventListener('keydown', e => { const d = document.querySelector('details.lang'); if (e.key === 'Escape' && d && d.open) { d.open = false; d.querySelector('summary').focus(); } });
+</script>
 </body>
 </html>
