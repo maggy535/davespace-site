@@ -1129,16 +1129,11 @@ show(location.hash.slice(1)||firstNeeded());
     out.innerHTML = '<div class="ipc-sum"><div><div class="ipc-v">Не получилось проверить</div>' +
       '<div class="ipc-meta">Нет связи с сервером проверки. Включите VPN и нажмите ещё раз. Не помогло - проверьте сами по списку ниже, в «Если всё же хотите свой VPN/VPS»</div></div></div>';
   }
-  function show(first, rest){
-    var all = [first].concat((rest || []).filter(Boolean));
-    var moving = all.length > 1;
-    // With several addresses the cards show the worst one: Claude sees it too.
-    var d = all.reduce(function(w, x){ return (x.score == null ? -1 : x.score) < (w.score == null ? -1 : w.score) ? x : w; });
-    var home = all.some(function(x){ return x.country === 'RU' || x.country === 'BY'; });
-    var pass = d.answered === d.total && d.flagged === 0 && !moving;
+  function show(d){
+    var home = d.country === 'RU' || d.country === 'BY';
+    var pass = d.answered === d.total && d.flagged === 0;
     var verdict;
     if (home) verdict = 'VPN выключен: Claude видит адрес вашей страны. Включите VPN и нажмите ещё раз';
-    else if (moving) verdict = 'Не подходит: адрес меняется от соединения к соединению. Используйте страны NurVPN из списка или проверьте свой VPS';
     else if (pass) verdict = 'Подходит: на всех четырёх сайтах ноль. Claude видит обычный адрес';
     else if (d.flagged > 0) verdict = 'Не подходит: не ноль на ' + d.flagged + ' из ' + d.total + ' сайтов. Используйте страны NurVPN из списка или проверьте свой VPS';
     else verdict = 'Ответили ' + d.answered + ' из ' + d.total + ' сайтов, и у них ноль. Остальные проверьте по ссылке на карточке';
@@ -1149,8 +1144,7 @@ show(location.hash.slice(1)||firstNeeded());
     }
     if (d.city && !home) place.push(d.city);
     var meta = 'Адрес ' + esc(d.ip) + (place.length ? ' · ' + esc(place.join(', ')) : '') + (d.isp ? ' · ' + esc(d.isp) : '');
-    if (moving) meta = 'Адреса этого подключения: ' + all.map(function(x){ return esc(x.ip) + ' - ' + (x.score == null ? '?' : x.score); }).join(', ') + '. Карточки ниже - про худший: ' + meta.charAt(0).toLowerCase() + meta.slice(1);
-    var cls = home || moving || d.flagged > 0 ? 'bad' : pass ? 'ok' : '';
+    var cls = home || d.flagged > 0 ? 'bad' : pass ? 'ok' : '';
     var big = home || d.score == null ? '—' : d.score + '<small>/100</small>';
     var cards = (d.sites || []).map(function(s){
       if (s.status === 'error') return card('err', s.name, s.url, 'не ответил', '<p>Откройте проверку на сайте →</p>');
@@ -1179,26 +1173,16 @@ show(location.hash.slice(1)||firstNeeded());
   btn.addEventListener('click', function(){
     btn.disabled = true; btn.textContent = 'Проверяем…';
     waiting();
-    // Each name opens its own connection. A VPN that changes its address per
-    // connection answers with different addresses, and Claude would see them all.
-    var pings = HOSTS.map(function(h){ return get(h + '/ip', 6000).then(function(j){ return {h: h, ip: j && j.ip}; }); });
-    // The full check goes to the first name that answered, the others are spares.
+    // The three names are the same check. A browser can keep a dead connection
+    // to one of them through a VPN and hang on it, so the full check goes to the
+    // name that answers a quick ping first; the others are spares.
+    var pings = HOSTS.map(function(h){ return get(h + '/ip', 6000).then(function(){ return h; }); });
     var first = new Promise(function(done){
       var failedPings = 0;
-      pings.forEach(function(p){ p.then(function(x){ done(x.h); }, function(){ if (++failedPings === HOSTS.length) done(HOSTS[0]); }); });
+      pings.forEach(function(p){ p.then(done, function(){ if (++failedPings === HOSTS.length) done(HOSTS[0]); }); });
     });
-    var seen = pings.map(function(p){ return p.then(function(x){ return x.ip; }, function(){ return null; }); });
-    var main = first.then(function(h){ return check(hostsFrom(h).map(function(x){ return x + '/check'; })); });
-    Promise.all([main].concat(seen))
-      .then(function(r){
-        var d = r[0];
-        var others = r.slice(1).filter(function(ip, i, a){ return ip && ip !== d.ip && a.indexOf(ip) === i; });
-        return first.then(function(h){
-          return Promise.all(others.map(function(ip){
-            return check(hostsFrom(h).map(function(x){ return x + '/check?ip=' + encodeURIComponent(ip); })).catch(function(){ return null; });
-          }));
-        }).then(function(rest){ show(d, rest); });
-      })
+    first.then(function(h){ return check(hostsFrom(h).map(function(x){ return x + '/check'; })); })
+      .then(show)
       .catch(failed)
       .then(function(){ btn.disabled = false; btn.textContent = 'Проверить ещё раз'; });
   });
