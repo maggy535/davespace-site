@@ -1,0 +1,1101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cypress Coast Comfort · Money dashboard</title>
+<style>
+.viz-root{
+  color-scheme: light;
+  --page:#f9f9f7; --surface-1:#fcfcfb; --surface-2:#f3f2ee;
+  --text-primary:#0b0b0b; --text-secondary:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,0.10);
+  --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a; --series-4:#eda100; --series-5:#e87ba4;
+  --good:#0ca30c; --warning:#fab219; --serious:#ec835a; --critical:#d03b3b; --good-text:#006300;
+  --accent-wash:rgba(42,120,214,0.08);
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])) .viz-root{
+    color-scheme: dark;
+    --page:#0d0d0d; --surface-1:#1a1a19; --surface-2:#232321;
+    --text-primary:#f0efec; --text-secondary:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,0.10);
+    --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500; --series-5:#d55181;
+    --good-text:#0ca30c; --accent-wash:rgba(57,135,229,0.12);
+  }
+}
+:root[data-theme="dark"] .viz-root{
+    color-scheme: dark;
+    --page:#0d0d0d; --surface-1:#1a1a19; --surface-2:#232321;
+    --text-primary:#f0efec; --text-secondary:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,0.10);
+    --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500; --series-5:#d55181;
+    --good-text:#0ca30c; --accent-wash:rgba(57,135,229,0.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}
+.viz-root{background:var(--page);color:var(--text-primary);font-size:14px;line-height:1.45}
+.wrap{max-width:1240px;margin:0 auto;padding:20px 24px 60px}
+header.top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+header.top h1{font-size:20px;margin:0;font-weight:650;letter-spacing:-.01em}
+header.top .sub{color:var(--text-secondary);font-size:13px}
+.theme-btn{border:1px solid var(--border);background:var(--surface-1);color:var(--text-secondary);border-radius:8px;padding:6px 10px;font:inherit;font-size:12px;cursor:pointer}
+nav.tabs{display:flex;gap:4px;border-bottom:1px solid var(--grid);margin-bottom:20px;overflow-x:auto}
+nav.tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:10px 14px;font:inherit;color:var(--text-secondary);cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--text-primary);border-bottom-color:var(--series-1);font-weight:600}
+nav.tabs button .count{display:inline-block;min-width:18px;padding:0 5px;margin-left:6px;border-radius:9px;background:var(--surface-2);font-size:11px;color:var(--text-secondary)}
+.card{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.card h2{font-size:15px;margin:0 0 4px;font-weight:600}
+.card .hint{color:var(--text-secondary);font-size:12.5px;margin:0 0 14px}
+.grid{display:grid;gap:16px}
+.g-hero{grid-template-columns:1.25fr 1fr 1fr 1fr}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+@media (max-width:980px){.g-hero,.g2,.g3{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.g-hero,.g2,.g3{grid-template-columns:1fr}}
+.tile{cursor:pointer;transition:background .12s}
+.tile:hover{background:var(--surface-2)}
+.tile .lbl{color:var(--text-secondary);font-size:12.5px}
+.tile .val{font-size:28px;font-weight:600;margin:4px 0 2px;letter-spacing:-.01em}
+.tile.hero .val{font-size:48px;line-height:1.05}
+.tile .foot{color:var(--text-secondary);font-size:12.5px}
+.tile .foot b{color:var(--text-primary);font-weight:600}
+.caveat{font-size:12px;color:var(--muted);margin-top:8px}
+/* status pills: icon + label, never color alone */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--text-secondary);white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+.st-completed .dot{background:var(--good)} .st-booked .dot{background:var(--series-1)}
+.st-pipeline .dot{background:var(--muted)} .st-cancelled .dot{background:var(--critical)}
+.flag{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;background:var(--surface-2);margin-bottom:8px;font-size:13px}
+.flag .ic{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff}
+.flag.crit .ic{background:var(--critical)} .flag.warn .ic{background:var(--warning);color:#0b0b0b}
+.flag.act .ic{background:var(--series-1)} .flag.good .ic{background:var(--good)} .flag.info .ic{background:var(--muted)}
+.flag .tag{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-secondary);font-weight:600;margin-right:6px}
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-weight:500;color:var(--text-secondary);text-align:left;padding:8px 10px;border-bottom:1px solid var(--grid);font-size:12px;white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--grid);vertical-align:top}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.click{cursor:pointer} tr.click:hover td{background:var(--accent-wash)}
+tfoot td{font-weight:600;border-bottom:0;border-top:1px solid var(--axis)}
+.small{font-size:12px;color:var(--text-secondary)}
+.pos{color:var(--good-text)} .neg{color:var(--critical)}
+/* stacked bars */
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin:0 0 12px;font-size:12px;color:var(--text-secondary)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:10px;border-radius:2px;display:inline-block}
+.bars{display:flex;flex-direction:column;gap:6px}
+.brow{display:grid;grid-template-columns:230px 1fr 130px;align-items:center;gap:12px;padding:4px 6px;border-radius:8px;cursor:pointer}
+.brow:hover,.brow:focus-visible{background:var(--accent-wash);outline:none}
+.brow .name{font-size:13px;line-height:1.25}
+.brow .name small{display:block;color:var(--text-secondary);font-size:11.5px}
+.track{position:relative;height:18px}
+.stack{display:flex;height:18px;gap:2px}
+.seg{height:100%;min-width:2px}
+.seg:first-child{border-radius:0} .seg:last-child{border-radius:0 4px 4px 0}
+.seg:hover{filter:brightness(1.12)}
+.brow .val{font-size:13px;text-align:right;font-variant-numeric:tabular-nums}
+.brow .val small{display:block;color:var(--text-secondary);font-size:11.5px}
+.axisrow{display:grid;grid-template-columns:230px 1fr 130px;gap:12px;padding:0 6px}
+.axis{position:relative;height:18px;border-top:1px solid var(--axis);font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.axis span{position:absolute;top:3px;transform:translateX(-50%)}
+.groupH{font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;margin:14px 6px 4px}
+/* segmented money bar */
+.segbar{display:flex;gap:2px;height:28px;margin:6px 0 10px}
+.segbar div{border-radius:4px;color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;padding-left:8px;white-space:nowrap;overflow:visible;min-width:2px}
+#tip{position:fixed;pointer-events:none;z-index:50;background:var(--surface-1);border:1px solid var(--border);box-shadow:0 6px 24px rgba(0,0,0,.14);border-radius:8px;padding:8px 10px;font-size:12px;max-width:300px;display:none}
+#tip b{font-size:14px;display:block;color:var(--text-primary);font-variant-numeric:tabular-nums}
+#tip .k{display:inline-block;width:12px;height:2px;vertical-align:middle;margin-right:6px}
+#tip .s{color:var(--text-secondary)}
+/* drawer */
+#scrim{position:fixed;inset:0;background:rgba(0,0,0,.28);display:none;z-index:30}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(640px,100%);background:var(--surface-1);border-left:1px solid var(--border);z-index:40;overflow:auto;transform:translateX(100%);transition:transform .2s ease;padding:22px 24px 40px}
+#drawer.open{transform:none} #scrim.open{display:block}
+#drawer h3{margin:0;font-size:19px}
+#drawer .close{position:sticky;top:0;float:right;border:1px solid var(--border);background:var(--surface-1);color:var(--text-primary);border-radius:8px;padding:4px 10px;cursor:pointer;font:inherit}
+#drawer h4{font-size:13px;margin:22px 0 8px;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.kv div{background:var(--surface-2);border-radius:8px;padding:10px 12px}
+.kv span{display:block;font-size:12px;color:var(--text-secondary)}
+.kv b{font-size:18px;font-weight:600}
+.swatch{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.filters button{border:1px solid var(--border);background:var(--surface-1);color:var(--text-secondary);border-radius:999px;padding:5px 12px;font:inherit;font-size:12.5px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--text-primary);color:var(--surface-1);border-color:var(--text-primary)}
+.idea{display:grid;grid-template-columns:110px 1fr 110px;gap:14px;padding:14px 4px;border-bottom:1px solid var(--grid)}
+.idea:last-child{border-bottom:0}
+.idea .area{font-size:12px;color:var(--text-secondary)}
+.idea h5{margin:0 0 4px;font-size:14px}
+.idea p{margin:0;color:var(--text-secondary);font-size:13px}
+.idea .v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.idea .v small{display:block;font-weight:400;color:var(--muted);font-size:11px}
+.order{border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px;background:var(--surface-1)}
+.order .oh{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.order .oh b{font-size:14px}
+.chk{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--text-secondary);margin-top:8px}
+.srcs{font-size:12px;color:var(--text-secondary)}
+.srcs li{margin-bottom:4px}
+a{color:var(--series-1)}
+.tableview{margin-top:10px}
+.tableview summary{cursor:pointer;color:var(--text-secondary);font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="viz-root">
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Cypress Coast Comfort · Money dashboard</h1>
+      <div class="sub" id="asof"></div>
+    </div>
+    <button class="theme-btn" id="themeBtn" type="button">Theme: auto</button>
+  </header>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <main id="view"></main>
+</div>
+<div id="tip" role="tooltip"></div>
+<div id="scrim"></div>
+<aside id="drawer" aria-label="Job details" aria-hidden="true"></aside>
+</div>
+
+<script>
+// Cypress Coast Comfort: finance dashboard data
+// Snapshot: Friday, November 13, 2026, 5:00 pm Eastern. All amounts USD before tax.
+// Sources: operations.xlsx (the "working file"), site-surveys.pdf, crew-rate-card.pdf, bank-deposit-confirmation.csv,
+// Dispatchlark (DL), Galloway-Hale portal (GH), Homeleaf Credit (HL), Harborlight Mail (E0xx = message id).
+
+window.CCC = {
+  asOf: "Fri, Nov 13, 2026 · 5:00 pm ET",
+  notConnected: [],
+
+  // HubSpot exports downloaded by Daniel on Nov 13 (deals + contacts), checked against the other systems.
+  hubspot: {
+    file: "hubspot-crm-exports-all-deals-2026-11-13.xlsx + all-contacts",
+    deals: [
+      { job: "CCC-26091", stage: "Closed Won", amt: 3150, real: "Finished, paid", realAmt: 3150, ok: true },
+      { job: "CCC-26100", stage: "Closed Won", amt: 3295, real: "Finished, paid", realAmt: 3295, ok: true },
+      { job: "CCC-26099", stage: "Closed Won", amt: 3900, real: "Finished, paid", realAmt: 3900, ok: true },
+      { job: "CCC-26095", stage: "Closed Won", amt: 6100, real: "Booked Nov 17, deposit paid", realAmt: 6100, ok: true },
+      { job: "CCC-26096", stage: "Closed Won", amt: 4150, real: "Booked Nov 19, deposit paid", realAmt: 4150, ok: true },
+      { job: "CCC-26101", stage: "Closed Won", amt: 3650, real: "Booked Nov 23, deposit paid", realAmt: 3650, ok: true },
+      { job: "CCC-26092", stage: "Closed Won", amt: 3100, real: "Booked Nov 18, upgraded to AURA", realAmt: 3550, ok: false,
+        fix: "Change the amount to $3,550. Marcus accepted the AURA upgrade on Nov 11 (E007)." },
+      { job: "CCC-26098", stage: "Closed Won", amt: 4800, real: "Cancelled by the customer Nov 13", realAmt: 0, ok: false,
+        fix: "Move to Closed Lost. Ben cancelled on Nov 13 and wants his deposit back (E021)." },
+      { job: "CCC-26093", stage: "Contract Sent", amt: 3650, real: "On hold: landlord consent; price to revise", realAmt: 3650, ok: false,
+        fix: "Stage is fine, but the $3,650 leaves out the pump (~$351 with fitting). Update it once you've re-quoted." },
+      { job: "CCC-26094", stage: "Presentation Scheduled", amt: 2800, real: "Estimate sent Nov 6", realAmt: 2800, ok: true,
+        fix: "Amount matches the proposal. Note the quote was costed against the wrong (indoor-only) part." },
+      { job: "CCC-26102", stage: "Qualified To Buy", amt: 4150, real: "Proposal sent, financing approved, comparing quotes", realAmt: 4150, ok: false,
+        fix: "She has the proposal and Homeleaf approval, so this is further along than Qualified To Buy (e.g. Contract Sent)." },
+      { job: "CCC-26097", stage: "Appointment Scheduled", amt: 3000, real: "New lead, no survey booked", realAmt: 0, ok: false,
+        fix: "No appointment has been offered yet (site notes), and $3,000 is her budget, not a quote. Book her morning survey, then the stage will be true." },
+    ],
+    contacts: { total: 12, real: 10, samples: ["Brian Halligan (Sample Contact)", "Maria Johnson (Sample Contact)"] },
+    hygiene: [
+      "No deal has a close date, an owner or a next activity, so HubSpot can't show what's due or who's chasing it.",
+      "Contacts have no lead status and no company. Ava Chen isn't linked to Bayside Lease & Care, even though her three properties are three separate deals.",
+      "Two HubSpot demo contacts (Brian Halligan, Maria Johnson) are still in the list and can be deleted.",
+      "All 10 real contacts' emails and phone numbers match Dispatchlark.",
+    ],
+  },
+
+  // Cost categories used in the job profit bars. Colors are assigned by category, in this fixed order.
+  cats: [
+    { key: "profit", label: "Gross profit", slot: 1 },
+    { key: "equip",  label: "Equipment",    slot: 2 },
+    { key: "crew",   label: "Crew labor",   slot: 3 },
+    { key: "mat",    label: "Materials & permit", slot: 4 },
+    { key: "extra",  label: "Extras, rework & financing", slot: 5 },
+  ],
+
+  jobs: [
+    // ---------------- COMPLETED ----------------
+    {
+      id: "CCC-26091", dl: 1187, customer: "Elena Brooks", company: "", site: "Seminole Heights / detached editing office",
+      stage: "completed", status: "Completed Nov 4", date: "2026-11-04", system: "LETO 12k",
+      price: 3150, priceSrc: "Quote in working file; DL INV-1131",
+      lines: [
+        { cat: "equip", label: "LETO 12k system + wall bracket + 20 ft cover", amt: 797.75, src: "GH invoice 4419962" },
+        { cat: "mat",   label: "Consumables pack (1 system)", amt: 95, src: "Office allowance" },
+        { cat: "mat",   label: "Permit / admin allowance", amt: 120, src: "Office allowance" },
+        { cat: "crew",  label: "Standard 12k installation", amt: 650, src: "Palmetto rate card" },
+      ],
+      received: 3150, receipts: "RCPT-1091A $1,575 (Oct 28) + RCPT-1091B $1,575 (Nov 4)",
+      flags: [ { lvl: "good", t: "Paid in full. Customer happy (E030) and referred Julia Moreno." } ],
+      fixes: [],
+    },
+    {
+      id: "CCC-26100", dl: 1188, customer: "Noah Price", company: "", site: "Westchase / home office",
+      stage: "completed", status: "Completed Nov 2 · callback Nov 12", date: "2026-11-02", system: "LETO 12k",
+      price: 3295, priceSrc: "Working file; DL INV-1133",
+      lines: [
+        { cat: "equip", label: "LETO 12k system + wall bracket + 20 ft cover", amt: 797.75, src: "GH invoice 4418207" },
+        { cat: "mat",   label: "Consumables pack (1 system)", amt: 95, src: "Office allowance" },
+        { cat: "mat",   label: "Permit / admin allowance", amt: 120, src: "Office allowance" },
+        { cat: "crew",  label: "Standard 12k installation", amt: 650, src: "Palmetto rate card" },
+        { cat: "extra", label: "Warranty callback: rattling cover (PC-613), no charge to the customer", amt: 150, src: "E026; site notes 11/12" },
+      ],
+      received: 3295, receipts: "RCPT-1100 $3,295 (Nov 2)",
+      flags: [ { lvl: "warn", t: "The $150 callback isn't in Dispatchlark, so its job costing shows 49.5% instead of 45.0%." } ],
+      fixes: [ "Working file and Dispatchlark both leave out the $150 callback (PC-613)." ],
+    },
+    {
+      id: "CCC-26099", dl: 1189, customer: "Tess Walker", company: "Morning Crumb Bakery", site: "Tampa Heights / packing room",
+      stage: "completed", status: "Completed Nov 10 (evening work)", date: "2026-11-10", system: "LETO 18k",
+      price: 3900, priceSrc: "Working file; E022; DL INV-1136",
+      lines: [
+        { cat: "equip", label: "LETO 18k system + wall bracket + 20 ft cover", amt: 980.05, src: "GH invoice 4421536 (still open)" },
+        { cat: "mat",   label: "Consumables pack (1 system)", amt: 95, src: "Office allowance" },
+        { cat: "mat",   label: "Permit / admin allowance", amt: 120, src: "Office allowance" },
+        { cat: "crew",  label: "Standard 18k installation", amt: 720, src: "Palmetto rate card" },
+        { cat: "crew",  label: "2 evening crew-hours × $90 (whole crew, not per person)", amt: 180, src: "PC-609 / E023" },
+      ],
+      received: 3900, receipts: "RCPT-1099 $3,900 (Nov 10)",
+      flags: [ { lvl: "good", t: "Paid in full. Evening work was priced into the $3,900." } ],
+      fixes: [],
+    },
+
+    // ---------------- BOOKED (scheduled, deposit taken) ----------------
+    {
+      id: "CCC-26095", dl: 1190, customer: "Ava Chen", company: "Bayside Lease & Care", site: "Dunedin / duplex, units A and B",
+      stage: "booked", status: "Install Tue Nov 17, 9–3", date: "2026-11-17", system: "2 × LETO 12k",
+      price: 6100, priceSrc: "E013; DL job #1190",
+      lines: [
+        { cat: "equip", label: "2 × LETO 12k + 2 brackets + 2 covers at project quote Q-260117", amt: 1535.20, src: "GH quote Q-260117 (valid to Nov 27; not ordered yet)" },
+        { cat: "mat",   label: "Consumables pack × 2 systems", amt: 190, src: "Office allowance; site notes" },
+        { cat: "mat",   label: "Permit / admin allowance (one job)", amt: 120, src: "E029" },
+        { cat: "crew",  label: "2 × standard 12k installation (rate is per system)", amt: 1300, src: "E014; rate card" },
+      ],
+      received: 3050, receipts: "RCPT-1095 $3,050 (Nov 4, ACH-9501). The bank CSV is the same payment and is counted once.",
+      flags: [
+        { lvl: "act", t: "Equipment isn't ordered and the install is Tuesday. Order quote Q-260117 on Monday at the latest (Tampa has 7 in stock)." },
+      ],
+      fixes: [
+        "Working file books crew at 1 × $650. The real cost is 2 × $650 = $1,300 (E014), which overstates profit by $650.",
+        "bank-deposit-confirmation.csv repeats RCPT-1095. It isn't a second payment (E015).",
+      ],
+    },
+    {
+      id: "CCC-26092", dl: 1194, customer: "Marcus Reed", company: "", site: "Kenwood / garage gym",
+      stage: "booked", status: "Install Wed Nov 18: needs sign-off", date: "2026-11-18", system: "AURA 12k (upgraded)",
+      price: 3550, priceSrc: "Upgrade to AURA accepted at $3,550 (E006/E007). Dispatchlark still shows $3,100.",
+      lines: [
+        { cat: "equip", label: "AURA 12k system (Ben Foster's unit, already bought, in van 2)", amt: 1198, src: "GH invoice 4422213" },
+        { cat: "equip", label: "Ground stand + 20 ft cover", amt: 113.15, src: "GH price book PB-1 ($58.90 + $54.25)" },
+        { cat: "mat",   label: "Consumables pack (1 system)", amt: 95, src: "Office allowance" },
+        { cat: "mat",   label: "Permit / admin allowance", amt: 120, src: "Office allowance" },
+        { cat: "crew",  label: "Standard 12k installation", amt: 650, src: "Palmetto rate card" },
+        { cat: "extra", label: "Electrician: changed supply for AURA (Harbor Circuit HC-418)", amt: 575, src: "E008 (valid to Nov 20)" },
+        { cat: "extra", label: "Homeleaf fee 7.99% on PR-30451 ($1,550)", amt: 123.85, src: "HL payment request PR-30451" },
+      ],
+      received: 1550, receipts: "RCPT-1092 $1,550 deposit (Nov 4)",
+      flags: [
+        { lvl: "act", t: "Decided Nov 13: charge Marcus $690 for the electrical work ($575 + 20%). Send him the price (draft written), and only tell Harbor Circuit to go ahead once he agrees." },
+        { lvl: "act", t: "Homeleaf request PR-30451 is still $1,550, but the balance after the upgrade is $2,000, so $450 isn't covered by anything." },
+        { lvl: "act", t: "New AURA units are backordered until about Dec 10, and the price goes up 6% on Dec 4. Using Ben Foster's unit lets Wednesday's install go ahead, once Luis signs off on the equipment." },
+      ],
+      fixes: [
+        "Working file and Dispatchlark still show the LETO 12k at $3,100. The agreed price is the AURA at $3,550 (E007).",
+        "The $575 electrician cost (HC-418) isn't in any cost sheet.",
+      ],
+      scenarios: [
+        { label: "As it stands (electrical not charged)", rev: 3550, cost: 2875.00 },
+        { label: "Decided: electrical charged at $690, all financed via Homeleaf", rev: 4240, cost: 2930.13 },
+        { label: "Fallback: electrical at cost (+$575)", rev: 4125, cost: 2875.00 },
+        { label: "For reference: original LETO plan at $3,100", rev: 3100, cost: 1814.00 },
+      ],
+    },
+    {
+      id: "CCC-26096", dl: 1192, customer: "Ava Chen", company: "Bayside Lease & Care", site: "Clearwater / coach house C",
+      stage: "booked", status: "Install Thu Nov 19: tenant to confirm", date: "2026-11-19", system: "LETO 18k",
+      price: 4150, priceSrc: "Working file; E017 (price unchanged)",
+      lines: [
+        { cat: "equip", label: "LETO 18k + bracket + 20 ft cover (already bought)", amt: 980.05, src: "GH invoice 4422011 (open)" },
+        { cat: "mat",   label: "Consumables pack (1 system)", amt: 95, src: "Office allowance" },
+        { cat: "mat",   label: "Permit / admin allowance", amt: 120, src: "Office allowance" },
+        { cat: "crew",  label: "Standard 18k installation", amt: 720, src: "Palmetto rate card" },
+        { cat: "extra", label: "Re-delivery after missed window, absorbed by us (SL-772)", amt: 185, src: "E016/E017; our dispatch note had the wrong window" },
+      ],
+      received: 2075, receipts: "RCPT-1096 $2,075 deposit (Nov 5)",
+      flags: [
+        { lvl: "act", t: "Get the tenant's window confirmed before rebooking Sunline. A second missed delivery would cost another $185." },
+      ],
+      fixes: [ "Working file leaves out the $185 re-delivery we agreed to absorb." ],
+    },
+    {
+      id: "CCC-26101", dl: 1195, customer: "Ava Chen", company: "Bayside Lease & Care", site: "St. Petersburg / rental unit 11",
+      stage: "booked", status: "Install Mon Nov 23, from 2pm", date: "2026-11-23", system: "LETO 18k",
+      price: 3650, priceSrc: "E027",
+      lines: [
+        { cat: "equip", label: "LETO 18k + bracket + 20 ft cover at contract price", amt: 980.05, src: "GH price book PB-1 (not ordered yet)" },
+        { cat: "mat",   label: "Consumables pack (1 system)", amt: 95, src: "Office allowance" },
+        { cat: "mat",   label: "Permit / admin allowance", amt: 120, src: "Office allowance" },
+        { cat: "crew",  label: "Standard 18k installation", amt: 720, src: "Palmetto rate card" },
+      ],
+      received: 1825, receipts: "RCPT-1101 $1,825 deposit (Nov 10, ACH-0101)",
+      flags: [ { lvl: "act", t: "Tampa has only 1 LETO 18k in stock. Order now to hold it (Brandon is closed Nov 19)." } ],
+      fixes: [],
+    },
+
+    // ---------------- PIPELINE (quoted, not yet won) ----------------
+    {
+      id: "CCC-26093", dl: 1196, customer: "Priya Shah", company: "Palma Studio Pilates", site: "Palma Ceia / rear treatment room",
+      stage: "pipeline", status: "On hold: landlord consent", date: "2026-11-24", system: "LETO 18k + condensate pump",
+      price: 3650, priceSrc: "Original proposal; not revised for the pump (site notes 11/09)",
+      lines: [
+        { cat: "equip", label: "LETO 18k + bracket + 20 ft cover", amt: 980.05, src: "GH price book PB-1" },
+        { cat: "equip", label: "Little Giant 553527 condensate pump", amt: 171.40, src: "GH price book PB-1 (0 at Tampa, 3 at Clearwater)" },
+        { cat: "mat",   label: "Consumables pack (1 system)", amt: 95, src: "Office allowance" },
+        { cat: "mat",   label: "Permit / admin allowance", amt: 120, src: "Office allowance" },
+        { cat: "crew",  label: "Standard 18k installation", amt: 720, src: "Palmetto rate card" },
+        { cat: "crew",  label: "Pump fitting labor", amt: 180, src: "E010; rate card" },
+      ],
+      received: 0, receipts: "No deposit (customer asked us not to take one until the landlord approves, E009)",
+      unknowns: "Electrician feed and site freight are still unpriced.",
+      flags: [
+        { lvl: "crit", t: "The $3,650 proposal leaves out the pump ($351.40 with fitting). Electrical and freight are still unpriced. Revise the price before confirming." },
+        { lvl: "info", t: "Don't order until the landlord's written consent and Luis's sign-off arrive. If approved by Dec 3, ordering then saves $52.68." },
+      ],
+      fixes: [ "Working file has no pump or pump labor, and leaves electrical and freight blank." ],
+    },
+    {
+      id: "CCC-26094", dl: 1197, customer: "Owen Clarke", company: "Owen Clarke Ceramics", site: "Arts District / front ceramics studio",
+      stage: "pipeline", status: "Estimate sent Nov 6", date: null, system: "LETO 12k (complete system)",
+      price: 2800, priceSrc: "E012",
+      lines: [
+        { cat: "equip", label: "LETO 12k COMPLETE system + bracket + 20 ft cover", amt: 797.75, src: "GH price book PB-1" },
+        { cat: "mat",   label: "Consumables pack (1 system)", amt: 95, src: "Office allowance" },
+        { cat: "mat",   label: "Permit / admin allowance", amt: 120, src: "Office allowance" },
+        { cat: "crew",  label: "Standard 12k installation", amt: 650, src: "Palmetto rate card" },
+      ],
+      received: 0, receipts: "No deposit",
+      flags: [
+        { lvl: "crit", t: "The equipment line is SENL-12CD-ILL, an indoor head only ($219) copied from Owen's shopping link. He needs the full system (SENL-12CD-16NB, $712), per the survey and E011." },
+        { lvl: "warn", t: "At $2,800 this is the lowest-priced 12k job (others run $3,050–$3,295), with a 40.6% margin." },
+      ],
+      fixes: [ "Working file and Dispatchlark list the indoor-only part SENL-12CD-ILL / H51-112. It should be the complete system H41-112." ],
+    },
+    {
+      id: "CCC-26102", dl: 1198, customer: "Lena Ortiz", company: "Lena Ortiz Music Lessons", site: "Palm Harbor / teaching room",
+      stage: "pipeline", status: "Estimate sent: comparing quotes", date: null, system: "AURA 12k",
+      price: 4150, priceSrc: "Working file; E028",
+      lines: [
+        { cat: "equip", label: "AURA 12k (backordered to ~Dec 10, so billed at the post-Dec 4 price)", amt: 1269.88, src: "GH price book PB-1 next price" },
+        { cat: "equip", label: "Wall bracket + 20 ft cover", amt: 85.75, src: "GH price book PB-1" },
+        { cat: "mat",   label: "Consumables pack (1 system)", amt: 95, src: "Office allowance" },
+        { cat: "mat",   label: "Permit / admin allowance", amt: 120, src: "Office allowance" },
+        { cat: "crew",  label: "Standard 12k installation", amt: 650, src: "Palmetto rate card" },
+        { cat: "extra", label: "Homeleaf fee 11.49% if she finances $4,150 on the plan she picked (2401)", amt: 476.84, src: "HL application A-88402; Plans & fees" },
+      ],
+      received: 0, receipts: "No deposit or signed acceptance",
+      flags: [
+        { lvl: "act", t: "She asked about our labor warranty today (E028). A competitor offers 2 years. Reply quickly." },
+        { lvl: "warn", t: "Her 24-month Homeleaf plan costs us 11.49% ($476.84). The 60-month plan 6099 would cost $134.88." },
+      ],
+      fixes: [],
+    },
+    {
+      id: "CCC-26097", dl: 1199, customer: "Julia Moreno", company: "", site: "Safety Harbor / nursery room",
+      stage: "pipeline", status: "New lead: no survey yet", date: null, system: "Not surveyed",
+      price: 0, priceSrc: "No price yet. She mentioned a ~$3,000 budget (E018).",
+      lines: [], received: 0, receipts: "None",
+      flags: [ { lvl: "act", t: "Referred by Elena Brooks. She has asked twice (Nov 11 and 13) for a survey before 11am, and nobody has replied." } ],
+      fixes: [ "The $3,000 in the working file is her budget, not a quote." ],
+    },
+
+    // ---------------- CANCELLED ----------------
+    {
+      id: "CCC-26098", dl: 1193, customer: "Ben Foster", company: "", site: "Riverview / workshop addition",
+      stage: "cancelled", status: "Customer cancelled Nov 13", date: "2026-11-20", system: "AURA 12k",
+      price: 0, priceSrc: "Was $4,800. Cancelled by the customer, E021.",
+      lines: [],
+      received: 1200, receipts: "RCPT-1098 $1,200 deposit (Nov 4)",
+      flags: [
+        { lvl: "crit", t: "Ben asked for his $1,200 deposit back. He'd told us to hold the equipment purchase (E020), but the kit was picked up on Nov 11 (GH 4422213, $1,283.75). The deposit was refundable until purchase, and the purchase broke his instruction, so the refund is owed. No refund has been posted yet (E029)." },
+        { lvl: "act", t: "Redeploy the AURA + cover to Marcus Reed's job. Returning the kit would cost a 15% restocking fee ($192.56), and new AURA units are backordered." },
+        { lvl: "act", t: "Cancel the Nov 20 crew booking in Dispatchlark." },
+      ],
+      fixes: [ "Working file says equipment was not ordered. It was invoiced Nov 11 (GH 4422213)." ],
+    },
+  ],
+
+  // Money owed TO us
+  receivables: [
+    { who: "Ava Chen · Bayside Lease & Care", job: "CCC-26095", what: "Dunedin duplex balance", amt: 3050, due: "On completion, Tue Nov 17", how: "Customer pays" },
+    { who: "Ava Chen · Bayside Lease & Care", job: "CCC-26096", what: "Clearwater coach house balance", amt: 2075, due: "On completion, Thu Nov 19", how: "Customer pays" },
+    { who: "Ava Chen · Bayside Lease & Care", job: "CCC-26101", what: "St. Petersburg unit 11 balance", amt: 1825, due: "On completion, Mon Nov 23", how: "Customer pays" },
+    { who: "Marcus Reed", job: "CCC-26092", what: "Homeleaf request PR-30451 (you net $1,426.15)", amt: 1550, due: "After job sign-off + customer authorization, ~2 business days", how: "Homeleaf" },
+    { who: "Marcus Reed", job: "CCC-26092", what: "Upgrade difference not yet covered by the Homeleaf request", amt: 450, due: "Needs arranging", how: "Unarranged", warn: true },
+  ],
+  // Money WE owe
+  payables: [
+    { who: "Galloway-Hale Supply", ref: "Inv 4421536", job: "CCC-26099", what: "Tess Walker equipment", amt: 980.05, due: "Dec 25 (1% off if paid by Dec 10)", kind: "supplier" },
+    { who: "Galloway-Hale Supply", ref: "Inv 4422011", job: "CCC-26096", what: "Clearwater coach house equipment", amt: 980.05, due: "Dec 25 (1% off if paid by Dec 10)", kind: "supplier" },
+    { who: "Galloway-Hale Supply", ref: "Inv 4422213", job: "CCC-26098", what: "AURA kit picked up for Ben Foster", amt: 1283.75, due: "Dec 25 (1% off if paid by Dec 10)", kind: "supplier" },
+    { who: "Ben Foster", ref: "Deposit refund", job: "CCC-26098", what: "Refund requested Nov 13 (E021); not posted yet", amt: 1200, due: "Now", kind: "refund" },
+    { who: "Sunline Local Delivery", ref: "SL-772", job: "CCC-26096", what: "Clearwater re-delivery (we absorb it)", amt: 185, due: "With the Nov 19 re-delivery", kind: "supplier" },
+  ],
+  crewIncurred: [
+    { ref: "CCC-26091", what: "Brooks install, Nov 4", amt: 650 },
+    { ref: "CCC-26100", what: "Price install, Nov 2", amt: 650 },
+    { ref: "PC-609", what: "Walker install + 2 evening crew-hours, Nov 10", amt: 900 },
+    { ref: "PC-613", what: "Price warranty callback, Nov 12", amt: 150 },
+  ],
+  committed: [
+    { who: "Palmetto Mechanical Crews", what: "Scheduled installs: Dunedin $1,300 · Reed $650 · Clearwater $720 · St. Pete $720", amt: 3390 },
+    { who: "Harbor Circuit (electrician)", what: "HC-418 Reed electrical, only after go-ahead (valid to Nov 20)", amt: 575 },
+    { who: "Galloway-Hale Supply", what: "Ordered today: W6284920 Dunedin $1,535.20 + W6285989 St. Pete $980.05 (billed when collected)", amt: 2515.25 },
+    { who: "Galloway-Hale Supply", what: "Reed ground stand, once Luis signs off", amt: 58.90 },
+  ],
+  depositsHeld: [
+    { job: "CCC-26095", who: "Ava Chen (Dunedin)", amt: 3050 },
+    { job: "CCC-26096", who: "Ava Chen (Clearwater)", amt: 2075 },
+    { job: "CCC-26101", who: "Ava Chen (St. Pete unit 11)", amt: 1825 },
+    { job: "CCC-26092", who: "Marcus Reed", amt: 1550 },
+    { job: "CCC-26098", who: "Ben Foster (to refund)", amt: 1200 },
+  ],
+  homeleaf: {
+    plans: [
+      { plan: "6099", name: "9.99% APR · 60 months", fee: 0.0325 },
+      { plan: "1201", name: "12 months no interest", fee: 0.0799 },
+      { plan: "2401", name: "24 months no interest", fee: 0.1149 },
+    ],
+    october: { financed: 10950, fees: 868.08 },
+    fundings: [
+      { date: "Oct 7", who: "Gwen Hughes", plan: "1201", amt: 4200, fee: 335.58 },
+      { date: "Oct 20", who: "Raj Patel", plan: "2401", amt: 3800, fee: 436.62 },
+      { date: "Oct 28", who: "Dolores Kim", plan: "6099", amt: 2950, fee: 95.88 },
+    ],
+  },
+
+  // Supplier purchase plan (Galloway-Hale, Tampa - Main #101)
+  orders: [
+    {
+      job: "CCC-26095", who: "Ava Chen · Dunedin duplex", need: "Tue Nov 17", when: "ORDERED Nov 13 · order W6284920 · will-call pickup Mon Nov 16",
+      status: "placed", how: "Placed at quote Q-260117 prices · PO CCC-26095 · awaiting branch review",
+      items: [
+        { item: "H41-112", desc: "LETO 12k system, 16 ft kit", qty: 2, unit: 684.00, stock: "7 at Tampa" },
+        { item: "M22-112", desc: "Wall bracket 6–12k", qty: 2, unit: 31.50, stock: "24 at Tampa" },
+        { item: "L31-620", desc: "Line set cover 20 ft", qty: 2, unit: 52.10, stock: "18 at Tampa" },
+      ],
+      note: "The quote is $60.30 below the price book. Billed when collected; pay by Dec 10 for 1% off.",
+    },
+    {
+      job: "CCC-26101", who: "Ava Chen · St. Pete unit 11", need: "Mon Nov 23", when: "ORDERED Nov 13 · order W6285989 · will-call pickup Mon Nov 16",
+      status: "placed", how: "Contract prices · PO CCC-26101 · awaiting branch review",
+      items: [
+        { item: "H41-118", desc: "LETO 18k system, 16 ft kit", qty: 1, unit: 878.00, stock: "1 at Tampa · 3 Brandon · 6 Orlando" },
+        { item: "M22-136", desc: "Wall bracket 18–36k", qty: 1, unit: 47.80, stock: "9 at Tampa" },
+        { item: "L31-620", desc: "Line set cover 20 ft", qty: 1, unit: 54.25, stock: "18 at Tampa" },
+      ],
+      note: "Ordered before the Dec 4 rise (saves $52.68). Branch asked to hold the last 18k at Tampa.",
+    },
+    {
+      job: "CCC-26092", who: "Marcus Reed · Kenwood", need: "Wed Nov 18", when: "After Luis signs off on the AURA",
+      status: "order", how: "Use Ben Foster's AURA + cover (already in van 2); buy only the stand",
+      items: [
+        { item: "M24-112", desc: "Ground stand 6–12k (stand location by the alley)", qty: 1, unit: 58.90, stock: "5 at Tampa" },
+      ],
+      note: "Avoids the AURA backorder (~Dec 10), the 6% rise ($71.88) and a $192.56 restocking fee. Ben's spare wall bracket ($31.50) goes to shop stock for Owen's job.",
+    },
+    {
+      job: "CCC-26093", who: "Priya Shah · Palma Ceia", need: "Tentative Nov 24", when: "Hold: landlord's written consent + Luis sign-off",
+      status: "hold", how: "Price book PB-1",
+      items: [
+        { item: "H41-118", desc: "LETO 18k system, 16 ft kit", qty: 1, unit: 878.00, stock: "1 at Tampa (taken by unit 11) · 3 Brandon · 6 Orlando" },
+        { item: "M22-136", desc: "Wall bracket 18–36k", qty: 1, unit: 47.80, stock: "9 at Tampa" },
+        { item: "L31-620", desc: "Line set cover 20 ft", qty: 1, unit: 54.25, stock: "18 at Tampa" },
+        { item: "C61-527", desc: "Little Giant 553527 condensate pump", qty: 1, unit: 171.40, stock: "0 at Tampa · 3 Clearwater (1-day transfer)" },
+      ],
+      note: "Customer asked: no deliveries to the public entrance. If approved, order before Dec 4.",
+    },
+    {
+      job: "CCC-26094", who: "Owen Clarke · Arts District", need: "Not booked", when: "Only if Owen accepts",
+      status: "if", how: "Price book PB-1, using the CORRECT part",
+      items: [
+        { item: "H41-112", desc: "LETO 12k COMPLETE system (not H51-112 indoor head)", qty: 1, unit: 712.00, stock: "7 at Tampa" },
+        { item: "L31-620", desc: "Line set cover 20 ft", qty: 1, unit: 54.25, stock: "18 at Tampa" },
+        { item: "M22-112", desc: "Wall bracket 6–12k: use Ben Foster's spare", qty: 1, unit: 0, stock: "In van 2" },
+      ],
+      note: "Ordering after Dec 4 would cost $42.72 more.",
+    },
+    {
+      job: "CCC-26102", who: "Lena Ortiz · Palm Harbor", need: "Not booked", when: "Only if Lena accepts",
+      status: "if", how: "Ask Carla Mendez for a project quote to lock $1,198",
+      items: [
+        { item: "H43-112", desc: "AURA 12k system, 16 ft kit (backordered, est. Dec 10)", qty: 1, unit: 1269.88, stock: "Backordered at every branch" },
+        { item: "M22-112", desc: "Wall bracket 6–12k", qty: 1, unit: 31.50, stock: "24 at Tampa" },
+        { item: "L31-620", desc: "Line set cover 20 ft", qty: 1, unit: 54.25, stock: "18 at Tampa" },
+      ],
+      note: "Backorders are billed at the price on the ship date (Dec 10 means +6%). A quote would save $71.88.",
+    },
+  ],
+  priceRise: { date: "Dec 4, 2026", pct: 6.0, items: "All LETO & AURA systems and indoor units (brackets, stands and covers aren't affected)" },
+  ghAccount: { limit: 15000, open: 3243.85, available: 11756.15, terms: "1% 10th Prox, Net 25th" },
+
+  // Improvements, each with an estimated $ effect where one can be computed
+  // Daniel's own to-do list (agreed Nov 13)
+  myList: [
+    { due: "Today / Mon Nov 16", title: "Refund Ben Foster's $1,200 deposit and confirm to him", detail: "To the original account, as he asked (E021). Paula noted no refund was posted as of 5pm. Also cancel his Fri Nov 20 install in Dispatchlark and mark his HubSpot deal Closed Lost.", job: "CCC-26098" },
+    { due: "Before Monday's orders", title: "Check the bank balance", detail: "Going out first: Ben's $1,200 refund. Monday's Galloway-Hale orders ($2,515.25) go on account, so they aren't due until December. Coming in: Ava's $3,050 for Dunedin when the job is done on Nov 17, then $2,075 (Nov 19) and $1,825 (Nov 23).", job: null },
+    { due: "By Thu Dec 10", title: "Pay Galloway-Hale and take the 1% discount", detail: "Open now $3,243.85, plus $2,515.25 if you approve Dunedin and St. Pete: $5,759.10 in total. Paying by Dec 10 takes off $57.59, so you'd pay $5,701.51 instead of the full amount due Dec 25. Pay by ACH or check (no card payments on this account).", job: null },
+    { due: "After this session", title: "Call Galloway-Hale: (813) 555-0142", detail: "1) Counter / will-call orders need an office PO: only Renee places orders and Luis only collects orders that are already placed. 2) Ask Renee and Paula to accept their portal invitations, and ask GH to let Paula (accounts payable) see invoice amounts. 3) Check that orders W6284920 + W6285989 pass branch review for pickup Monday, and that the last LETO 18k is held. 4) Ask Carla Mendez (ext. 214) for a project quote on one AURA 12k (H43-112) for Lena Ortiz, valid into mid-December, to lock $1,198 instead of $1,269.88.", job: null },
+    { due: "Before Thu Nov 19", title: "Confirm the Clearwater tenant's install window", detail: "Coach house C: get the tenant's confirmation for Thu Nov 19, 1–6pm, through Ava Chen. Only then rebook Sunline's re-delivery (SL-772). Another missed delivery would cost another $185.", job: "CCC-26096" },
+    { due: "This week", title: "Update HubSpot (6 deals + contacts)", detail: "Ben Foster CCC-26098: Closed Won → Closed Lost. Marcus Reed CCC-26092: $3,100 → $3,550 (+$690 if he accepts the electrical). Julia Moreno CCC-26097: Appointment Scheduled only once her survey is booked. Priya Shah CCC-26093: new amount after the re-quote. Lena Ortiz CCC-26102: Qualified To Buy → Contract Sent. Owen Clarke CCC-26094: OK as is. Also link Ava Chen to Bayside Lease & Care and delete the 2 HubSpot sample contacts.", job: null },
+    { due: "Mon Nov 16 (before Wed install)", title: "Send Marcus Reed the electrical price: $690", detail: "Draft in drafts.md. When Marcus replies, the mailbox watcher alerts this conversation. If he clearly approves, his Homeleaf request PR-30451 is updated from $1,550 to $2,690 automatically (Homeleaf texts him to confirm), and you'll get a message. Then tell Harbor Circuit to go ahead (HC-418 is valid to Nov 20). Luis still has to sign off on the AURA before the install.", job: "CCC-26092" },
+    { due: "Mon Nov 16", title: "Send the replies to Julia Moreno and Lena Ortiz", detail: "Drafts written (drafts.md). Confirm Julia's survey time with Luis first. Lena's states the 2-year labor warranty you agreed to.", job: "CCC-26097" },
+    { due: "Mon Nov 16", title: "Send the other drafts: Owen, Priya, Harbor Circuit, the team", detail: "All in drafts.md: Owen Clarke follow-up ($2,800 honored), Priya Shah (pump changes the price, revised quote coming), Jared at Harbor Circuit (price the Palma Studio feed), Renee + Paula (new rules and this week), and Luis (pickups, the AURA for Marcus, sign-off).", job: "CCC-26093" },
+    { due: "This week", title: "Get Palmetto payments + monthly overheads from Paula", detail: "Not recorded in Dispatchlark, Galloway-Hale, Homeleaf, the mailbox or the working file. Ask Paula (bookkeeping) or check the bank for payments to Palmetto. Incurred for finished work: $650 (Brooks), $650 (Price), $900 (PC-609), $150 (PC-613) = $2,350. Also ask for the monthly overheads (rent, insurance, van finance, your pay), which every file says are kept elsewhere. With those I'll add a break-even figure (jobs per month needed).", job: null },
+  ],
+
+  recordsUpdated: "Nov 13: Dispatchlark line items corrected on 8 jobs (costs filled in, Marcus Reed now $3,550 AURA, Owen's part fixed, callback, re-delivery, electrician and pump costs added). operations.xlsx updated with a 'Change log Nov 13' sheet (70 changes); the original is kept as 'operations (before Nov 13 updates).xlsx'. HubSpot is on your list.",
+  decisions: [
+    { what: "Minimum price per system size", rule: "LETO 12k $3,150 · LETO 18k $3,600 · AURA 12k $4,050 (extras on top). See the Minimum prices tab." },
+    { what: "Extra work by subcontractors", rule: "Charged to the customer at the subcontractor's quote + 20%. First case: Marcus Reed's electrical at $690 ($575 + 20%)." },
+    { what: "Deposits & cancellation", rule: "50% deposit to book, in every proposal. Fully refundable until equipment is ordered. Once ordered, refundable minus any supplier restocking cost (Galloway-Hale charges 15% on unopened stock; special-order and opened items can't be returned). Equipment is only ordered after the deposit and the customer's written go-ahead." },
+    { what: "Labor warranty", rule: "2 years on our workmanship for every job, return visits included. Manufacturer covers the parts separately." },
+    { what: "Financing", rule: "Offer every Homeleaf plan, promoting the 12-month no-interest plan (7.99% fee) first. Don't push the interest-bearing 60-month plan. Leave Lena's own choice alone. Check the Homeleaf agreement before pricing financed jobs differently." },
+    { what: "Buying on the Galloway-Hale account", rule: "Only Renee places orders, using the job number as the PO, once three things are true: the customer has said go in writing, the deposit is in, and Luis has signed off. Luis only collects orders already placed." },
+  ],
+
+  // Minimum price per system size (agreed Nov 13). Costs use Galloway-Hale prices from Dec 4, 2026.
+  priceFloor: {
+    target: 0.45,
+    why: "45% is what your finished jobs averaged (46%). Gross profit has to pay rent, insurance, van finance and your own pay, which aren't in these files. If those need more, raise the target and the floors move up with it.",
+    systems: [
+      { size: "LETO 9/12k, standard install", parts: [["Equipment (Dec 4 price) + bracket + cover", 840.47], ["Crew", 650], ["Consumables", 95], ["Permit / admin", 120]], floor: 3150, extraFloor: 2900 },
+      { size: "LETO 18k, standard install", parts: [["Equipment (Dec 4 price) + bracket + cover", 1032.73], ["Crew", 720], ["Consumables", 95], ["Permit / admin", 120]], floor: 3600, extraFloor: 3400 },
+      { size: "AURA 12k, standard install", parts: [["Equipment (Dec 4 price) + bracket + cover", 1355.63], ["Crew", 650], ["Consumables", 95], ["Permit / admin", 120]], floor: 4050, extraFloor: 3850 },
+    ],
+    addons: [
+      { item: "Condensate pump, fitted", cost: 351.40, price: 650, note: "Pump $171.40 + $180 fitting" },
+      { item: "Evening / after-hours work, per crew-hour", cost: 90, price: 165, note: "Crew-hour covers both people" },
+      { item: "Electrician (changed supply etc.)", cost: null, price: null, note: "Electrician's quote + 20%" },
+      { item: "Extra / timed delivery", cost: null, price: null, note: "Pass through at cost" },
+      { item: "Ground stand instead of wall bracket", cost: 27.40, price: 50, note: "Stand costs $27.40 more than the 12k bracket" },
+    ],
+    check: [
+      { job: "CCC-26094", who: "Owen Clarke", sys: "LETO 12k", quoted: 2800, floor: 3150, verdict: "$350 under. Already sent, so honor it, and order before Dec 4 to keep its margin at 40.6%." },
+      { job: "CCC-26093", who: "Priya Shah", sys: "LETO 18k + pump", quoted: 3650, floor: 4250, verdict: "$600 under the floor with the pump. Re-quote (electrical and freight still to add)." },
+      { job: "CCC-26102", who: "Lena Ortiz", sys: "AURA 12k", quoted: 4150, floor: 4050, verdict: "OK." },
+      { job: "CCC-26097", who: "Julia Moreno", sys: "Not surveyed", quoted: 3000, floor: 3150, verdict: "Her ~$3,000 budget is just under the 12k floor. Say so honestly after the survey." },
+      { job: "CCC-26101", who: "Ava Chen · unit 11", sys: "LETO 18k", quoted: 3650, floor: 3600, verdict: "OK." },
+      { job: "CCC-26095", who: "Ava Chen · Dunedin", sys: "2 × LETO 12k", quoted: 6100, floor: 6050, verdict: "OK (first system + second at the same address)." },
+    ],
+  },
+
+  ideas: [
+    { area: "Records", value: null, title: "Bring HubSpot up to date",
+      body: "HubSpot shows $32,145 as won, but the real figure is $27,795: Ben Foster's cancelled $4,800 job is still Closed Won and Marcus Reed is at the old $3,100. Julia Moreno is marked Appointment Scheduled when no visit was offered. No deal has a close date, owner or next step.", src: "HubSpot export Nov 13" },
+    { area: "Pricing", value: 575, title: "Charge Marcus Reed for the AURA electrical work",
+      body: "Harbor Circuit charges $575 for the changed supply, and nothing passes it on to the customer. Marcus asked to see the electrical price before the work starts. Sending it at cost lifts the job from 19% to 35% margin. The quote is valid to Nov 20.", src: "E007, E008" },
+    { area: "Purchasing", value: 264, title: "Give Ben Foster's AURA to Marcus Reed instead of returning it",
+      body: "Avoids a $192.56 restocking fee and the +6% ($71.88) on a backordered replacement. Also lets Wednesday's install happen on time instead of waiting until mid-December.", src: "GH 4422213, N-2026-14, product H43-112" },
+    { area: "Collections", value: 450, title: "Fix Marcus Reed's Homeleaf request ($1,550 → $2,000)",
+      body: "The request was made for the old $3,100 price. Unless it's updated or Marcus pays the $450 another way, it goes uncollected.", src: "HL PR-30451, E007" },
+    { area: "Pricing", value: 351.40, title: "Re-price Priya Shah before confirming",
+      body: "The $3,650 proposal doesn't include the condensate pump ($171.40) or its fitting ($180), and the electrical feed and freight are unpriced. Luis: \"Please don't promise a final installed price from the base sheet alone.\"", src: "E010, site notes" },
+    { area: "Purchasing", value: 208.38, title: "Buy before the Dec 4 Senville increase",
+      body: "St. Pete unit 11 (+$52.68 avoided), Priya if approved (+$52.68), Owen if accepted (+$42.72). Using quote Q-260117 for Dunedin also saves $60.30 against the price book.", src: "N-2026-14, PB-1, Q-260117" },
+    { area: "Financing", value: 342, title: "Steer financed customers to the low-fee Homeleaf plan",
+      body: "October's financing fees were $868 on $10,950, or 7.9% of financed sales. Lena picked the 24-month plan (11.49% = $476.84 on $4,150), while plan 6099 would cost $134.88. Either present 6099 first or build the fee into financed prices.", src: "HL Plans & fees, A-88402" },
+    { area: "Cash", value: 58, title: "Take Galloway-Hale's 1% early-payment discount",
+      body: "Paying all November invoices (open $3,243.85 plus ~$2,574 of new orders) by Dec 10 saves about $58. Two October invoices missed the discount ($15.96): one was paid a day late and one early but at full price. Paula's AP login to Galloway-Hale was never activated.", src: "GH statement, invoices 4418207/4419962, Users" },
+    { area: "Operations", value: 335, title: "Cut avoidable rework",
+      body: "This week a wrong delivery window ($185) and a rattling cover callback ($150) cost $335, about a fifth of a typical job's gross profit. Check the access window on every dispatch note and the cover fixings at commissioning.", src: "SL-772, PC-613" },
+    { area: "Pricing", value: null, title: "Standardize prices for the standard kit",
+      body: "The same standard LETO 12k install has sold for $2,800 (Owen), $3,050 a unit (Dunedin), $3,150 (Elena) and $3,295 (Noah). A price floor per system size protects margin. Owen's quote is also costed against the wrong (indoor-only) part.", src: "Working file, E011/E012" },
+    { area: "Sales", value: null, title: "Answer the warm leads today",
+      body: "Julia Moreno is a referral from a happy customer and has asked twice for a morning survey. Lena Ortiz asked about the labor warranty because a competitor offers 2 years. Both are waiting on us.", src: "E018/E019, E028" },
+    { area: "Controls", value: null, title: "No supplier purchase without an office-released PO",
+      body: "Ben Foster's kit was picked up at the counter against the customer's instruction to hold, which turned a refundable deposit into a dispute. Galloway-Hale lets you control who can order on the account.", src: "E020, DL #1193 notes, GH order 5522140" },
+    { area: "Records", value: null, title: "Keep Dispatchlark job costing complete",
+      body: "7 open jobs have blank equipment costs and the Reed price is out of date, so Dispatchlark can't show profit. Callbacks and re-deliveries aren't recorded against jobs, so finished-job margins look better than they are.", src: "DL job pages, Reports" },
+  ],
+};
+
+</script>
+<script>
+(() => {
+const D = window.CCC;
+const $ = (s, r=document) => r.querySelector(s);
+const el = (tag, attrs={}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs)) {
+    if (k === 'class') n.className = v;
+    else if (k === 'style') n.setAttribute('style', v);
+    else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+    else if (v !== null && v !== undefined && v !== false) n.setAttribute(k, v);
+  }
+  for (const c of kids.flat()) if (c !== null && c !== undefined && c !== false) n.append(c.nodeType ? c : document.createTextNode(String(c)));
+  return n;
+};
+const money = (v, d=0) => (v < 0 ? '−' : '') + '$' + Math.abs(v).toLocaleString('en-US', {minimumFractionDigits:d, maximumFractionDigits:d});
+const money2 = v => money(v, 2);
+const pct = v => (v*100).toFixed(1) + '%';
+const sum = (a, f=x=>x) => a.reduce((s,x)=>s+f(x),0);
+const catColor = k => `var(--series-${D.cats.find(c=>c.key===k).slot})`;
+const stageLabel = {completed:'Completed', booked:'Booked', pipeline:'Quoted / lead', cancelled:'Cancelled'};
+
+// ---------- derived job economics ----------
+D.jobs.forEach(j => {
+  j.cost = Math.round(sum(j.lines, l=>l.amt)*100)/100;
+  j.gp = j.price - j.cost;
+  j.margin = j.price ? j.gp / j.price : null;
+  j.byCat = {};
+  D.cats.forEach(c => j.byCat[c.key] = 0);
+  j.lines.forEach(l => j.byCat[l.cat] += l.amt);
+  j.byCat.profit = Math.max(j.gp, 0);
+  j.balance = j.stage === 'cancelled' ? 0 : Math.max(j.price - j.received, 0);
+});
+const jobsBy = s => D.jobs.filter(j => j.stage === s && j.price > 0);
+const completed = jobsBy('completed'), booked = jobsBy('booked'), pipeline = jobsBy('pipeline');
+const agg = arr => ({ rev: sum(arr,j=>j.price), cost: sum(arr,j=>j.cost), gp: sum(arr,j=>j.gp) });
+const A = { done: agg(completed), booked: agg(booked), pipe: agg(pipeline) };
+A.both = { rev: A.done.rev + A.booked.rev, gp: A.done.gp + A.booked.gp };
+const AR = sum(D.receivables, r=>r.amt);
+const AP = sum(D.payables, p=>p.amt);
+const ordersNow = D.orders.filter(o=>o.status==='order');
+const ordersPlaced = D.orders.filter(o=>o.status==='placed');
+const ordersPlacedTotal = sum(ordersPlaced, o=>sum(o.items, i=>i.qty*i.unit));
+const ordersNowTotal = sum(ordersNow, o=>sum(o.items, i=>i.qty*i.unit));
+const actionFlags = D.jobs.flatMap(j => j.flags.filter(f => f.lvl==='crit' || f.lvl==='act').map(f => ({...f, job:j})));
+
+// ---------- tooltip ----------
+const tip = $('#tip');
+function showTip(ev, value, label, sub, color){
+  tip.replaceChildren();
+  const b = el('b', {}, value); tip.append(b);
+  const l = el('div', {}, color ? el('span', {class:'k', style:`background:${color}`}) : null, label); tip.append(l);
+  if (sub) tip.append(el('div', {class:'s'}, sub));
+  tip.style.display = 'block';
+  moveTip(ev);
+}
+function moveTip(ev){
+  let x, y;
+  if (ev.clientX !== undefined && ev.type !== 'focus') { x = ev.clientX; y = ev.clientY; }
+  else { const r = ev.target.getBoundingClientRect(); x = r.left + r.width/2; y = r.top; }
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = Math.min(window.innerWidth - w - 8, x + 14) + 'px';
+  tip.style.top = Math.max(8, y - h - 10) + 'px';
+}
+const hideTip = () => tip.style.display = 'none';
+
+// ---------- tabs ----------
+const TABS = [
+  { id:'overview', label:'Overview' },
+  { id:'mylist', label:'My list', count: D.myList.length },
+  { id:'jobs', label:'Job profit' },
+  { id:'money', label:'Owed to us / We owe' },
+  { id:'crm', label:'HubSpot deals', count: D.hubspot.deals.filter(x=>!x.ok).length },
+  { id:'orders', label:'Supplier orders' },
+  { id:'improve', label:'Improvements', count: D.ideas.length },
+  { id:'prices', label:'Minimum prices' },
+  { id:'fixes', label:'Record fixes' },
+];
+let current = location.hash.slice(1) || 'overview';
+function renderTabs(){
+  const nav = $('#tabs'); nav.replaceChildren();
+  TABS.forEach(t => nav.append(el('button', {role:'tab', 'aria-selected': String(t.id===current), onclick:()=>go(t.id)}, t.label, t.count ? el('span',{class:'count'}, t.count) : null)));
+}
+function go(id){ current = id; try{history.replaceState(null,'','#'+id);}catch(e){} renderTabs(); render(); window.scrollTo({top:0}); }
+
+// ---------- shared pieces ----------
+function legend(keys = D.cats.map(c=>c.key)){
+  return el('div', {class:'legend'}, keys.map(k => el('span', {}, el('i', {style:`background:${catColor(k)}`}), D.cats.find(c=>c.key===k).label)));
+}
+function flagNode(f, withJob){
+  const icon = {crit:'!', warn:'!', act:'→', good:'✓', info:'i'}[f.lvl];
+  const tag = {crit:'Critical', warn:'Watch', act:'Action', good:'OK', info:'Note'}[f.lvl];
+  const kids = [el('span',{class:'ic','aria-hidden':'true'}, icon), el('div', {}, el('span',{class:'tag'}, tag), withJob ? el('b', {}, `${f.job.customer} · ${f.job.site.split(' / ')[0]}: `) : null, f.t)];
+  const n = el('div', {class:'flag '+f.lvl}, ...kids);
+  if (withJob) { n.style.cursor = 'pointer'; n.addEventListener('click', () => openJob(f.job.id)); }
+  return n;
+}
+function statusPill(j){ return el('span', {class:'pill st-'+j.stage}, el('span',{class:'dot','aria-hidden':'true'}), stageLabel[j.stage]); }
+
+function jobBars(list, scaleMax){
+  const wrap = el('div', {class:'bars'});
+  const ticks = [];
+  const step = scaleMax > 5000 ? 1000 : 500;
+  for (let v=0; v<=scaleMax; v+=step) ticks.push(v);
+  list.forEach(j => {
+    const stack = el('div', {class:'stack'});
+    const order = ['equip','crew','mat','extra','profit'];
+    order.forEach(k => {
+      const v = j.byCat[k]; if (!v) return;
+      const seg = el('div', {class:'seg', style:`width:${(v/scaleMax*100).toFixed(3)}%;background:${catColor(k)}`});
+      const label = D.cats.find(c=>c.key===k).label;
+      seg.addEventListener('pointermove', ev => showTip(ev, money2(v), label, `${j.customer} · ${j.site.split(' / ')[0]} · ${pct(v/j.price)} of price`, catColor(k)));
+      seg.addEventListener('pointerleave', hideTip);
+      stack.append(seg);
+    });
+    // a negative profit is shown as cost exceeding price: price marker
+    const row = el('div', {class:'brow', tabindex:'0', role:'button', 'aria-label': `${j.customer}, ${j.site}: price ${money(j.price)}, gross profit ${money2(j.gp)}, margin ${pct(j.margin)}. Open details.`,
+      onclick:()=>openJob(j.id), onkeydown:e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();openJob(j.id);} }},
+      el('div', {class:'name'}, `${j.customer}`, el('small', {}, `${j.id} · ${j.site.split(' / ')[0]}`)),
+      el('div', {class:'track'}, stack),
+      el('div', {class:'val'}, money(j.gp), el('small', {}, `${pct(j.margin)} of ${money(j.price)}`)));
+    wrap.append(row);
+  });
+  const axis = el('div', {class:'axis'});
+  ticks.forEach(t => axis.append(el('span', {style:`left:${t/scaleMax*100}%`}, t>=1000 ? (t/1000)+'K' : t)));
+  wrap.append(el('div', {class:'axisrow'}, el('div'), axis, el('div', {class:'small', style:'text-align:right'}, 'Gross profit')));
+  return wrap;
+}
+
+// ---------- views ----------
+function viewOverview(){
+  const v = el('div', {class:'grid', style:'gap:18px'});
+  const t = (cls, lbl, val, foot, go_) => el('div', {class:'card tile '+cls, tabindex:'0', role:'button', onclick:()=>go(go_), onkeydown:e=>{if(e.key==='Enter')go(go_);}}, el('div',{class:'lbl'},lbl), el('div',{class:'val'},val), el('div',{class:'foot'},...foot));
+  v.append(el('div', {class:'grid g-hero'},
+    t('hero', 'Gross profit on finished + booked jobs', money(A.both.gp), [el('b',{},pct(A.both.gp/A.both.rev)), ` of ${money(A.both.rev)} in sales · ${completed.length} finished, ${booked.length} booked`], 'jobs'),
+    t('', 'Owed to us', money(AR), [ 'Balances due as jobs finish. ', el('b',{},'$450'), ' of it has no payment arranged'], 'money'),
+    t('', 'We owe', money2(AP), [ 'Galloway-Hale ', el('b',{},money2(D.ghAccount.open)), ' · Ben Foster refund ', el('b',{},'$1,200')], 'money'),
+    t('', 'Ordered today', money2(ordersPlacedTotal), [ el('b',{},'Dunedin + St. Pete'), ' for pickup Mon Nov 16 · Reed stand waits on Luis’s sign-off'], 'orders'),
+  ));
+  v.append(el('div', {class:'caveat'}, 'Job profit is the selling price before tax minus direct job costs (equipment, crew, materials, permit, extras, financing fees). Rent, insurance, van finance and owner pay aren’t included, so this isn’t company net profit.'));
+
+  const left = el('div', {class:'card'},
+    el('h2', {}, 'Needs a decision'),
+    el('p', {class:'hint'}, 'From all the systems combined. Click an item to open its job.'),
+    ...actionFlags.sort((a,b)=> (a.lvl==='crit'?0:1)-(b.lvl==='crit'?0:1)).slice(0,8).map(f => flagNode(f, true)));
+  const top = D.jobs.filter(j=>j.price>0 && j.stage!=='cancelled').sort((a,b)=>a.margin-b.margin);
+  const right = el('div', {class:'card'},
+    el('h2', {}, 'Profit per job (finished + booked)'),
+    el('p', {class:'hint'}, 'Each bar is the job’s selling price, split into what it costs and what’s left. Hover a segment for its amount; click a row to see the details.'),
+    legend(['equip','crew','mat','extra','profit']),
+    jobBars([...completed, ...booked].sort((a,b)=>b.price-a.price), 6500));
+  v.append(el('div', {class:'grid g2'}, right, left));
+
+  // pipeline strip
+  const p = el('div', {class:'card'}, el('h2', {}, 'Pipeline'), el('p',{class:'hint'}, 'Quoted but not won yet, including corrected costs.'));
+  const tb = el('table', {}, el('thead', {}, el('tr', {}, el('th',{},'Customer'), el('th',{},'Status'), el('th',{class:'num'},'Quoted'), el('th',{class:'num'},'Est. gross profit'), el('th',{class:'num'},'Margin'))));
+  const body = el('tbody');
+  D.jobs.filter(j=>j.stage==='pipeline').forEach(j => body.append(el('tr', {class:'click', onclick:()=>openJob(j.id)},
+    el('td', {}, j.customer, el('div',{class:'small'}, j.site)), el('td', {}, j.status),
+    el('td', {class:'num'}, j.price ? money(j.price) : '—'), el('td', {class:'num'}, j.price ? money2(j.gp) : '—'), el('td', {class:'num'}, j.price ? pct(j.margin) : '—'))));
+  tb.append(body); p.append(tb);
+  v.append(p);
+  return v;
+}
+
+function viewJobs(){
+  const v = el('div', {class:'grid', style:'gap:18px'});
+  let filter = window.__jobFilter || 'all';
+  const filters = el('div', {class:'filters'});
+  const opts = [['all','All jobs'],['completed','Finished'],['booked','Booked'],['pipeline','Quoted / leads'],['cancelled','Cancelled']];
+  opts.forEach(([k,l]) => filters.append(el('button', {'aria-pressed': String(filter===k), onclick:()=>{window.__jobFilter=k; render();}}, l)));
+  v.append(filters);
+
+  const list = D.jobs.filter(j => filter==='all' || j.stage===filter);
+  const chartJobs = list.filter(j => j.price > 0);
+  const totals = agg(chartJobs);
+  v.append(el('div', {class:'grid g3'},
+    el('div', {class:'card'}, el('div',{class:'small'},'Sales (before tax)'), el('div',{style:'font-size:26px;font-weight:600'}, money(totals.rev))),
+    el('div', {class:'card'}, el('div',{class:'small'},'Direct job costs'), el('div',{style:'font-size:26px;font-weight:600'}, money2(totals.cost))),
+    el('div', {class:'card'}, el('div',{class:'small'},'Gross profit'), el('div',{style:'font-size:26px;font-weight:600'}, money2(totals.gp)), el('div',{class:'small'}, totals.rev ? pct(totals.gp/totals.rev)+' margin' : ''))));
+
+  if (chartJobs.length){
+    const c = el('div', {class:'card'}, el('h2',{},'Where each job’s money goes'), el('p',{class:'hint'},'Bar length is the selling price. Click a row for the line-by-line breakdown and sources.'), legend(['equip','crew','mat','extra','profit']));
+    const groups = ['completed','booked','pipeline'].filter(s => chartJobs.some(j=>j.stage===s));
+    groups.forEach(s => { c.append(el('div',{class:'groupH'}, stageLabel[s])); c.append(jobBars(chartJobs.filter(j=>j.stage===s).sort((a,b)=>b.price-a.price), 6500)); });
+    v.append(c);
+  }
+
+  const card = el('div', {class:'card'}, el('h2',{},'All jobs'), el('p',{class:'hint'},'Click any row for details.'));
+  const tb = el('table', {}, el('thead',{}, el('tr',{}, ...['Job','Customer / site','Status','Price','Costs','Gross profit','Margin','Paid','Balance'].map((h,i)=>el('th',{class:i>=3?'num':''},h)))));
+  const body = el('tbody');
+  list.forEach(j => body.append(el('tr', {class:'click', onclick:()=>openJob(j.id)},
+    el('td', {}, j.id, el('div',{class:'small'}, 'DL #'+j.dl)),
+    el('td', {}, j.customer, j.company ? el('span',{class:'small'}, ' · '+j.company) : null, el('div',{class:'small'}, j.site)),
+    el('td', {}, statusPill(j), el('div',{class:'small', style:'margin-top:4px'}, j.status)),
+    el('td', {class:'num'}, j.price ? money(j.price) : '—'),
+    el('td', {class:'num'}, j.lines.length ? money2(j.cost) : '—'),
+    el('td', {class:'num'}, j.price ? money2(j.gp) : '—'),
+    el('td', {class:'num'}, j.price ? pct(j.margin) : '—'),
+    el('td', {class:'num'}, money(j.received)),
+    el('td', {class:'num'}, j.stage==='cancelled' ? el('span',{class:'neg'}, 'refund '+money(j.received)) : (j.stage==='pipeline' ? '—' : money(j.balance))))));
+  tb.append(body); card.append(tb); v.append(card);
+  return v;
+}
+
+function viewMoney(){
+  const v = el('div', {class:'grid', style:'gap:18px'});
+  // segmented bars
+  const segbar = (parts) => {
+    const tot = sum(parts, p=>p.v);
+    const b = el('div', {class:'segbar', role:'img', 'aria-label': parts.map(p=>`${p.l} ${money2(p.v)}`).join(', ')});
+    parts.forEach(p => {
+      const w = p.v/tot*100;
+      const d = el('div', {style:`flex:0 0 calc(${w}% - 2px);background:${p.c};${p.dark?'color:#0b0b0b':''}`, tabindex:'0'}, w > 16 ? money(p.v) : '');
+      d.addEventListener('pointermove', ev=>showTip(ev, money2(p.v), p.l, `${pct(p.v/tot)} of ${money2(tot)}`, p.c));
+      d.addEventListener('focus', ev=>showTip(ev, money2(p.v), p.l, `${pct(p.v/tot)} of ${money2(tot)}`, p.c));
+      d.addEventListener('pointerleave', hideTip); d.addEventListener('blur', hideTip);
+      b.append(d);
+    });
+    return b;
+  };
+  const arParts = [
+    {l:'Ava Chen / Bayside (3 sites)', v:6950, c:'var(--series-1)'},
+    {l:'Marcus Reed via Homeleaf', v:1550, c:'var(--series-3)'},
+    {l:'Marcus Reed: not arranged', v:450, c:'var(--series-4)', dark:true},
+  ];
+  const apParts = [
+    {l:'Galloway-Hale Supply', v:D.ghAccount.open, c:'var(--series-2)'},
+    {l:'Ben Foster deposit refund', v:1200, c:'var(--series-5)'},
+    {l:'Sunline Local Delivery', v:185, c:'var(--series-4)', dark:true},
+  ];
+  const lg = parts => el('div', {class:'legend'}, parts.map(p => el('span',{}, el('i',{style:`background:${p.c}`}), p.l)));
+
+  const arCard = el('div', {class:'card'}, el('h2',{},'Who owes us'), el('p',{class:'hint'}, `${money(AR)} in contract balances. Nothing is overdue: each balance falls due when its job is finished (Dispatchlark shows $0 unpaid on issued invoices).`), segbar(arParts), lg(arParts));
+  const t1 = el('table', {}, el('thead',{}, el('tr',{}, el('th',{},'Customer'), el('th',{},'For'), el('th',{},'When'), el('th',{class:'num'},'Amount'))));
+  const b1 = el('tbody');
+  D.receivables.forEach(r => b1.append(el('tr', {class:'click', onclick:()=>openJob(r.job)}, el('td',{}, r.who, el('div',{class:'small'}, r.job)), el('td',{}, r.what, r.warn ? el('div',{class:'small neg'}, '⚠ needs arranging') : null), el('td',{class:'small'}, r.due), el('td',{class:'num'}, money2(r.amt)))));
+  t1.append(b1, el('tfoot',{}, el('tr',{}, el('td',{colspan:'3'},'Total'), el('td',{class:'num'}, money2(AR)))));
+  arCard.append(t1);
+
+  const apCard = el('div', {class:'card'}, el('h2',{},'Who we owe'), el('p',{class:'hint'}, `${money2(AP)} in bills and refunds. Paying Galloway-Hale by Dec 10 takes 1% off.`), segbar(apParts), lg(apParts));
+  const t2 = el('table', {}, el('thead',{}, el('tr',{}, el('th',{},'To'), el('th',{},'For'), el('th',{},'Due'), el('th',{class:'num'},'Amount'))));
+  const b2 = el('tbody');
+  D.payables.forEach(p => b2.append(el('tr', {class:'click', onclick:()=>openJob(p.job)}, el('td',{}, p.who, el('div',{class:'small'}, p.ref)), el('td',{}, p.what, el('div',{class:'small'}, p.job)), el('td',{class:'small'}, p.due), el('td',{class:'num'}, money2(p.amt)))));
+  t2.append(b2, el('tfoot',{}, el('tr',{}, el('td',{colspan:'3'},'Total'), el('td',{class:'num'}, money2(AP)))));
+  apCard.append(t2);
+  v.append(el('div', {class:'grid g2'}, arCard, apCard));
+
+  // crew + commitments
+  const crew = el('div', {class:'card'}, el('h2',{},'Palmetto crew charges on finished work'), el('p',{class:'hint'}, 'These are incurred, but none of the files or systems record whether they’ve been paid. Check them against Palmetto’s statements.'));
+  const t3 = el('table', {}, el('tbody', {}, D.crewIncurred.map(c => el('tr',{}, el('td',{}, c.ref), el('td',{}, c.what), el('td',{class:'num'}, money(c.amt))))), el('tfoot',{}, el('tr',{}, el('td',{colspan:'2'},'Total'), el('td',{class:'num'}, money(sum(D.crewIncurred,c=>c.amt))))));
+  crew.append(t3);
+  const com = el('div', {class:'card'}, el('h2',{},'Coming costs for the next two weeks'), el('p',{class:'hint'}, 'Already committed or about to be, for the booked installs.'));
+  const t4 = el('table', {}, el('tbody', {}, D.committed.map(c => el('tr',{}, el('td',{}, c.who, el('div',{class:'small'}, c.what)), el('td',{class:'num'}, money2(c.amt))))));
+  com.append(t4);
+  v.append(el('div', {class:'grid g2'}, crew, com));
+
+  // deposits + homeleaf
+  const dep = el('div', {class:'card'}, el('h2',{},'Customer deposits we’re holding'), el('p',{class:'hint'}, 'This is customers’ money for work not yet done. Per Paula, keep it separate from sales.'));
+  dep.append(el('table', {}, el('tbody',{}, D.depositsHeld.map(d => el('tr', {class:'click', onclick:()=>openJob(d.job)}, el('td',{}, d.who, el('div',{class:'small'},d.job)), el('td',{class:'num'}, money(d.amt))))), el('tfoot',{}, el('tr',{}, el('td',{},'Total'), el('td',{class:'num'}, money(sum(D.depositsHeld,d=>d.amt)))))));
+  const hl = el('div', {class:'card'}, el('h2',{},'Homeleaf financing costs'), el('p',{class:'hint'}, `October: ${money2(D.homeleaf.october.fees)} in fees on ${money(D.homeleaf.october.financed)} financed (${pct(D.homeleaf.october.fees/D.homeleaf.october.financed)}). The fee depends on the plan the customer picks.`));
+  const fmax = 0.12;
+  D.homeleaf.plans.forEach(p => {
+    const row = el('div', {class:'brow', style:'grid-template-columns:200px 1fr 90px;cursor:default'},
+      el('div',{class:'name'}, 'Plan '+p.plan, el('small',{}, p.name)),
+      el('div',{class:'track'}, el('div',{class:'stack'}, el('div',{class:'seg', style:`width:${p.fee/fmax*100}%;background:var(--series-1);border-radius:0 4px 4px 0`}))),
+      el('div',{class:'val'}, pct(p.fee), el('small',{}, money2(4150*p.fee)+' on $4,150')));
+    hl.append(row);
+  });
+  hl.append(el('div',{class:'small', style:'margin-top:10px'}, 'Single series: fee rate per plan. The dollar figure shows the cost on a $4,150 job like Lena Ortiz’s.'));
+  v.append(el('div', {class:'grid g2'}, dep, hl));
+  return v;
+}
+
+function viewOrders(){
+  const v = el('div', {class:'grid', style:'gap:18px'});
+  const holdTotal = sum(D.orders.filter(o=>o.status!=='order'), o=>sum(o.items,i=>i.qty*i.unit));
+  v.append(el('div', {class:'grid g3'},
+    el('div', {class:'card'}, el('div',{class:'small'},'Ordered Nov 13'), el('div',{style:'font-size:26px;font-weight:600'}, money2(ordersPlacedTotal)), el('div',{class:'small'}, 'W6284920 Dunedin · W6285989 St. Pete')),
+    el('div', {class:'card'}, el('div',{class:'small'},'On hold / only if won'), el('div',{style:'font-size:26px;font-weight:600'}, money2(holdTotal)), el('div',{class:'small'}, 'Priya, Owen, Lena')),
+    el('div', {class:'card'}, el('div',{class:'small'},'Galloway-Hale credit available'), el('div',{style:'font-size:26px;font-weight:600'}, money2(D.ghAccount.available)), el('div',{class:'small'}, `Limit ${money(D.ghAccount.limit)} · terms ${D.ghAccount.terms}`))));
+  v.append(flagNode({lvl:'warn', t:`Senville price increase of ${D.priceRise.pct}% on ${D.priceRise.date}: ${D.priceRise.items}. Backordered items are billed at the price on the day they ship.`}));
+  v.append(flagNode({lvl:'good', t:'Dunedin (W6284920, $1,535.20) and St. Pete (W6285989, $980.05) were ordered Nov 13 with your approval, for will-call pickup Mon Nov 16. Everything else below still needs a decision first.'}));
+
+  const sect = (title, st) => {
+    const c = el('div', {class:'card'}, el('h2',{}, title));
+    D.orders.filter(o=>o.status===st || (st==='later' && o.status!=='order' && o.status!=='placed')).forEach(o => {
+      const tot = sum(o.items, i=>i.qty*i.unit);
+      const card = el('div', {class:'order'},
+        el('div', {class:'oh'}, el('div',{}, el('b',{}, o.who), el('span',{class:'small'}, `  ${o.job} · needed ${o.need}`)), el('div',{}, el('b',{}, money2(tot)))),
+        el('div', {class:'small', style:'margin:4px 0 8px'}, el('b',{}, o.when), ' · ', o.how));
+      const t = el('table', {}, el('thead',{}, el('tr',{}, el('th',{},'Item'), el('th',{},'Description'), el('th',{},'Stock'), el('th',{class:'num'},'Qty'), el('th',{class:'num'},'Unit'), el('th',{class:'num'},'Total'))),
+        el('tbody',{}, o.items.map(i => el('tr',{}, el('td',{}, i.item), el('td',{}, i.desc), el('td',{class:'small'}, i.stock), el('td',{class:'num'}, i.qty), el('td',{class:'num'}, money2(i.unit)), el('td',{class:'num'}, money2(i.qty*i.unit))))));
+      card.append(t, el('div',{class:'chk'}, '💡 ', o.note), el('div',{class:'chk'}, el('a',{href:'#', onclick:e=>{e.preventDefault();openJob(o.job);}}, 'Open job →')));
+      c.append(card);
+    });
+    return c;
+  };
+  v.append(sect('Ordered (Nov 13)', 'placed'));
+  v.append(sect('Next to order', 'order'));
+  v.append(sect('Waiting on a decision', 'later'));
+  return v;
+}
+
+function viewImprove(){
+  const v = el('div', {class:'grid', style:'gap:18px'});
+  const valued = D.ideas.filter(i=>i.value);
+  v.append(el('div', {class:'card'}, el('div',{class:'small'}, 'Measurable value of the items below'), el('div',{style:'font-size:32px;font-weight:600'}, '≈ '+money(sum(valued,i=>i.value))), el('div',{class:'small'}, 'Mostly one-off amounts on current jobs. The process fixes (pricing floor, purchase control, lead response) repeat on every future job.')));
+  const c = el('div', {class:'card'});
+  D.ideas.forEach(i => c.append(el('div', {class:'idea'},
+    el('div',{class:'area'}, i.area),
+    el('div',{}, el('h5',{}, i.title), el('p',{}, i.body), el('div',{class:'small', style:'margin-top:4px;color:var(--muted)'}, 'Source: '+i.src)),
+    el('div',{class:'v'}, i.value ? money(i.value) : '—', el('small',{}, i.value ? 'est. value' : 'process')))));
+  v.append(c);
+  return v;
+}
+
+function viewCRM(){
+  const v = el('div', {class:'grid', style:'gap:18px'});
+  const H = D.hubspot.deals;
+  const hsWon = sum(H.filter(x=>x.stage==='Closed Won'), x=>x.amt);
+  const realWon = sum(D.jobs.filter(j=>j.stage==='completed'||j.stage==='booked'), j=>j.price);
+  const wrong = H.filter(x=>!x.ok);
+  v.append(el('div', {class:'grid g3'},
+    el('div', {class:'card'}, el('div',{class:'small'},'HubSpot says won'), el('div',{style:'font-size:26px;font-weight:600'}, money(hsWon)), el('div',{class:'small'}, `${H.filter(x=>x.stage==='Closed Won').length} deals marked Closed Won`)),
+    el('div', {class:'card'}, el('div',{class:'small'},'Actually won (current prices)'), el('div',{style:'font-size:26px;font-weight:600'}, money(realWon)), el('div',{class:'small'}, el('span',{class:'neg'}, `HubSpot overstates by ${money(hsWon-realWon)}`))),
+    el('div', {class:'card'}, el('div',{class:'small'},'Deals to update'), el('div',{style:'font-size:26px;font-weight:600'}, String(wrong.length)), el('div',{class:'small'}, `of ${H.length}. Every deal matches a job`))));
+
+  const c = el('div', {class:'card'}, el('h2',{},'Deal by deal: HubSpot vs what really happened'), el('p',{class:'hint'}, 'From your HubSpot export, checked against email, Dispatchlark and payments. Click a row to open the job.'));
+  const t = el('table', {}, el('thead',{}, el('tr',{}, el('th',{},'Deal'), el('th',{},'HubSpot stage'), el('th',{class:'num'},'HubSpot amount'), el('th',{},'Reality'), el('th',{class:'num'},'Real amount'), el('th',{},'What to change in HubSpot'))));
+  const b = el('tbody');
+  [...wrong, ...H.filter(x=>x.ok)].forEach(x => {
+    const j = D.jobs.find(y=>y.id===x.job);
+    b.append(el('tr', {class:'click', onclick:()=>openJob(x.job)},
+      el('td',{}, j.customer, el('div',{class:'small'}, x.job+' · '+j.site.split(' / ')[0])),
+      el('td',{}, x.stage),
+      el('td',{class:'num'}, money(x.amt)),
+      el('td',{}, x.real),
+      el('td',{class:'num'}, x.realAmt!==x.amt ? el('b',{class:'neg'}, money(x.realAmt)) : money(x.realAmt)),
+      el('td',{class:'small'}, x.ok ? (x.fix ? x.fix : el('span',{class:'pos'}, '✓ Matches')) : el('span',{}, '⚠ '+x.fix))));
+  });
+  t.append(b); c.append(t); v.append(c);
+
+  const hy = el('div', {class:'card'}, el('h2',{},'Customer list (contacts)'), el('p',{class:'hint'}, `${D.hubspot.contacts.total} contacts in HubSpot: ${D.hubspot.contacts.real} real customers plus ${D.hubspot.contacts.samples.length} HubSpot demo entries.`));
+  hy.append(el('ul',{class:'srcs'}, D.hubspot.hygiene.map(x=>el('li',{},x))));
+  v.append(hy);
+  return v;
+}
+
+function viewMyList(){
+  const v = el('div', {class:'grid', style:'gap:18px'});
+  const c = el('div', {class:'card'}, el('h2',{},'Daniel’s list'), el('p',{class:'hint'}, 'The things you said you’d handle yourself. Tick them off as you go (ticks are kept in this browser only).'));
+  D.myList.forEach((t,i) => {
+    const key = 'ccc-done-'+i;
+    let done = false; try { done = localStorage.getItem(key)==='1'; } catch(e){}
+    const box = el('input', {type:'checkbox', id:key, style:'width:18px;height:18px;margin-top:2px;flex:none'});
+    box.checked = done;
+    const row = el('div', {class:'flag', style: done ? 'opacity:.55' : ''}, box,
+      el('label', {for:key, style:'flex:1;cursor:pointer'}, el('div',{}, el('b',{}, t.title), el('span',{class:'small'}, '  ·  '+t.due)), el('div',{class:'small', style:'margin-top:3px'}, t.detail)),
+      t.job ? el('a', {href:'#', onclick:e=>{e.preventDefault();openJob(t.job);}, class:'small'}, 'Job →') : null);
+    box.addEventListener('change', () => { try { localStorage.setItem(key, box.checked?'1':'0'); } catch(e){} row.style.opacity = box.checked ? '.55' : ''; });
+    c.append(row);
+  });
+  v.append(c);
+  const dc = el('div', {class:'card'}, el('h2',{},'Rules you decided (Nov 13)'), el('p',{class:'hint'}, 'Use these from now on.'));
+  dc.append(el('table',{}, el('tbody',{}, D.decisions.map(x => el('tr',{}, el('td',{style:'width:220px'}, el('b',{}, x.what)), el('td',{}, x.rule))))));
+  v.append(dc);
+  return v;
+}
+
+function viewPrices(){
+  const v = el('div', {class:'grid', style:'gap:18px'});
+  const F = D.priceFloor;
+  v.append(el('div', {class:'card'}, el('h2',{},'Minimum price per system size'), el('p',{class:'hint', style:'margin:0'}, `Set so every standard job keeps at least ${Math.round(F.target*100)}% gross margin at Galloway-Hale’s prices from Dec 4 (rounded up to the next $50, before tax). ${F.why}`)));
+  const c = el('div', {class:'card'});
+  const t = el('table', {}, el('thead',{}, el('tr',{}, el('th',{},'System'), el('th',{},'Direct cost'), el('th',{class:'num'},'Cost'), el('th',{class:'num'},'Minimum price'), el('th',{class:'num'},'Each extra system, same address'))));
+  const b = el('tbody');
+  F.systems.forEach(s => { const cost = sum(s.parts, p=>p[1]);
+    b.append(el('tr',{}, el('td',{}, el('b',{}, s.size)), el('td',{class:'small'}, s.parts.map(p=>`${p[0]} ${money2(p[1])}`).join(' · ')), el('td',{class:'num'}, money2(cost)), el('td',{class:'num'}, el('b',{}, money(s.floor)), el('div',{class:'small'}, pct((s.floor-cost)/s.floor)+' margin')), el('td',{class:'num'}, money(s.extraFloor), el('div',{class:'small'}, 'no second permit')))); });
+  t.append(b); c.append(t); v.append(c);
+  const a = el('div', {class:'card'}, el('h2',{},'Add-ons, priced on top'), el('p',{class:'hint'},'Extras that cost you money get charged too, never absorbed by default.'));
+  a.append(el('table',{}, el('thead',{}, el('tr',{}, el('th',{},'Add-on'), el('th',{class:'num'},'Your cost'), el('th',{class:'num'},'Charge at least'), el('th',{},'Note'))),
+    el('tbody',{}, F.addons.map(x => el('tr',{}, el('td',{}, x.item), el('td',{class:'num'}, x.cost!=null?money2(x.cost):'—'), el('td',{class:'num'}, x.price!=null?money(x.price):'—'), el('td',{class:'small'}, x.note))))));
+  v.append(a);
+  const k = el('div', {class:'card'}, el('h2',{},'Open and recent quotes against the floor'));
+  k.append(el('table',{}, el('thead',{}, el('tr',{}, el('th',{},'Customer'), el('th',{},'System'), el('th',{class:'num'},'Quoted'), el('th',{class:'num'},'Floor'), el('th',{},'Verdict'))),
+    el('tbody',{}, F.check.map(x => el('tr',{class:'click', onclick:()=>openJob(x.job)}, el('td',{}, x.who, el('div',{class:'small'}, x.job)), el('td',{}, x.sys), el('td',{class:'num'}, money(x.quoted)), el('td',{class:'num'}, money(x.floor)), el('td',{class:'small'}, x.quoted < x.floor ? el('span',{class:'neg'}, '⚠ '+x.verdict) : el('span',{class:'pos'}, '✓ '+x.verdict)))))));
+  v.append(k);
+  return v;
+}
+
+function viewFixes(){
+  const v = el('div', {class:'grid', style:'gap:18px'});
+  v.append(el('div', {class:'card'}, el('h2',{},'Where the records disagree'),
+    el('p',{class:'hint'}, 'The November working file (operations.xlsx) holds the office’s original entries, and many later decisions only exist in email. This dashboard uses the latest confirmed figure. Here’s what differs, so the spreadsheet and Dispatchlark can be updated.')));
+  v.append(flagNode({lvl:'good', t: D.recordsUpdated}));
+  const c = el('div', {class:'card'});
+  const t = el('table', {}, el('thead',{}, el('tr',{}, el('th',{},'Job'), el('th',{},'What’s wrong in the records'))));
+  const b = el('tbody');
+  D.jobs.forEach(j => j.fixes.forEach(f => b.append(el('tr',{class:'click', onclick:()=>openJob(j.id)}, el('td',{}, j.id, el('div',{class:'small'}, j.customer)), el('td',{}, f)))));
+  b.append(el('tr',{}, el('td',{},'Dispatchlark'), el('td',{}, 'Job costing shows profit only for finished jobs, and 7 open jobs have blank equipment costs. Finished-job margins leave out callbacks.')));
+  b.append(el('tr',{}, el('td',{},'Galloway-Hale'), el('td',{}, 'Paula (accounts payable) and Renee (buyer) never accepted their portal invitations, so only Daniel can see prices and invoices online.')));
+  t.append(b); c.append(t); v.append(c);
+
+  const s = el('div', {class:'card'}, el('h2',{},'Sources used'), el('ul',{class:'srcs'},
+    el('li',{}, 'Documents/Cypress Coast Comfort: operations.xlsx (quotes, purchasing, crew bookings, allowances, receipts), crew-rate-card.pdf, site-surveys.pdf, bank-deposit-confirmation.csv, Office handover.txt'),
+    el('li',{}, 'Dispatchlark: jobs #1187–1199, schedule, invoices, timesheets, job-costing report'),
+    el('li',{}, 'Galloway-Hale: price books PB-1/PB-2, quotes Q-260117/Q-260098, orders, invoices, statement, branch stock, notices'),
+    el('li',{}, 'Homeleaf Credit: applications, payment requests, fundings, plans & fees'),
+    el('li',{}, 'Harborlight Mail: all 33 messages (E001–E033)'),
+    el('li',{}, 'HubSpot: deals and contacts exports downloaded Nov 13 (12 deals, 12 contacts)'),
+    D.notConnected.length ? el('li',{}, 'Not connected: '+D.notConnected.join('; ')) : null));
+  v.append(s);
+  return v;
+}
+
+// ---------- drawer ----------
+function openJob(id){
+  const j = D.jobs.find(x=>x.id===id); if (!j) return;
+  const d = $('#drawer'); d.replaceChildren();
+  d.append(el('button',{class:'close', onclick:closeJob, 'aria-label':'Close'}, 'Close ✕'));
+  d.append(el('div',{class:'small'}, `${j.id} · Dispatchlark #${j.dl}`), el('h3',{}, j.customer + (j.company ? ' · '+j.company : '')), el('div',{class:'small'}, j.site),
+    el('div',{style:'margin-top:8px;display:flex;gap:8px;flex-wrap:wrap'}, statusPill(j), el('span',{class:'pill'}, j.status), el('span',{class:'pill'}, j.system)));
+  d.append(el('div',{class:'kv'},
+    el('div',{}, el('span',{},'Price (before tax)'), el('b',{}, j.price ? money(j.price) : '—')),
+    el('div',{}, el('span',{},'Gross profit'), el('b',{class: j.gp<0?'neg':''}, j.price ? money2(j.gp) : '—')),
+    el('div',{}, el('span',{},'Margin'), el('b',{}, j.price ? pct(j.margin) : '—'))));
+  d.append(el('div',{class:'small', style:'margin-top:6px'}, 'Price basis: '+j.priceSrc));
+  const hd = D.hubspot.deals.find(x=>x.job===j.id);
+  if (hd) d.append(el('div',{class:'small', style:'margin-top:4px'}, `HubSpot: ${hd.stage} · ${money(hd.amt)}`, hd.ok ? ' ✓ matches' : el('span',{class:'neg'}, ' ⚠ out of date. See the HubSpot deals tab')));
+
+  if (j.flags.length){ d.append(el('h4',{},'What needs attention')); j.flags.forEach(f=>d.append(flagNode(f,false))); }
+
+  if (j.lines.length){
+    d.append(el('h4',{},'Cost breakdown'));
+    if (j.price){
+      const bar = el('div',{class:'segbar', style:'height:14px'});
+      ['equip','crew','mat','extra','profit'].forEach(k => { const val=j.byCat[k]; if(!val) return; const s=el('div',{style:`flex:0 0 calc(${val/Math.max(j.price,j.cost)*100}% - 2px);background:${catColor(k)}`}); s.addEventListener('pointermove',ev=>showTip(ev,money2(val),D.cats.find(c=>c.key===k).label,pct(val/j.price)+' of price',catColor(k))); s.addEventListener('pointerleave',hideTip); bar.append(s);});
+      d.append(bar, legend(['equip','crew','mat','extra','profit']));
+    }
+    const t = el('table',{}, el('thead',{}, el('tr',{}, el('th',{},'Cost line'), el('th',{},'Source'), el('th',{class:'num'},'Amount'))));
+    const b = el('tbody');
+    j.lines.forEach(l => b.append(el('tr',{}, el('td',{}, el('span',{class:'swatch', style:`background:${catColor(l.cat)}`}), l.label), el('td',{class:'small'}, l.src), el('td',{class:'num'}, money2(l.amt)))));
+    t.append(b, el('tfoot',{}, el('tr',{}, el('td',{colspan:'2'},'Total direct cost'), el('td',{class:'num'}, money2(j.cost)))));
+    d.append(t);
+    if (j.unknowns) d.append(el('div',{class:'small neg', style:'margin-top:6px'}, '⚠ Not included yet: '+j.unknowns));
+  }
+  if (j.scenarios){
+    d.append(el('h4',{},'What-if'));
+    const t = el('table',{}, el('thead',{}, el('tr',{}, el('th',{},'Scenario'), el('th',{class:'num'},'Price'), el('th',{class:'num'},'Gross profit'), el('th',{class:'num'},'Margin'))));
+    t.append(el('tbody',{}, j.scenarios.map(s => el('tr',{}, el('td',{}, s.label), el('td',{class:'num'}, money(s.rev)), el('td',{class:'num'}, money2(s.rev-s.cost)), el('td',{class:'num'}, pct((s.rev-s.cost)/s.rev))))));
+    d.append(t);
+  }
+  d.append(el('h4',{},'Payments'));
+  d.append(el('table',{}, el('tbody',{},
+    el('tr',{}, el('td',{},'Received'), el('td',{class:'num'}, money2(j.received))),
+    el('tr',{}, el('td',{class:'small', colspan:'2'}, j.receipts)),
+    j.stage==='cancelled' ? el('tr',{}, el('td',{},'To refund'), el('td',{class:'num neg'}, money2(j.received))) :
+    j.stage==='pipeline' ? null : el('tr',{}, el('td',{},'Still to collect'), el('td',{class:'num'}, money2(j.balance))))));
+  if (j.fixes.length){ d.append(el('h4',{},'Record corrections')); d.append(el('ul',{class:'srcs'}, j.fixes.map(f=>el('li',{},f)))); }
+  d.classList.add('open'); d.setAttribute('aria-hidden','false'); $('#scrim').classList.add('open');
+  d.scrollTop = 0; $('.close', d).focus();
+}
+function closeJob(){ const d=$('#drawer'); d.classList.remove('open'); d.setAttribute('aria-hidden','true'); $('#scrim').classList.remove('open'); hideTip(); }
+$('#scrim').addEventListener('click', closeJob);
+document.addEventListener('keydown', e => { if (e.key==='Escape') closeJob(); });
+
+// ---------- theme ----------
+const themes = ['auto','light','dark']; let ti = 0;
+$('#themeBtn').addEventListener('click', () => { ti=(ti+1)%3; const t=themes[ti]; if(t==='auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', t); $('#themeBtn').textContent='Theme: '+t; });
+
+function render(){
+  const v = $('#view'); v.replaceChildren(); hideTip();
+  const fn = {mylist:viewMyList, prices:viewPrices, crm:viewCRM, overview:viewOverview, jobs:viewJobs, money:viewMoney, orders:viewOrders, improve:viewImprove, fixes:viewFixes}[current] || viewOverview;
+  v.append(fn());
+}
+$('#asof').textContent = 'Data as of ' + D.asOf + ' · USD before tax · Click anything to dig in';
+renderTabs(); render();
+})();
+</script>
+</body>
+</html>
