@@ -1102,23 +1102,77 @@
 })();
 </script>
 <script>
-/* Plays the two slides' scenes while they are on screen; with reduced motion each stands at its last frame. */
+/* Plays the two slides' scenes while they are on screen; with reduced motion each stands at its last frame.
+   Every pause is in T (milliseconds). With ?tune in the address a panel of sliders tunes them, kept in a cookie. */
 (() => {
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+  // [key, label, default, max]
+  const SPEC = [
+    ['Telegram'],
+    ['tgStart', 'Before text starts', 0, 3000],
+    ['tgChar', 'Typing, per letter', 18, 120],
+    ['tgSent', 'Sent → thinking', 350, 3000],
+    ['tgThink', 'Thinking', 900, 4000],
+    ['tgFile', 'File shown', 1300, 5000],
+    ['tgTap', 'Finger tap', 260, 2000],
+    ['tgList', 'Group list', 450, 3000],
+    ['tgOpen', 'Mail opened', 350, 3000],
+    ['tgAsk', 'Sent → tool', 300, 3000],
+    ['tgTool', 'Tool running', 1000, 5000],
+    ['tgEnd', 'Final frame', 3500, 10000],
+    ['tgFade', 'Fade out', 600, 3000],
+    ['Notes'],
+    ['mdStart', 'Before start', 150, 3000],
+    ['mdMove', 'Cursor move', 480, 2000],
+    ['mdClick', 'Click', 180, 1000],
+    ['mdTick', 'After tick', 250, 3000],
+    ['mdFly', 'Picture flight', 400, 2000],
+    ['mdDrop', 'Drop line', 250, 2000],
+    ['mdPic', 'Picture in', 500, 3000],
+    ['mdPara', 'To paragraph', 450, 2000],
+    ['mdHandle', 'Handle shows', 150, 2000],
+    ['mdGrip', 'To handle', 350, 2000],
+    ['mdLift', 'Paragraph flight', 400, 2000],
+    ['mdMoved', 'Paragraph moved', 400, 3000],
+    ['mdText', 'To text', 450, 2000],
+    ['mdChar', 'Typing [[, per letter', 110, 500],
+    ['mdMenu', 'Menu open', 500, 3000],
+    ['mdItem', 'To menu item', 400, 2000],
+    ['mdLink', 'Link in', 300, 3000],
+    ['mdEnd', 'Final frame', 3500, 10000],
+    ['mdFade', 'Fade out', 600, 3000],
+  ];
+  const D = {}; SPEC.forEach(s => { if (s.length > 1) D[s[0]] = s[2]; });
+  const T = { ...D };
+  const COOKIE = 'dave_vs_timing';
+  try {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + COOKIE + '=([^;]*)'));
+    if (m) { const v = JSON.parse(decodeURIComponent(m[1])); for (const k in v) if (k in D && isFinite(v[k])) T[k] = +v[k]; }
+  } catch (e) {}
+  const save = () => {
+    const diff = {}; for (const k in D) if (T[k] !== D[k]) diff[k] = T[k];
+    document.cookie = COOKIE + '=' + encodeURIComponent(JSON.stringify(diff)) + ';path=/;max-age=31536000;samesite=lax';
+  };
+
   /* A scene plays only on screen and starts from its first frame every time it comes into view. */
   const RESTART = {};
+  const P = { paused: false };
+  const gates = [];
   function gate(host) {
     const st = { vis: false, gen: 0, cur: 0 };
+    gates.push(st);
     const see = v => { if (v && !st.vis) st.gen++; st.vis = v; };
     new IntersectionObserver(es => see(es[0].isIntersecting), { threshold: .3 }).observe(host);
     host.rsVis = see;
-    const shown = async () => { while (!st.vis || document.hidden) await sleep(80); st.cur = st.gen; };
-    const wait = async ms => { await sleep(ms); while (!st.vis || document.hidden) await sleep(80); if (st.gen !== st.cur) throw RESTART; };
+    const hold = () => !st.vis || document.hidden || P.paused;
+    const shown = async () => { while (hold()) await sleep(80); st.cur = st.gen; };
+    const wait = async ms => { await sleep(ms); while (hold()) await sleep(80); if (st.gen !== st.cur) throw RESTART; };
     const run = async body => { for (;;) { await shown(); try { await body(); } catch (e) { if (e !== RESTART) throw e; } } };
     return { wait, run };
   }
+  const restartAll = () => { P.paused = false; gates.forEach(st => st.gen++); };
 
   /* The real window and the real phone: every step lands in both at the same moment. */
   function real(host) {
@@ -1153,43 +1207,42 @@
       const r = el.getBoundingClientRect(), s = sc.getBoundingClientRect(), k = s.width / sc.offsetWidth || 1;
       tap.style.left = (r.left - s.left + r.width / 2) / k + 'px'; tap.style.top = (r.top - s.top + r.height / 2) / k + 'px';
       tap.classList.remove('go'); void tap.offsetWidth; tap.classList.add('go');
-      await wait(260);
+      await wait(T.tgTap);
     };
     const type = async text => {
       ph.hidden = true; typed.hidden = false;
-      for (const ch of text) { typed.textContent += ch; await wait(18); }
+      for (const ch of text) { typed.textContent += ch; await wait(T.tgChar); }
       typed.textContent = ''; typed.hidden = true; ph.hidden = false;
     };
     if (still) { set(3); return; }
     reset();
     run(async () => {
-      {
-        reset(); sc.classList.remove('out');
-        await type(first);
-        set(1);
-        await wait(350);
-        set(2);
-        await wait(900);
-        set(3);
-        await wait(1300);
-        // Out to the group: every topic is one of D.A.V.E.'s chats; Mail opens here and there at once.
-        await touch(back);
-        set(4);
-        await wait(450);
-        topic.classList.add('press');
-        await touch(topic);
-        set(5);
-        await wait(350);
-        await type(second);
-        set(6);
-        await wait(300);
-        set(7);
-        await wait(1000);
-        set(8);
-        await wait(3500);
-        sc.classList.add('out');
-        await wait(600);
-      }
+      reset(); sc.classList.remove('out');
+      if (T.tgStart) await wait(T.tgStart);
+      await type(first);
+      set(1);
+      await wait(T.tgSent);
+      set(2);
+      await wait(T.tgThink);
+      set(3);
+      await wait(T.tgFile);
+      // Out to the group: every topic is one of D.A.V.E.'s chats; Mail opens here and there at once.
+      await touch(back);
+      set(4);
+      await wait(T.tgList);
+      topic.classList.add('press');
+      await touch(topic);
+      set(5);
+      await wait(T.tgOpen);
+      await type(second);
+      set(6);
+      await wait(T.tgAsk);
+      set(7);
+      await wait(T.tgTool);
+      set(8);
+      await wait(T.tgEnd);
+      sc.classList.add('out');
+      await wait(T.tgFade);
     });
   }
   document.querySelectorAll('.rs-box[data-scene="tg-real"]').forEach(real);
@@ -1219,8 +1272,10 @@
       return { x: (a.left - b.left) / z, y: (a.top - b.top) / z, w: a.width / z, h: a.height / z };
     };
     const place = (el, x, y) => { el.style.transform = `translate(${x}px,${y}px)`; };
-    const to = async (el, fx = .5, fy = .5, ms = 480) => { const p = rel(el, sc); place(cur, p.x + p.w * fx, p.y + p.h * fy); await wait(ms); };
-    const click = async () => { cur.animate([{ scale: 1 }, { scale: .85 }, { scale: 1 }], { duration: 180 }); await wait(180); };
+    // The cursor's glide lasts as long as the pause it belongs to.
+    const glide = (el, ms) => { el.style.transitionDuration = Math.round(ms * .88) + 'ms, 300ms'; };
+    const to = async (el, fx = .5, fy = .5, ms = T.mdMove) => { const p = rel(el, sc); glide(cur, ms); place(cur, p.x + p.w * fx, p.y + p.h * fy); await wait(ms); };
+    const click = async () => { cur.animate([{ scale: 1 }, { scale: .85 }, { scale: 1 }], { duration: Math.max(1, T.mdClick) }); await wait(T.mdClick); };
     const line = (above) => {
       const p = rel(above, drop.parentElement);
       Object.assign(drop.style, { display: 'block', left: p.x + 'px', top: (p.y - 4) + 'px', width: p.w + 'px' });
@@ -1234,64 +1289,105 @@
     if (still) { reset(); end(); return; }
     reset();
     run(async () => {
-      {
-        reset(); sc.classList.remove('out'); cur.style.opacity = 1;
-        await wait(150);
-        await to(chk.querySelector('.task-check'));
-        await click(); chk.dataset.checked = 'true';
-        await wait(250);
-        // A picture from the project's files into the note (on a phone the files are hidden, and it just appears).
-        if (png.offsetParent) {
-          await to(png, .35);
-          await click();
-          const g = rel(png, sc);
-          ghost.style.transition = 'none'; place(ghost, g.x + 10, g.y + 4); void ghost.offsetWidth;
-          ghost.style.transition = ''; ghost.style.opacity = 1;
-          const t = rel(para, sc);
-          place(ghost, t.x + 40, t.y - 6); place(cur, t.x + 30, t.y - 10);
-          await wait(400); line(para); await wait(250);
-          ghost.style.opacity = 0; drop.style.display = 'none';
-        }
-        set(2);
-        await wait(500);
-        // The paragraph goes above the picture by its handle.
-        await to(para, .25, .5, 450);
-        const p = rel(para, handle.parentElement);
-        Object.assign(handle.style, { display: 'flex', left: (p.x - 26) + 'px', top: (p.y + (p.h - 24) / 2) + 'px' });
-        await wait(150);
-        await to(handle, .5, .5, 350);
-        handle.classList.add('pm-drag-handle-pinned');
+      reset(); sc.classList.remove('out'); cur.style.opacity = 1;
+      await wait(T.mdStart);
+      await to(chk.querySelector('.task-check'));
+      await click(); chk.dataset.checked = 'true';
+      await wait(T.mdTick);
+      // A picture from the project's files into the note (on a phone the files are hidden, and it just appears).
+      if (png.offsetParent) {
+        await to(png, .35);
         await click();
-        para.style.opacity = '.4';
-        const i = rel(img, sc);
-        place(cur, i.x + 10, i.y - 6);
-        await wait(400); line(img); await wait(250);
-        drop.style.display = 'none'; handle.style.display = 'none'; handle.classList.remove('pm-drag-handle-pinned'); para.style.opacity = '';
-        set(3);
-        await wait(400);
-        // A link to another note: two brackets, then the note from the list.
-        await to(typed, 0, .5, 450);
-        await click();
-        for (const ch of '[[') { typed.textContent += ch; await wait(110); }
-        set(4);
-        // Below the text like in the app, or above it when the window ends first.
-        const m = rel(typed, menu.parentElement), t2 = rel(typed, sc), mh = menu.offsetHeight;
-        const win = rel(R.querySelector('.rs-md'), sc);
-        const below = t2.y + t2.h + 6 + mh <= win.y + win.h - 10;
-        Object.assign(menu.style, { left: m.x + 'px', top: (below ? m.y + m.h + 6 : m.y - 6 - mh) + 'px' });
-        await wait(500);
-        await to(menu.querySelector('[role="menuitem"]'), .4, .5, 400);
-        await click();
-        typed.textContent = ''; typed.classList.add('off'); set(5);
-        await wait(300);
-        cur.style.opacity = 0;
-        await wait(3500);
-        sc.classList.add('out');
-        await wait(600);
+        const g = rel(png, sc);
+        ghost.style.transition = 'none'; place(ghost, g.x + 10, g.y + 4); void ghost.offsetWidth;
+        ghost.style.transition = ''; glide(ghost, T.mdFly); ghost.style.opacity = 1;
+        const t = rel(para, sc);
+        glide(cur, T.mdFly); place(ghost, t.x + 40, t.y - 6); place(cur, t.x + 30, t.y - 10);
+        await wait(T.mdFly); line(para); await wait(T.mdDrop);
+        ghost.style.opacity = 0; drop.style.display = 'none';
       }
+      set(2);
+      await wait(T.mdPic);
+      // The paragraph goes above the picture by its handle.
+      await to(para, .25, .5, T.mdPara);
+      const p = rel(para, handle.parentElement);
+      Object.assign(handle.style, { display: 'flex', left: (p.x - 26) + 'px', top: (p.y + (p.h - 24) / 2) + 'px' });
+      await wait(T.mdHandle);
+      await to(handle, .5, .5, T.mdGrip);
+      handle.classList.add('pm-drag-handle-pinned');
+      await click();
+      para.style.opacity = '.4';
+      const i = rel(img, sc);
+      glide(cur, T.mdLift); place(cur, i.x + 10, i.y - 6);
+      await wait(T.mdLift); line(img); await wait(T.mdDrop);
+      drop.style.display = 'none'; handle.style.display = 'none'; handle.classList.remove('pm-drag-handle-pinned'); para.style.opacity = '';
+      set(3);
+      await wait(T.mdMoved);
+      // A link to another note: two brackets, then the note from the list.
+      await to(typed, 0, .5, T.mdText);
+      await click();
+      for (const ch of '[[') { typed.textContent += ch; await wait(T.mdChar); }
+      set(4);
+      // Below the text like in the app, or above it when the window ends first.
+      const m = rel(typed, menu.parentElement), t2 = rel(typed, sc), mh = menu.offsetHeight;
+      const win = rel(R.querySelector('.rs-md'), sc);
+      const below = t2.y + t2.h + 6 + mh <= win.y + win.h - 10;
+      Object.assign(menu.style, { left: m.x + 'px', top: (below ? m.y + m.h + 6 : m.y - 6 - mh) + 'px' });
+      await wait(T.mdMenu);
+      await to(menu.querySelector('[role="menuitem"]'), .4, .5, T.mdItem);
+      await click();
+      typed.textContent = ''; typed.classList.add('off'); set(5);
+      await wait(T.mdLink);
+      cur.style.opacity = 0;
+      await wait(T.mdEnd);
+      sc.classList.add('out');
+      await wait(T.mdFade);
     });
   }
   document.querySelectorAll('.rs-box[data-scene="md-real"]').forEach(mdReal);
+
+  /* The tuning panel: only with ?tune in the address; the values stay in this browser's cookie. */
+  if (!/[?&#]tune\b/.test(location.search + location.hash)) return;
+  const css = document.createElement('style');
+  css.textContent = `.rt{position:fixed;right:12px;bottom:12px;z-index:99999;width:300px;max-height:calc(100vh - 24px);display:flex;flex-direction:column;background:#1b1b19;color:#ecebe4;border:1px solid #3a3a36;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.6);font:12px/1.3 system-ui,-apple-system,sans-serif}
+.rt-h{display:flex;gap:6px;padding:10px;border-bottom:1px solid #3a3a36;}.rt button{flex:1 1 auto;padding:7px 4px;border:0;border-radius:7px;background:#2e2e2b;color:#ecebe4;font:600 12px system-ui,sans-serif;cursor:pointer}.rt button:hover{background:#3d3d39}.rt button[data-a=side],.rt button[data-a=min]{flex:0 0 28px}.rt button.rt-go{background:#d9442f;color:#fff}
+.rt-b{overflow:auto;padding:4px 12px 12px}.rt-g{margin:12px 0 4px;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#a9a89f}.rt-r{display:grid;grid-template-columns:1fr 58px;gap:2px 8px;align-items:center;margin:6px 0}.rt-r span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rt-r input[type=range]{grid-column:1/-1;width:100%;accent-color:#d9442f;margin:0}.rt-r input[type=number]{width:58px;padding:2px 4px;border:1px solid #3a3a36;border-radius:5px;background:#121211;color:#ecebe4;font:12px ui-monospace,monospace;text-align:right}.rt-r.ch span{color:#ffb4a6}
+.rt.min .rt-b{display:none}.rt.left{right:auto;left:12px}`;
+  document.head.appendChild(css);
+  const box = document.createElement('div');
+  box.className = 'rt';
+  box.innerHTML = '<div class="rt-h"><button class="rt-go" data-a="restart">Restart</button><button data-a="pause">Pause</button><button data-a="defaults">Defaults</button><button data-a="copy">Copy</button><button data-a="side">⇆</button><button data-a="min">–</button></div><div class="rt-b"></div>';
+  const body = box.querySelector('.rt-b');
+  const rows = {};
+  for (const s of SPEC) {
+    if (s.length === 1) { const g = document.createElement('div'); g.className = 'rt-g'; g.textContent = s[0]; body.appendChild(g); continue; }
+    const [key, label, , max] = s;
+    const r = document.createElement('label');
+    r.className = 'rt-r';
+    r.innerHTML = `<span title="${key}">${label}</span><input type="number" min="0" max="${max}" step="10"><input type="range" min="0" max="${max}" step="${max <= 500 ? 1 : 10}">`;
+    const [num, rng] = r.querySelectorAll('input');
+    const put = v => { v = Math.max(0, Math.round(+v || 0)); T[key] = v; num.value = v; rng.value = v; r.classList.toggle('ch', v !== D[key]); };
+    rows[key] = put;
+    put(T[key]);
+    rng.addEventListener('input', () => { put(rng.value); save(); });
+    num.addEventListener('change', () => { put(num.value); save(); });
+    body.appendChild(r);
+  }
+  const pb = box.querySelector('[data-a="pause"]');
+  box.addEventListener('click', e => {
+    const a = e.target.closest('button')?.dataset.a;
+    if (a === 'restart') { restartAll(); pb.textContent = 'Pause'; }
+    else if (a === 'pause') { P.paused = !P.paused; pb.textContent = P.paused ? 'Play' : 'Pause'; }
+    else if (a === 'defaults') { for (const k in D) rows[k](D[k]); save(); restartAll(); pb.textContent = 'Pause'; }
+    else if (a === 'copy') {
+      const txt = JSON.stringify(T);
+      const b = e.target, done = () => { b.textContent = 'Copied'; setTimeout(() => { b.textContent = 'Copy'; }, 1200); };
+      (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(done, () => { prompt('Timings', txt); });
+    }
+    else if (a === 'side') box.classList.toggle('left');
+    else if (a === 'min') { box.classList.toggle('min'); e.target.textContent = box.classList.contains('min') ? '+' : '–'; }
+  });
+  document.body.appendChild(box);
 })();
 </script>
 </body>
