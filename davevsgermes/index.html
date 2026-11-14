@@ -808,6 +808,172 @@
     .md-doc { width: 220px; }
   }
 </style>
+<style>
+  /* Two slides: Dave in Telegram and notes like in Notion. Each scene is drawn at 640 x 460 and
+     scaled to its box; it plays while on screen and stands still at its last frame for reduced motion. */
+  .slide { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; align-items: center;
+           min-height: 100svh; padding: 96px 0; }
+  .slide-flip { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+  .slide-flip .slide-text { order: 2; }
+  .slide-title { font-size: 60px; line-height: 64px; font-weight: 500; letter-spacing: -2px; color: var(--fg); text-wrap: balance; }
+  .slide-lead { margin-top: 20px; font-size: 22px; line-height: 32px; color: #d6d5cc; text-wrap: pretty; }
+  .slide .soon-list { margin-top: 28px; gap: 14px; }
+  .slide .soon-list li { font-size: 17px; line-height: 26px; }
+  .scene-box { --base: 640; position: relative; width: 100%; aspect-ratio: 640 / 460; }
+  .scene { position: absolute; left: 0; top: 0; width: calc(var(--base) * 1px); height: 460px; transform-origin: 0 0; transform: scale(var(--k, 1));
+           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; color: #1c1c1f; letter-spacing: 0; }
+  .scene * { box-sizing: border-box; }
+  .scene .hide { display: none !important; }
+  .scene .pop { animation: pop .45s cubic-bezier(.2,.8,.3,1) both; }
+  @keyframes pop { from { opacity: 0; transform: translateY(10px) scale(.97); } }
+  .dw-wall, .ph-wall, .ed, .toast { transition: opacity .5s; }
+  .scene.out .dw-wall, .scene.out .ph-wall, .scene.out .ed, .scene.out .toast { opacity: 0; }
+  .slide .soon-list li::before { top: 9px; }
+
+  /* D.A.V.E.'s window, as on dave.space: warm grey sidebar, the chat on white. */
+  .dw { position: absolute; left: 0; top: 24px; width: 470px; height: 388px; display: flex; border-radius: 14px; overflow: hidden; background: #fff;
+        box-shadow: 0 0 0 1px rgba(0,0,0,.25), 0 40px 80px -30px rgba(0,0,0,.8); }
+  .dw-wide { left: 0; top: 16px; width: 640px; height: 428px; }
+  .dw-side { width: 136px; flex: none; display: flex; flex-direction: column; gap: 2px; padding: 0 8px; background: #f6f5f2; border-right: 1px solid #ebe9e4; }
+  .dw-dots { display: flex; gap: 6px; height: 30px; align-items: center; padding: 0 4px; }
+  .dw-dots i { width: 9px; height: 9px; border-radius: 50%; background: #e2dfd8; }
+  .dw-dots i:nth-child(1) { background: #ff5f57; } .dw-dots i:nth-child(2) { background: #febc2e; } .dw-dots i:nth-child(3) { background: #28c840; }
+  .dw-logo { display: flex; align-items: center; gap: 7px; padding: 4px 4px 14px; font-size: 13px; font-weight: 700; letter-spacing: .06em; }
+  .dv-dot { display: inline-block; width: 14px; height: 14px; flex: none; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #eaa477, #b35d2a 55%, #6d3014); }
+  .dw-sec { padding: 2px 4px 6px; font-size: 10px; font-weight: 600; color: #8b8983; }
+  .dw-row { display: flex; align-items: center; gap: 6px; padding: 6px 7px; border-radius: 7px; font-size: 11.5px; color: #3a3935; }
+  .dw-row .tg-mark { width: 12px; height: 12px; margin-left: auto; }
+  .dw-row.on { background: #e9e7e1; font-weight: 600; color: #1c1c1f; }
+  .dw-row.flash { box-shadow: 0 0 0 2px #e07a52; }
+  .dw-main { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .dw-head { display: flex; align-items: center; gap: 6px; height: 40px; padding: 0 16px; border-bottom: 1px solid #efede8; font-size: 12.5px; }
+  .tg-mark { width: 14px; height: 14px; flex: none; display: block; }
+  .dw-wall { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 16px 92px 12px 16px; overflow: hidden; }
+  .dw-ask { align-self: flex-end; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; max-width: 100%; }
+  .dw-from { display: flex; align-items: center; gap: 4px; font-size: 9.5px; color: #8b8983; }
+  .dw-from .tg-mark { width: 11px; height: 11px; }
+  .dw-ask p, .dw-re p { margin: 0; font-size: 12px; line-height: 17px; }
+  .dw-ask p { padding: 8px 11px; border-radius: 12px; background: #f1f0ed; }
+  .dw-re { display: flex; flex-direction: column; align-items: flex-start; gap: 7px; }
+  .dw-who { display: flex; align-items: center; gap: 5px; font-size: 9.5px; font-weight: 700; letter-spacing: .04em; color: #b35d2a; }
+  .dw-who .dv-dot { width: 9px; height: 9px; }
+  .dw-think { display: flex; gap: 4px; }
+  .dw-think i { width: 6px; height: 6px; border-radius: 50%; background: #c9c6bf; animation: think 1s infinite; }
+  .dw-think i:nth-child(2) { animation-delay: .15s; } .dw-think i:nth-child(3) { animation-delay: .3s; }
+  @keyframes think { 50% { opacity: .3; transform: translateY(-2px); } }
+  .dw-re p, .dw-re .dw-file { display: none; }
+  .dw-re.done .dw-think { display: none; }
+  .dw-re.done p, .dw-re.done .dw-file { display: flex; }
+  .dw-file, .tm-file { display: flex; align-items: center; gap: 8px; padding: 7px 10px 7px 7px; border-radius: 10px; border: 1px solid #ebe9e4; font-size: 11px; }
+  .pdf { display: grid; place-items: center; width: 26px; height: 26px; flex: none; border-radius: 6px; background: #d8452f; color: #fff; font-size: 7.5px; font-weight: 800; }
+  .dw-chip { align-self: flex-start; display: flex; align-items: center; gap: 5px; padding: 5px 9px; border-radius: 999px; background: #eaf6ee; color: #1d7a45; font-size: 10.5px; font-weight: 600; }
+  .dw-input { margin: 0 92px 12px 16px; padding: 9px 12px; border-radius: 10px; border: 1px solid #e6e4df; font-size: 11px; color: #a3a19b; }
+
+  /* The phone with Telegram's night theme, the same topic. */
+  .ph { position: absolute; left: 404px; top: 0; width: 236px; height: 460px; display: flex; flex-direction: column; border-radius: 34px; overflow: hidden;
+        background: #0e1621; color: #f5f5f5; box-shadow: 0 0 0 7px #1d1d1b, 0 0 0 8px #3a3a36, 0 40px 80px -24px rgba(0,0,0,.9); }
+  .ph-bar { display: flex; align-items: center; gap: 8px; padding: 30px 12px 9px; background: #17212b; }
+  .ph-back { font-size: 22px; line-height: 1; color: #6ab3f3; }
+  .ph-av { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; background: #b35d2a; font-size: 12px; font-weight: 700; }
+  .ph-t b { display: block; font-size: 12.5px; } .ph-t small { display: block; font-size: 10px; color: #7f91a4; }
+  .ph-wall { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 10px 10px 8px;
+             background: linear-gradient(160deg, #0e1621, #12202d); overflow: hidden; }
+  .tm { position: relative; max-width: 86%; padding: 7px 10px 16px; border-radius: 13px; font-size: 11.5px; line-height: 15px; }
+  .tm em { position: absolute; right: 8px; bottom: 3px; font-style: normal; font-size: 8.5px; color: #8fb0cf; }
+  .tm.out { align-self: flex-end; background: #2b5278; border-bottom-right-radius: 4px; }
+  .tm.in { align-self: flex-start; background: #182533; border-bottom-left-radius: 4px; }
+  .tm-file { margin-top: 6px; border-color: #2a3a4b; }
+  .tm-file b { display: block; font-size: 11px; } .tm-file small { display: block; font-size: 9px; color: #7f91a4; }
+  .tm-ask { padding-bottom: 8px; }
+  .tm-btns { display: flex; gap: 6px; margin-top: 8px; }
+  .tm-btn { flex: 1; padding: 6px 4px; border-radius: 8px; background: #22344a; color: #6ab3f3; font-size: 10.5px; font-weight: 600; text-align: center; }
+  .tm-btn.press { background: #2b5278; color: #fff; }
+  .tm-done { display: none; margin-top: 8px; color: #8be29c; font-size: 11px; font-weight: 600; }
+  .tm-ask.ok .tm-btns { display: none; } .tm-ask.ok .tm-done { display: block; }
+  .ph-in { display: flex; align-items: center; gap: 8px; padding: 9px 10px 22px; background: #17212b; }
+  .ph-field { position: relative; flex: 1; min-height: 30px; padding: 7px 10px; border-radius: 15px; background: #242f3d; font-size: 11px; line-height: 16px; }
+  .ph-typed { display: none; } .ph-ph { color: #7f91a4; }
+  .ph-field.typing .ph-typed { display: inline; } .ph-field.typing .ph-ph { display: none; }
+  .ph-send { width: 30px; height: 30px; flex: none; border-radius: 50%; background: #2aabee url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12l15-7-4 15-3-6z' fill='%23fff'/%3E%3C/svg%3E") 7px 8px/15px no-repeat; }
+
+  /* What moves between them. */
+  .beam { position: absolute; left: 0; top: 0; z-index: 4; width: 12px; height: 12px; border-radius: 50%; background: #e07a52; box-shadow: 0 0 0 6px rgba(224,122,82,.25), 0 0 24px #e07a52;
+          opacity: 0; transition: none; pointer-events: none; }
+  .tap { position: absolute; z-index: 4; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; background: rgba(106,179,243,.45); opacity: 0; transform: scale(.3); }
+  .tap.go { animation: tap .6s ease-out; }
+  @keyframes tap { 0% { opacity: 1; transform: scale(.3); } 100% { opacity: 0; transform: scale(1.4); } }
+
+  /* The editor. */
+  .ft { display: flex; align-items: center; gap: 6px; padding: 5px 7px; border-radius: 7px; font-size: 11px; color: #3a3935; }
+  .ft-dir { font-weight: 600; color: #6d6b66; }
+  .ft.on { background: #e9e7e1; font-weight: 600; color: #1c1c1f; }
+  .ft.lift { opacity: .45; }
+  .fi { display: inline-block; width: 12px; height: 14px; flex: none; border-radius: 2px; background: #b9b6ae; }
+  .fi.md { background: linear-gradient(135deg, #e07a52, #b9532f); }
+  .fi.img { background: linear-gradient(135deg, #6fb4f0, #3b78c4); }
+  .ed-tab { display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 16px; border-bottom: 1px solid #efede8; font-size: 11px; color: #6d6b66; }
+  .ed { position: relative; flex: 1; display: flex; flex-direction: column; gap: 7px; padding: 18px 28px 12px 40px; overflow: hidden; }
+  .ed-h { font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 2px; }
+  .ed-li { display: flex; align-items: center; gap: 8px; font-size: 12.5px; line-height: 18px; color: #2b2a27; }
+  .cb { width: 13px; height: 13px; flex: none; border-radius: 3px; box-shadow: inset 0 0 0 1.5px #b9b6ae; transition: background .2s, box-shadow .2s; }
+  .ed-li.done { color: #9a9892; text-decoration: line-through; }
+  .ed-li.done .cb { background: #e07a52 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2l2.2 2.2 4.8-5' fill='none' stroke='%23fff' stroke-width='1.8'/%3E%3C/svg%3E") center/10px no-repeat; box-shadow: none; }
+  .ed-move { display: flex; flex-direction: column; gap: 7px; }
+  .ed-img { align-self: flex-start; width: 192px; overflow: hidden; max-height: 0; border-radius: 8px; transition: max-height .45s ease; }
+  .ed-img.in { max-height: 120px; box-shadow: 0 0 0 1px #ebe9e4; }
+  .ed-img img { display: block; width: 192px; height: 120px; }
+  .ed { gap: 6px; }
+  .ed-p { position: relative; z-index: 2; transition: box-shadow .2s; font-size: 12.5px; line-height: 18px; color: #2b2a27; padding: 3px 6px; margin-left: -6px; border-radius: 6px; background: #fff; }
+  .grip { position: absolute; left: -16px; top: 3px; font-size: 11px; letter-spacing: -2px; color: #b9b6ae; opacity: 0; }
+  .ed-p.grab .grip { opacity: 1; }
+  .ed-p.lift { box-shadow: 0 10px 24px -8px rgba(0,0,0,.35), 0 0 0 1px #ebe9e4; }
+  .ed-tbl { display: grid; grid-template-columns: 1fr 80px; width: 260px; border: 1px solid #ebe9e4; border-radius: 6px; font-size: 11px; line-height: 15px; overflow: hidden; }
+  .ed-tbl span { padding: 4px 8px; border-top: 1px solid #ebe9e4; }
+  .ed-tbl span:nth-child(-n+2) { border-top: 0; background: #f6f5f2; font-weight: 600; color: #6d6b66; }
+  .ed-tbl span:nth-child(even) { text-align: right; }
+  .ed-line { position: relative; display: flex; align-items: center; font-size: 12.5px; line-height: 18px; color: #2b2a27; white-space: nowrap; }
+  .ed-typed { display: none; color: #b35d2a; }
+  .wl { display: none; padding: 0 5px; border-radius: 4px; background: rgba(224,122,82,.14); color: #b35d2a; font-weight: 600; }
+  .caret { display: none; width: 1.5px; height: 15px; margin-left: 1px; background: #1c1c1f; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .ed-line.t1 .ed-typed, .ed-line.t1 .caret { display: inline-block; }
+  .ed-line.t2 .ed-typed { display: none; } .ed-line.t2 .wl { display: inline-block; }
+  .sug { position: absolute; left: 70px; bottom: 22px; display: none; flex-direction: column; min-width: 150px; padding: 4px; border-radius: 8px; background: #fff;
+         box-shadow: 0 12px 30px -8px rgba(0,0,0,.35), 0 0 0 1px #ebe9e4; font-size: 11px; }
+  .sug span { padding: 5px 8px; border-radius: 5px; } .sug .on { background: #f3ede9; color: #b35d2a; font-weight: 600; }
+  .ed-line.t1 .sug { display: flex; }
+  .toast { position: absolute; right: 16px; bottom: 14px; display: flex; align-items: center; gap: 7px; padding: 8px 12px; border-radius: 10px;
+           background: #1c1c1f; color: #f5f5eb; font-size: 11px; box-shadow: 0 12px 30px -10px rgba(0,0,0,.5); }
+  .toast .dv-dot { width: 10px; height: 10px; }
+  .ghost { position: absolute; left: 0; top: 0; z-index: 4; transition: transform .7s cubic-bezier(.3,.7,.3,1), opacity .2s; display: flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 7px; background: #fff; font-size: 11px;
+           box-shadow: 0 14px 30px -8px rgba(0,0,0,.45), 0 0 0 1px #ebe9e4; opacity: 0; pointer-events: none; }
+  .drop { position: absolute; left: 0; top: 0; transition: opacity .2s; height: 2px; width: 220px; border-radius: 1px; background: #2aabee; opacity: 0; }
+  .sc-cursor { position: absolute; left: 0; top: 0; width: 18px; height: 18px; opacity: 0; transition: transform .7s cubic-bezier(.3,.7,.3,1), opacity .3s; pointer-events: none; z-index: 5; }
+
+  @media (min-width: 761px) and (max-width: 1100px) {
+    .slide, .slide-flip { grid-template-columns: 1fr; gap: 40px; min-height: 0; }
+    .slide-flip .slide-text { order: 0; }
+    .scene-box { max-width: 720px; }
+  }
+  @media (max-width: 760px) {
+    .slide, .slide-flip { grid-template-columns: 1fr; gap: 28px; min-height: 0; padding: 64px 0; }
+    .slide-flip .slide-text { order: 0; }
+    .slide-title { font-size: 40px; line-height: 44px; letter-spacing: -1.2px; }
+    .slide-lead { margin-top: 12px; font-size: 18px; line-height: 26px; }
+    .slide .soon-list { margin-top: 20px; }
+    .slide .soon-list li { font-size: 16px; line-height: 24px; }
+    /* On a phone the scene is drawn 470 wide without the window's sidebar, so its text stays readable. */
+    .scene-box { --base: 470; aspect-ratio: 470 / 460; }
+    .scene .dw-side { display: none; }
+    .sc-tg .dw { width: 300px; }
+    .sc-tg .ph { left: 234px; }
+    .sc-tg .dw-wall { padding-right: 82px; }
+    .sc-tg .dw-input { margin-right: 82px; }
+    .sc-md .dw-wide { width: 470px; }
+    .sc-md .ed { padding: 16px 18px 12px 30px; }
+    .sc-md .ghost { display: none; }
+  }
+</style>
 </head>
 <body>
 <header class="top">
@@ -890,48 +1056,97 @@
           <a class="result-open" href="case/hermes-dashboard.html" target="_blank" rel="noopener">Открыть дашборд <span aria-hidden="true">↗</span></a>
         </article></div>
     </section>
-  <section class="page-section rest" id="rest">
-      <div class="dave-now">
-          <h3 class="diff-soon-title"><span class="acc">Уже сейчас</span>&nbsp;— Дейв в&nbsp;Telegram и&nbsp;заметки как в&nbsp;Notion</h3>
-          <div class="soon-cards">
-            <div class="soon-card">
-              <div class="soon-vis tg-vis" aria-hidden="true">
-                <div class="tg-topics">
-                  <span class="tg-group"><span class="tg-plane"></span>D.A.V.E.</span>
-                  <span class="tg-topic on"><i>#</i>Дашборд</span>
-                  <span class="tg-topic"><i>#</i>Отчёты</span>
-                  <span class="tg-topic"><i>#</i>Почта</span>
-                </div>
-                <div class="sv-chat"><span class="sv-msg in">Что заказать на&nbsp;понедельник?</span><span class="sv-msg out">Оформил 3&nbsp;заказа поставщику ✓</span></div>
-              </div>
-              <h4>Дейв в&nbsp;Telegram</h4>
-              <p class="soon-lead">Каждый чат&nbsp;— своя тема в&nbsp;вашей группе</p>
-              <ul class="soon-list">
-                <li>Пишете с&nbsp;телефона&nbsp;— Дейв работает на&nbsp;компьютере и&nbsp;отвечает туда&nbsp;же</li>
-                <li>Голосовые, фото и&nbsp;файлы в&nbsp;обе стороны: готовый отчёт приходит прямо в&nbsp;тему</li>
-                <li>Доступ к&nbsp;сайту и&nbsp;подтверждения&nbsp;— одной кнопкой в&nbsp;Telegram</li>
-              </ul>
+  <section class="page-section slide" id="telegram">
+      <div class="slide-text">
+        <h2 class="slide-title">Дейв в&nbsp;<span class="acc">Telegram</span></h2>
+        <p class="slide-lead">Каждый чат&nbsp;— своя тема в&nbsp;вашей группе</p>
+        <ul class="soon-list">
+          <li>Пишете с&nbsp;телефона&nbsp;— Дейв работает на&nbsp;компьютере и&nbsp;отвечает туда&nbsp;же</li>
+          <li>Голосовые, фото и&nbsp;файлы в&nbsp;обе стороны: готовый отчёт приходит прямо в&nbsp;тему</li>
+          <li>Доступ к&nbsp;сайту и&nbsp;подтверждения&nbsp;— одной кнопкой в&nbsp;Telegram</li>
+        </ul>
+      </div>
+      <div class="scene-box" aria-hidden="true"><div class="scene sc-tg" data-scene="tg">
+        <div class="dw">
+          <div class="dw-side">
+            <div class="dw-dots"><i></i><i></i><i></i></div>
+            <div class="dw-logo"><i class="dv-dot"></i>D.A.V.E.</div>
+            <div class="dw-sec">Чаты</div>
+            <div class="dw-row on" data-k="row">Дашборд<svg class="tg-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#2aabee"/><path fill="#fff" d="M5.5 11.6l11.8-4.6c.6-.2 1 .1.9.9l-2 9.5c-.1.6-.6.8-1.1.5l-3-2.2-1.4 1.4c-.2.2-.3.3-.6.3l.2-3.1 5.6-5c.2-.2 0-.4-.4-.2l-6.9 4.3-3-.9c-.6-.2-.6-.6.1-.9z"/></svg></div>
+            <div class="dw-row">Отчёты</div>
+            <div class="dw-row">Почта</div>
+          </div>
+          <div class="dw-main">
+            <div class="dw-head"><b>Дашборд</b><svg class="tg-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#2aabee"/><path fill="#fff" d="M5.5 11.6l11.8-4.6c.6-.2 1 .1.9.9l-2 9.5c-.1.6-.6.8-1.1.5l-3-2.2-1.4 1.4c-.2.2-.3.3-.6.3l.2-3.1 5.6-5c.2-.2 0-.4-.4-.2l-6.9 4.3-3-.9c-.6-.2-.6-.6.1-.9z"/></svg></div>
+            <div class="dw-wall">
+              <div class="dw-ask" data-k="d-ask"><span class="dw-from"><svg class="tg-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#2aabee"/><path fill="#fff" d="M5.5 11.6l11.8-4.6c.6-.2 1 .1.9.9l-2 9.5c-.1.6-.6.8-1.1.5l-3-2.2-1.4 1.4c-.2.2-.3.3-.6.3l.2-3.1 5.6-5c.2-.2 0-.4-.4-.2l-6.9 4.3-3-.9c-.6-.2-.6-.6.1-.9z"/></svg>из Telegram</span><p>Что заказать на&nbsp;понедельник?</p></div>
+              <div class="dw-re" data-k="d-re"><span class="dw-who"><i class="dv-dot"></i>D.A.V.E.</span><span class="dw-think"><i></i><i></i><i></i></span>
+                <p>Оформил 3&nbsp;заказа поставщику ✓</p><span class="dw-file"><span class="pdf">PDF</span>orders.pdf</span></div>
+              <div class="dw-chip" data-k="d-chip"><svg class="tg-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#2aabee"/><path fill="#fff" d="M5.5 11.6l11.8-4.6c.6-.2 1 .1.9.9l-2 9.5c-.1.6-.6.8-1.1.5l-3-2.2-1.4 1.4c-.2.2-.3.3-.6.3l.2-3.1 5.6-5c.2-.2 0-.4-.4-.2l-6.9 4.3-3-.9c-.6-.2-.6-.6.1-.9z"/></svg>hubspot.com · <span>На 15 минут</span></div>
             </div>
-            <div class="soon-card">
-              <div class="soon-vis md-vis" aria-hidden="true">
-                <div class="md-doc">
-                  <div class="md-tab"><span class="md-ic"></span>plan.md</div>
-                  <div class="md-h">План на&nbsp;неделю</div>
-                  <div class="md-li done"><span class="md-box"></span>Заказы поставщику</div>
-                  <div class="md-li"><span class="md-box"></span>Отчёт для банка</div>
-                  <div class="md-li"><span class="md-link">[[Cypress Coast]]</span></div>
-                </div>
-              </div>
-              <h4>Заметки как в&nbsp;Notion</h4>
-              <p class="soon-lead">Любой .md открывается как документ, а&nbsp;не&nbsp;как код</p>
-              <ul class="soon-list">
-                <li>Правите прямо в&nbsp;D.A.V.E.: заголовки, списки и&nbsp;таблицы</li>
-                <li>Ссылки между заметками не&nbsp;ломаются, когда файл переехал</li>
-                <li>Это те&nbsp;же файлы, что читает Дейв: поправили документ&nbsp;— он&nbsp;уже работает по&nbsp;нему</li>
-              </ul>
-            </div>
+            <div class="dw-input">Сообщение</div>
           </div>
         </div>
+        <div class="ph">
+          <div class="ph-bar"><span class="ph-back">‹</span><span class="ph-av">D</span><span class="ph-t"><b>Дашборд</b><small>D.A.V.E.</small></span></div>
+          <div class="ph-wall">
+            <div class="tm out" data-k="p-ask">Что заказать на&nbsp;понедельник?<em>9:41 ✓✓</em></div>
+            <div class="tm in" data-k="p-re">Оформил 3&nbsp;заказа поставщику ✓<span class="tm-file"><span class="pdf">PDF</span><span><b>orders.pdf</b><small>84 KB</small></span></span><em>9:42</em></div>
+            <div class="tm in tm-ask" data-k="p-perm"><b>Пустить D.A.V.E. на hubspot.com?</b>
+              <span class="tm-btns"><span class="tm-btn" data-k="p-yes">На 15 минут</span><span class="tm-btn">Навсегда</span></span>
+              <span class="tm-done">Разрешено на 15 минут ✓</span></div>
+          </div>
+          <div class="ph-in"><span class="ph-field"><span class="ph-typed" data-k="p-typed">Что заказать на&nbsp;понедельник?</span><span class="ph-ph">Сообщение</span></span><span class="ph-send"></span></div>
+        </div>
+        <span class="beam" data-k="beam"></span>
+        <span class="tap" data-k="tap"></span>
+      </div></div>
+    </section>
+  <section class="page-section slide slide-flip" id="notes">
+      <div class="slide-text">
+        <h2 class="slide-title">Заметки как в&nbsp;<span class="acc">Notion</span></h2>
+        <p class="slide-lead">Любой .md открывается как документ, а&nbsp;не&nbsp;как код</p>
+        <ul class="soon-list">
+          <li>Правите прямо в&nbsp;D.A.V.E.: заголовки, списки и&nbsp;таблицы</li>
+          <li>Ссылки между заметками не&nbsp;ломаются, когда файл переехал</li>
+          <li>Это те&nbsp;же файлы, что читает Дейв: поправили документ&nbsp;— он&nbsp;уже работает по&nbsp;нему</li>
+        </ul>
+      </div>
+      <div class="scene-box" aria-hidden="true"><div class="scene sc-md" data-scene="md">
+        <div class="dw dw-wide">
+          <div class="dw-side">
+            <div class="dw-dots"><i></i><i></i><i></i></div>
+            <div class="dw-logo"><i class="dv-dot"></i>D.A.V.E.</div>
+            <div class="dw-sec">Проекты</div>
+            <div class="ft ft-dir">▾ cypress</div>
+            <div class="ft on"><i class="fi md"></i>plan.md</div>
+            <div class="ft"><i class="fi md"></i>prices.md</div>
+            <div class="ft" data-k="img-src"><i class="fi img"></i>dashboard.png</div>
+          </div>
+          <div class="dw-main">
+            <div class="ed-tab"><i class="fi md"></i>plan.md</div>
+            <div class="ed">
+              <div class="ed-h">План на&nbsp;неделю</div>
+              <div class="ed-li" data-k="chk"><span class="cb"></span>Заказы поставщику</div>
+              <div class="ed-li"><span class="cb"></span>Отчёт для банка</div>
+              <div class="ed-li"><span class="cb"></span>Позвонить монтажнику</div>
+              <div class="ed-move">
+                <div class="ed-img" data-k="img"><img src="case/dave-dashboard-1000.webp" alt="" width="1000" height="625"></div>
+                <div class="ed-p" data-k="para"><span class="grip">⋮⋮</span>Понедельник: подтвердить выезды бригад</div>
+              </div>
+              <div class="ed-tbl"><span>Поставщик</span><span>Сумма</span><span>Harbor Circuit</span><span>$2,515</span><span>Galloway-Hale</span><span>$4,125</span></div>
+              <div class="ed-line"><span>Подробности:</span> <span class="ed-typed" data-k="typed">[[</span><span class="wl" data-k="wl">Cypress Coast</span><span class="caret" data-k="caret"></span>
+                <span class="sug" data-k="sug"><span class="on">Cypress Coast</span><span>prices</span></span></div>
+            </div>
+            <div class="toast" data-k="toast"><i class="dv-dot"></i>Дейв взял обновлённый план ✓</div>
+          </div>
+        </div>
+        <span class="ghost" data-k="ghost"><i class="fi img"></i>dashboard.png</span>
+        <span class="drop" data-k="drop"></span>
+        <svg class="sc-cursor" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3l14 8-6 1.6L10 19z" fill="#14140f" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </div></div>
+    </section>
+  <section class="page-section rest" id="rest">
       <div class="diff-soon">
           <h3 class="diff-soon-title"><span class="acc">Через неделю</span>&nbsp;— большое обновление</h3>
           <div class="soon-cards">
@@ -1058,6 +1273,159 @@
     if ((e.target.closest && e.target.closest('.bp-x')) || e.target === pop) { video.pause(); pop.close(); }
   });
   pop.addEventListener('close', function () { video.pause(); });
+})();
+</script>
+<script>
+/* Plays the two slides' scenes while they are on screen; with reduced motion each stands at its last frame. */
+(() => {
+  const boxes = [...document.querySelectorAll('.scene-box')];
+  if (!boxes.length) return;
+  const fit = b => b.firstElementChild.style.setProperty('--k', b.clientWidth / (parseFloat(getComputedStyle(b).getPropertyValue('--base')) || 640));
+  const ro = new ResizeObserver(es => es.forEach(e => fit(e.target)));
+  boxes.forEach(b => { fit(b); ro.observe(b); });
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  function rig(sc) {
+    const st = { vis: false };
+    const q = k => sc.querySelector('[data-k="' + k + '"]');
+    const wait = async ms => { await sleep(ms); while (!st.vis || document.hidden) await sleep(250); };
+    const at = (el, fx = .5, fy = .5) => {
+      const r = el.getBoundingClientRect(), s = sc.getBoundingClientRect(), k = s.width / sc.offsetWidth || 1;
+      return { x: (r.left - s.left + r.width * fx) / k, y: (r.top - s.top + r.height * fy) / k };
+    };
+    const show = el => { el.classList.remove('hide', 'pop'); void el.offsetWidth; el.classList.add('pop'); };
+    const hide = (...els) => els.forEach(el => el.classList.add('hide'));
+    new IntersectionObserver(es => { st.vis = es[0].isIntersecting; }, { threshold: .35 }).observe(sc);
+    return { st, q, wait, at, show, hide };
+  }
+
+  function tg(sc) {
+    const { q, wait, at, show, hide } = rig(sc);
+    const typed = q('p-typed'), field = typed.parentElement, full = typed.textContent;
+    const send = sc.querySelector('.ph-send'), row = q('row'), beam = q('beam'), tap = q('tap');
+    const msgs = ['p-ask', 'p-re', 'p-perm', 'd-ask', 'd-re', 'd-chip'].map(q);
+    const reset = () => {
+      hide(...msgs); q('d-re').classList.remove('done'); q('p-perm').classList.remove('ok'); q('p-yes').classList.remove('press');
+      field.classList.remove('typing'); typed.textContent = '';
+    };
+    const fly = async (a, b) => {
+      await beam.animate([{ opacity: 0, transform: `translate(${a.x - 6}px,${a.y - 6}px) scale(.4)` },
+                          { opacity: 1, offset: .15, transform: `translate(${a.x - 6}px,${a.y - 6}px) scale(1)` },
+                          { opacity: 1, offset: .85, transform: `translate(${b.x - 6}px,${b.y - 6}px) scale(1)` },
+                          { opacity: 0, transform: `translate(${b.x - 6}px,${b.y - 6}px) scale(.4)` }],
+                         { duration: 900, easing: 'cubic-bezier(.4,0,.2,1)' }).finished;
+    };
+    const end = () => { reset(); msgs.forEach(m => m.classList.remove('hide')); q('d-re').classList.add('done'); q('p-perm').classList.add('ok'); };
+    if (still) { end(); return; }
+    (async () => {
+      for (;;) {
+        reset(); sc.classList.remove('out');
+        await wait(900);
+        field.classList.add('typing');
+        for (const ch of full) { typed.textContent += ch; await wait(42); }
+        await wait(450);
+        field.classList.remove('typing'); typed.textContent = '';
+        show(q('p-ask'));
+        await wait(350);
+        await fly(at(send), at(row));
+        row.classList.add('flash'); show(q('d-ask'));
+        await wait(700); row.classList.remove('flash');
+        show(q('d-re'));
+        await wait(1700);
+        q('d-re').classList.add('done');
+        await wait(900);
+        await fly(at(q('d-re').querySelector('.dw-file')), at(sc.querySelector('.ph-wall'), .5, .85));
+        show(q('p-re'));
+        await wait(1300);
+        show(q('p-perm'));
+        await wait(1100);
+        const y = at(q('p-yes'));
+        tap.style.left = y.x + 'px'; tap.style.top = y.y + 'px';
+        tap.classList.remove('go'); void tap.offsetWidth; tap.classList.add('go'); q('p-yes').classList.add('press');
+        await wait(450);
+        q('p-perm').classList.add('ok');
+        await wait(500);
+        show(q('d-chip'));
+        await wait(3200);
+        sc.classList.add('out');
+        await wait(700);
+      }
+    })();
+  }
+
+  function md(sc) {
+    const { q, wait, at, show, hide } = rig(sc);
+    const cur = sc.querySelector('.sc-cursor'), ghost = q('ghost'), drop = q('drop');
+    const chk = q('chk'), src = q('img-src'), img = q('img'), para = q('para'), line = sc.querySelector('.ed-line');
+    const box = img.parentElement;
+    const to = async (p, ms = 800) => { cur.style.transform = `translate(${p.x - 4}px,${p.y - 2}px)`; await wait(ms); };
+    const click = async () => { cur.animate([{ scale: 1 }, { scale: .8 }, { scale: 1 }], { duration: 220 }); await wait(260); };
+    const reset = () => {
+      chk.classList.remove('done'); img.classList.remove('in'); src.classList.remove('lift');
+      para.classList.remove('grab', 'lift'); box.prepend(img); line.classList.remove('t1', 't2');
+      hide(q('toast')); ghost.style.opacity = 0; drop.style.opacity = 0;
+    };
+    const end = () => { reset(); chk.classList.add('done'); img.classList.add('in'); box.prepend(para); line.classList.add('t2'); q('toast').classList.remove('hide'); };
+    if (still) { end(); return; }
+    (async () => {
+      for (;;) {
+        reset(); sc.classList.remove('out');
+        cur.style.transition = 'none'; cur.style.opacity = 0; await to({ x: 420, y: 330 }, 30);
+        cur.style.transition = ''; await wait(700);
+        cur.style.opacity = 1;
+        await to(at(chk.querySelector('.cb')));
+        await click(); chk.classList.add('done');
+        await wait(500);
+        // A picture from the files into the document (on a phone the files are not shown and it just appears).
+        if (src.offsetParent) {
+          await to(at(src, .45));
+          src.classList.add('lift'); await click();
+          const g0 = at(src, .1, .1);
+          ghost.style.transition = 'none'; ghost.style.transform = `translate(${g0.x}px,${g0.y}px)`; void ghost.offsetWidth;
+          ghost.style.transition = ''; ghost.style.opacity = 1;
+          const d = at(box, 0, 0);
+          drop.style.transform = `translate(${d.x}px,${d.y - 4}px)`;
+          cur.style.transform = `translate(${d.x + 40}px,${d.y + 6}px)`;
+          ghost.style.transform = `translate(${d.x + 46}px,${d.y + 10}px)`;
+          await wait(450); drop.style.opacity = 1; await wait(500);
+          ghost.style.opacity = 0; drop.style.opacity = 0; src.classList.remove('lift');
+        }
+        img.classList.add('in');
+        await wait(1000);
+        // The paragraph goes above the picture.
+        await to(at(para, .3));
+        para.classList.add('grab');
+        await to(at(para.querySelector('.grip')), 500);
+        await click(); para.classList.add('lift');
+        const gap = 7, hi = img.offsetHeight, hp = para.offsetHeight;
+        const c0 = at(para.querySelector('.grip'));
+        await Promise.all([
+          para.animate([{ transform: 'none' }, { transform: `translateY(${-(hi + gap)}px)` }], { duration: 650, easing: 'cubic-bezier(.4,0,.2,1)' }).finished,
+          img.animate([{ transform: 'none' }, { transform: `translateY(${hp + gap}px)` }], { duration: 650, easing: 'cubic-bezier(.4,0,.2,1)' }).finished,
+          to({ x: c0.x, y: c0.y - hi - gap }, 650)
+        ]);
+        box.prepend(para); para.classList.remove('lift');
+        await wait(350); para.classList.remove('grab');
+        await wait(400);
+        // A link to another note.
+        await to(at(line.querySelector('span'), 1.05));
+        await click(); line.classList.add('t1');
+        await wait(900);
+        await to(at(q('sug').querySelector('.on')), 600);
+        await click(); line.classList.remove('t1'); line.classList.add('t2');
+        await wait(500);
+        cur.style.opacity = 0;
+        show(q('toast'));
+        await wait(3200);
+        sc.classList.add('out');
+        await wait(700);
+      }
+    })();
+  }
+
+  document.querySelectorAll('.scene[data-scene="tg"]').forEach(tg);
+  document.querySelectorAll('.scene[data-scene="md"]').forEach(md);
 })();
 </script>
 </body>
